@@ -50,7 +50,7 @@
           <div id="chat-log"></div>
           <div class="row" style="margin-top:10px">
             <input id="chat-input" placeholder="Escribe tu mensaje para Sandra..." />
-            <button class="btn" onclick="SandraAPI.sendText()">Enviar</button>
+            <button id="btnSend" class="btn">Enviar</button>
           </div>
         </div>
 
@@ -63,11 +63,11 @@
           <div id="voice-status" class="small" style="margin-top:8px;opacity:.8"></div>
         </div>
 
-        <div id="panel-avatar" class="card hidden">
-          <iframe id="avatar-frame" src="about:blank" title="Avatar Sandra"></iframe>
+        <div id="panel-avatar" class="card">
+          <iframe id="avatar-frame" src="about:blank" title="Avatar Sandra" style="width:100%;height:400px;border:0;border-radius:8px;background:#000"></iframe>
           <div style="margin-top:10px">
-            <button class="btn" onclick="SandraAPI.loadAvatar()">Cargar Avatar</button>
-            <button class="btn secondary" onclick="SandraAPI.sendAvatarCommand('hola')">Decir hola</button>
+            <button class="btn" onclick="loadAvatarEmbed()">Cargar Avatar</button>
+            <button class="btn secondary" onclick="testAvatar()">Test Avatar</button>
           </div>
         </div>
       </section>
@@ -83,6 +83,98 @@
   <script src="/assets/js/bargein.min.js" defer></script>
 
   <script>
+    // Sistema TTS con ElevenLabs
+    async function playSandraFromText(text) {
+      if (!text || !text.trim()) return;
+
+      // Añadir mensaje al chat log
+      const chatLog = document.getElementById('chat-log');
+      if (chatLog) {
+        const userMsg = document.createElement('div');
+        userMsg.className = 'msg me';
+        userMsg.textContent = `🧑 ${text}`;
+        chatLog.appendChild(userMsg);
+        chatLog.scrollTop = chatLog.scrollHeight;
+      }
+
+      try {
+        const r = await fetch('/.netlify/functions/tts', {
+          method: 'POST',
+          headers: {'Content-Type':'application/json'},
+          body: JSON.stringify({ text })
+        });
+
+        if (!r.ok) {
+          const msg = await r.text();
+          console.error('TTS error:', msg);
+          return;
+        }
+
+        const buf = await r.arrayBuffer();
+        const blob = new Blob([buf], { type: 'audio/mpeg' });
+        const url = URL.createObjectURL(blob);
+        const audio = new Audio(url);
+
+        // Añadir respuesta al chat log
+        if (chatLog) {
+          const aiMsg = document.createElement('div');
+          aiMsg.className = 'msg ai';
+          aiMsg.textContent = '🤖 Respondiendo...';
+          chatLog.appendChild(aiMsg);
+          chatLog.scrollTop = chatLog.scrollHeight;
+        }
+
+        audio.play();
+      } catch (e) {
+        console.error('Network error:', e);
+      }
+    }
+
+    // Avatar functions
+    async function loadAvatarEmbed() {
+      try {
+        const r = await fetch('/.netlify/functions/heygen-share', { method:'POST' });
+        const j = await r.json().catch(() => ({}));
+        const u = (j?.data?.url || j?.url || '').replace('/share/', '/embeds/');
+        document.getElementById('avatar-frame').src = u || 'about:blank';
+      } catch {
+        document.getElementById('avatar-frame').src = 'https://placehold.co/400x300/000000/ffffff?text=Avatar+Sandra';
+      }
+    }
+
+    function testAvatar() {
+      playSandraFromText('Hola, soy Sandra. ¿En qué puedo ayudarte hoy?');
+    }
+
+    // Conectar botón Enviar del chat
+    document.addEventListener('DOMContentLoaded', () => {
+      const input = document.getElementById('chat-input');
+      const btn = document.getElementById('btnSend');
+
+      if (btn) {
+        btn.addEventListener('click', () => {
+          const value = (input && input.value) ? input.value.trim() : '';
+          if (value) {
+            playSandraFromText(value);
+            if (input) input.value = '';
+          }
+        });
+      }
+
+      // Enter para enviar
+      if (input) {
+        input.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter') {
+            e.preventDefault();
+            btn?.click();
+          }
+        });
+      }
+
+      // Cargar avatar automáticamente
+      loadAvatarEmbed();
+    });
+
     // Puentes para sistema barge-in
     window.__registerStreamAbort = (controller) => window.SandraBargeIn?.armAbort(() => controller.abort());
 
