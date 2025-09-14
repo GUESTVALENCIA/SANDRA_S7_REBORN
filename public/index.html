@@ -265,106 +265,98 @@
   <script>
 async function loadAvatar(videoId){
   try{
-    const r = await fetch('/api/heygen-embed', {
-      method: 'POST',
-      headers: { 'Content-Type':'application/json' },
+    const r = await fetch('/.netlify/functions/heygen-embed', {
+      method:'POST', headers:{'content-type':'application/json'},
       body: JSON.stringify({ video_id: videoId })
     });
     const j = await r.json();
-    const url1 = j.embedUrl;
-    const url2 = j.fallback;
-
     const emb = document.getElementById('emb');
-    const avatarBox = document.getElementById('avatar');
-
-    // Probar candidato 1; si el proveedor bloquea, probamos 2.
-    const tryEmbed = (url) => new Promise((resolve,reject)=>{
-      let done=false;
-      const t = setTimeout(()=>{ if(!done){done=true; reject(new Error('timeout')); } }, 4000);
-      emb.onload = ()=>{ if(!done){ clearTimeout(t); done=true; resolve(true); } };
-      emb.onerror = ()=>{ if(!done){ clearTimeout(t); done=true; reject(new Error('error')); } };
-      emb.src = url;
-    });
-
-    try{
-      await tryEmbed(url1);
-    }catch{
-      if(url2){ await tryEmbed(url2); }
-    }
-
-    // Si llegamos aquí hay algo embebido
-    avatarBox.style.display = 'block';
+    emb.src = j.embedUrl || j.fallback || "about:blank";
+    document.getElementById('avatar').style.display = emb.src !== "about:blank" ? "block" : "none";
   }catch(e){
-    console.warn('Embed Heygen falló:', e.message);
-    // Dejamos oculto el avatar para no partir el layout
-    document.getElementById('avatar').style.display='none';
+    document.getElementById('avatar').style.display = "none";
   }
 }
 </script>
 
+<script>
+  const $logEl = document.getElementById("log-realtime");
+  const logger = (t) => {
+    const el=document.createElement("div");
+    el.textContent=t;
+    $logEl.appendChild(el);
+    $logEl.scrollTop=$logEl.scrollHeight;
+  };
+</script>
+
 <script type="module">
 let mediaStream, mediaRec, chunks=[];
-let ctx, analyser, source, muted=false;
-let vadInstance=null;
+let ctx, analyser, source, vadInstance=null;
+
+const $micPill = document.getElementById("mic");
+const setMic = (on) => ($micPill.textContent = on ? "🎙️ Mic activo" : "🎙️ Mic apagado");
 
 async function ensureMic(){
   if (mediaStream) return;
   mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+  setMic(true);
   ctx = new (window.AudioContext||window.webkitAudioContext)();
   source = ctx.createMediaStreamSource(mediaStream);
   analyser = ctx.createAnalyser(); analyser.fftSize=512; source.connect(analyser);
-  vu();
 }
 
-async function tryVAD(){
+async function startVAD(){
   try{
-    // Carga desde CDN permitido por CSP
     const mod = await import('https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/index.browser.esm.js');
     vadInstance = await mod.MicVAD.new({
-      onSpeechStart: ()=> log("🗣️ voz detectada"),
+      audioContext: ctx, source,
+      positiveSpeechThreshold: 0.55, negativeSpeechThreshold: 0.35,
+      onSpeechStart: () => logger("🗣️ voz detectada"),
       onSpeechEnd: async (audio) => {
-        // Paramos cualquier TTS que esté sonando aquí si procede (barge-in)
+        // envía el fragmento capturado automáticamente → TTS IA
         await sendAudio(new Blob([audio], { type: "audio/webm" }));
       },
-      positiveSpeechThreshold: 0.55,
-      negativeSpeechThreshold: 0.35,
-      // usa el AudioContext existente
-      audioContext: ctx,
-      source: source,
       workletURL: 'https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/vad.worklet.bundle.min.js'
     });
-    log("✅ VAD listo");
+    logger("✅ VAD listo");
   }catch(e){
-    log("⚠️ VAD no disponible ("+e.message+"), seguimos sin VAD");
-    vadInstance=null;
+    logger("⚠️ VAD no disponible ("+e.message+")");
+    vadInstance = null;
   }
+}
+
+async function sendAudio(blob){
+  const form = new FormData(); form.append("audio", blob, "input.webm");
+  const r = await fetch("/.netlify/functions/ask", { method:"POST", body: form });
+  if(!r.ok){ logger("Error servidor: "+r.status); return; }
+  const buf = await r.arrayBuffer();
+  const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+  const a = new Audio(url); a.play();
 }
 
 document.getElementById("btnTalk").onclick = async ()=>{
   try{
     await ensureMic();
-    if (!vadInstance) await tryVAD();
-
+    if (!vadInstance) await startVAD();
     if (!vadInstance) {
-      // fallback simple: grabamos hasta pulsar Silencio/Parar
+      // Fallback: grabación manual
       mediaRec = new MediaRecorder(mediaStream, { mimeType: "audio/webm;codecs=opus" });
       chunks=[];
       mediaRec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
       mediaRec.onstop = async ()=>{ await sendAudio(new Blob(chunks, {type:"audio/webm"})); chunks=[]; };
       mediaRec.start();
-      log("🎤 Escuchando… pulsa Silencio para enviar");
+      logger("🎤 Grabando… pulsa Silencio para enviar");
     } else {
-      // VAD ya está escuchando por debajo
-      log("🎤 VAD escuchando… (corta TTS al hablar)");
+      logger("🎤 VAD activo (barge-in)");
     }
   }catch(e){
-    log("Error mic: " + e.message);
+    setMic(false);
+    logger("Error mic: "+e.message);
   }
 };
 
 document.getElementById("btnMute").onclick = ()=>{
-  if (mediaRec && mediaRec.state!=='inactive') { mediaRec.stop(); }
-  muted = !muted;
+  if (mediaRec && mediaRec.state!=='inactive') mediaRec.stop();
 };
 </script>
 </body>

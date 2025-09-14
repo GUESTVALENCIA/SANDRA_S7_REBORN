@@ -25,6 +25,12 @@
 
   // Mic + VU demo (client-side only)
   const $state=$("#state"), $lat=$("#latency"), $mic=$("#mic"), $txt=$("#txt");
+  $txt.addEventListener("keydown", (e) => {
+    if (e.key === "Enter" && !e.shiftKey) {
+      e.preventDefault();
+      document.getElementById("btnSend").click();
+    }
+  });
   let mediaStream, mediaRec, chunks=[], ctx, analyser, source, muted=false;
   const API_ORIGIN = ""; // same origin on Netlify
 
@@ -47,7 +53,7 @@
       speakLocal("Hola, soy Sandra. Estoy lista para ayudarte.");
     }catch(e){
       setState("Error", false);
-      log("Error conectando: "+e.message);
+      logger("Error conectando: "+e.message);
     }
   }
 
@@ -68,8 +74,8 @@
         await sendAudio(blob);
       };
       mediaRec.start();
-      log("🎤 Escuchando… (detén la grabación cerrando el panel o cambiando pestaña)");
-    }catch(e){ log("Error mic: "+e.message); setState("Error mic", false); }
+      logger("🎤 Escuchando… (detén la grabación cerrando el panel o cambiando pestaña)");
+    }catch(e){ logger("Error mic: "+e.message); setState("Error mic", false); }
   };
   $("#btnMute").onclick = ()=> muted = !muted;
   $("#btnSend").onclick = ()=> sendText($txt.value);
@@ -84,22 +90,36 @@
         body: JSON.stringify({ text })
       });
       if(!r.ok){
-        log("⚠️ TTS error: " + await r.text());
+        logger("⚠️ TTS error: " + await r.text());
         speakLocal("Tengo problemas para conectar, pero sigo aquí.");
         return;
       }
       const buf = await r.arrayBuffer();
       const url = URL.createObjectURL(new Blob([buf], {type:'audio/mpeg'}));
-      log("Sandra: 🔊 Reproduciendo respuesta");
+      logger("Sandra: 🔊 Reproduciendo respuesta");
       if(!muted) new Audio(url).play();
     }catch(e){
-      log("⚠️ Error servidor: "+e.message);
+      logger("⚠️ Error servidor: "+e.message);
       speakLocal("Tengo problemas para conectar, pero sigo aquí.");
     }
   }
 
-  // Alias para compatibilidad
-  async function sendText(text){ return playSandraFromText(text); }
+  async function sendText(text){
+    if(!text.trim()) return;
+    logger("Tú: " + text);
+    $txt.value = "";
+    const r = await fetch("/.netlify/functions/ask", {
+      method:"POST",
+      headers:{ "content-type":"application/json" },
+      body: JSON.stringify({ text })
+    });
+    if(!r.ok){ logger("Error servidor: "+r.status); return; }
+    const buf = await r.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+    const a = new Audio(url);
+    a.play().catch(()=>{ /* silencioso */ });
+  }
+  document.getElementById("btnSend").onclick = ()=> sendText($txt.value);
 
   // Exposer globalmente para el wire del botón
   window.playSandraFromText = playSandraFromText;
@@ -111,10 +131,10 @@
       const r = await fetch(API_ORIGIN + "/.netlify/functions/reply", { method:"POST", body: JSON.stringify({ text: "Audio enviado (demo)." }), headers:{ "Content-Type":"application/json" } });
       const data = await r.json();
       const reply = data.reply || "Audio recibido (demo).";
-      log("Sandra: "+reply);
+      logger("Sandra: "+reply);
       speakLocal(reply);
     }catch(e){
-      log("⚠️ Error servidor: "+e.message);
+      logger("⚠️ Error servidor: "+e.message);
       speakLocal("No pude procesar tu audio ahora mismo.");
     }
   }
