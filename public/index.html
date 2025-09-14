@@ -78,5 +78,17 @@
 
   <script src="/assets/js/config.js" type="text/javascript"></script>
   <script src="/assets/js/sandra.js" type="text/javascript"></script>
+  <script src="/assets/js/wire-up.min.js" defer></script>
+  <script src="/assets/js/wire-voice.min.js" defer></script>
+  <script src="/assets/js/bargein.min.js" defer></script>
+
+  <script>
+    // Puentes para sistema barge-in
+    window.__registerStreamAbort = (controller) => window.SandraBargeIn?.armAbort(() => controller.abort());
+
+    // Conectar dictado si existe
+    if (window.sandraIA?.startDictation) SandraBargeIn.setDictation(() => sandraIA.startDictation());
+    if (window.SandraAPI?.startVoice) SandraBargeIn.setDictation(() => SandraAPI.startVoice());
+  </script>
 </body>
 </html>
