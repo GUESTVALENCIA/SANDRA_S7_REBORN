@@ -1,21 +1,34 @@
-# netlify.toml
 [build]
-  publish   = "public"
+  publish = "public"
   functions = "netlify/functions"
 
-# Compatibilidad con rutas antiguas /api/*
-[[redirects]]
-  from = "/api/tts"
-  to   = "/.netlify/functions/tts"
-  status = 200
-
-[[redirects]]
-  from = "/api/heygen-share"
-  to   = "/.netlify/functions/heygen-embed"
-  status = 200
-
-# Fallback SPA (evita 404 en rutas internas)
+# SPA fallback → adiós 404
 [[redirects]]
   from = "/*"
-  to   = "/index.html"
+  to = "/index.html"
   status = 200
+
+# Cabeceras de seguridad + CSP con allowlist para lo que usamos
+[[headers]]
+  for = "/*"
+  [headers.values]
+    # OJO: ajusta el dominio netlify a tu sitio real si cambias
+    Content-Security-Policy = '''
+      default-src 'self';
+      frame-ancestors 'self';
+      frame-src 'self' https://console.heygen.com https://labs.heygen.com https://*.netlify.app;
+      connect-src 'self' https://api.elevenlabs.io https://*.netlify.app https://*.netlify/functions blob:;
+      img-src 'self' data: https:;
+      media-src 'self' blob: data:;
+      style-src 'self' 'unsafe-inline' https: data:;
+      font-src 'self' https: data:;
+      script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com;
+      worker-src 'self' blob:;
+      object-src 'none';
+      base-uri 'self';
+      form-action 'self'
+    '''
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-Content-Type-Options = "nosniff"
+    X-Frame-Options = "SAMEORIGIN"
+    Permissions-Policy = "microphone=(*), camera=(), geolocation=()"

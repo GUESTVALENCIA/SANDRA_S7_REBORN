@@ -15,7 +15,12 @@
   const openChatBtn = $("#open-chat-btn");
   const closeChatBtn = $("#close-chat-btn");
   const rt = $("#realtime-container");
-  openChatBtn.addEventListener("click", ()=>{ rt.style.display="flex"; openChatBtn.style.display="none"; connectAssistant(); });
+  openChatBtn.addEventListener('click', () => {
+    rt.style.display = 'block';
+    openChatBtn.style.display = 'none';
+    loadAvatar("{{TU_HEYGEN_VIDEO_ID}}"); // pon el ID que usas
+    connectAssistant();
+  });
   closeChatBtn.addEventListener("click", ()=>{ rt.style.display="none"; openChatBtn.style.display="grid"; });
 
   // Mic + VU demo (client-side only)

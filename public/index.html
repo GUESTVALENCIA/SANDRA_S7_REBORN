@@ -60,9 +60,36 @@
       .contact-inner{grid-template-columns:1fr}
       .hero{padding:72px 0 40px}
     }
-    /* Realtime panel */
-    #realtime-container{position:fixed;bottom:20px;right:20px;z-index:1000;display:none;width:360px;height:520px;box-shadow:0 10px 30px rgba(0,0,0,.18);border-radius:20px;overflow:hidden;background:#fff}
-    #open-chat-btn{position:fixed;bottom:20px;right:20px;z-index:1001;width:60px;height:60px;border-radius:50%;background:var(--brand);color:#fff;font-size:24px;border:0;cursor:pointer;display:grid;place-items:center;box-shadow:0 5px 15px rgba(0,0,0,0.3)}
+    /* Panel flotante: columna, alto automático, scroll si hace falta */
+    #realtime-container{
+      position: fixed;
+      bottom: 20px; right: 20px;
+      z-index: 9999;
+      display: none; /* se muestra al pulsar el FAB */
+      width: 380px;
+      max-height: calc(100vh - 40px);
+      background: #fff;
+      border-radius: 20px;
+      box-shadow: 0 20px 50px rgba(0,0,0,.2);
+      overflow: hidden;
+    }
+    #realtime-container .panel-body{
+      display: flex; flex-direction: column;
+      max-height: calc(100vh - 40px - 56px); /* header ~56px */
+      overflow-y: auto;
+    }
+
+    #open-chat-btn{
+      position: fixed;
+      bottom: 20px; right: 20px;
+      width: 60px; height: 60px; border-radius: 50%;
+      display: grid; place-items: center;
+      background: var(--brand); color:#fff; border:0; cursor:pointer;
+      box-shadow: 0 10px 30px rgba(0,0,0,.3); z-index: 10000;
+    }
+
+    /* Evita solapamientos del "avatar" con el panel */
+    #avatar{ display:none; } /* lo mostramos cuando el embed cargue ok */
     #log{height:220px;overflow:auto;background:#f1f5f9;border-radius:10px;padding:10px;font-family:ui-monospace,monospace}
     .pill{display:inline-block;padding:4px 8px;border-radius:999px;background:#e2e8f0;margin-right:6px}
     .ok{background:#d1fae5}.bad{background:#fee2e2}
@@ -202,162 +229,143 @@
     <iframe id="emb" src="about:blank" style="width:100%;height:100%;border:0;background:#000"></iframe>
   </div>
 
-  <div id="realtime-container">
-    <header style="background:#0f766e; color:#fff; padding:14px 16px; font-weight:700; display:flex; gap:10px; align-items:center; justify-content:space-between;">
-      <div>HouseRentValencia · Sandra IA</div>
-      <button id="close-chat-btn" style="background:transparent; color:#fff; border:none; cursor:pointer;">✕</button>
-    </header>
-    <div style="display:flex;gap:16px;padding:16px;flex-wrap:wrap">
-      <section style="flex:1;min-width:320px;max-width:620px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:10px">
-        <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <span class="pill ok" id="state">Desconectado</span>
-          <span class="pill" id="latency">—</span>
-          <span class="pill" id="mic">🎙️ Mic apagado</span>
-        </div>
-        <div id="log"></div>
-        <div id="log-realtime" style="height:100px;overflow:auto;background:#f8f9fa;border:1px solid #e9ecef;border-radius:6px;padding:8px;font-family:monospace;font-size:12px;margin-top:8px"></div>
-        <div id="vu"><div></div></div>
-        <div style="margin-top:6px; display:flex;gap:10px;align-items:center;flex-wrap:wrap">
-          <button id="btnTalk" class="btn primary">Hablar</button>
-          <button id="btnMute" class="btn ghost">Silencio</button>
-          <input id="txt" placeholder="o escribe y pulsa Enviar" class="btn ghost" style="flex:1;border:1px solid #e2e8f0" />
-          <button id="btnSend" class="btn primary">Enviar</button>
-        </div>
-      </section>
-      <div style="width:360px;height:520px;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column">
-        <div style="padding:10px 12px;background:#0d9488;color:#fff;font-weight:600">Sandra IA · Avatar</div>
-        <iframe id="emb" src="about:blank" style="width:100%;height:100%;border:0;display:block;flex:1;background:#000"></iframe>
+<div id="realtime-container">
+  <header style="background:#0f766e;color:#fff;padding:14px 16px;font-weight:700;display:flex;justify-content:space-between;align-items:center">
+    <div>HouseRentValencia · Sandra IA</div>
+    <button id="close-chat-btn" style="background:transparent;border:0;color:#fff;cursor:pointer">✕</button>
+  </header>
+
+  <div class="panel-body">
+    <!-- AQUÍ deja tu wrap del chat y abajo el bloque del avatar -->
+    <section id="realtime" style="flex:1;min-width:320px;max-width:620px;background:#fff;border-radius:16px;padding:14px;box-shadow:0 10px 30px rgba(0,0,0,.08);display:flex;flex-direction:column;gap:10px">
+      <div style="display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <span class="pill ok" id="state">Desconectado</span>
+        <span class="pill" id="latency">—</span>
+        <span class="pill" id="mic">🎙️ Mic apagado</span>
       </div>
+      <div id="log"></div>
+      <div id="log-realtime" style="height:100px;overflow:auto;background:#f8f9fa;border:1px solid #e9ecef;border-radius:6px;padding:8px;font-family:monospace;font-size:12px;margin-top:8px"></div>
+      <div id="vu"><div></div></div>
+      <div style="margin-top:6px; display:flex;gap:10px;align-items:center;flex-wrap:wrap">
+        <button id="btnTalk" class="btn primary">Hablar</button>
+        <button id="btnMute" class="btn ghost">Silencio</button>
+        <input id="txt" placeholder="o escribe y pulsa Enviar" class="btn ghost" style="flex:1;border:1px solid #e2e8f0" />
+        <button id="btnSend" class="btn primary">Enviar</button>
+      </div>
+    </section>
+
+    <div id="avatar" style="width:100%;height:420px;background:#000">
+      <iframe id="emb" src="about:blank" style="width:100%;height:100%;border:0"></iframe>
     </div>
   </div>
+</div>
 
   <script src="./js/app.js"></script>
 
   <script>
-(async ()=>{
+async function loadAvatar(videoId){
   try{
-    const r = await fetch('/.netlify/functions/heygen-embed');
-    const {url} = await r.json();
-    document.getElementById('emb').src = url || 'about:blank';
-  }catch{ document.getElementById('emb').src='about:blank'; }
-})();
-document.getElementById('minAvatar').onclick = ()=>{
-  const box = document.getElementById('avatar');
-  box.style.height = (box.style.height==='56px' ? '520px' : '56px');
-};
+    const r = await fetch('/api/heygen-embed', {
+      method: 'POST',
+      headers: { 'Content-Type':'application/json' },
+      body: JSON.stringify({ video_id: videoId })
+    });
+    const j = await r.json();
+    const url1 = j.embedUrl;
+    const url2 = j.fallback;
+
+    const emb = document.getElementById('emb');
+    const avatarBox = document.getElementById('avatar');
+
+    // Probar candidato 1; si el proveedor bloquea, probamos 2.
+    const tryEmbed = (url) => new Promise((resolve,reject)=>{
+      let done=false;
+      const t = setTimeout(()=>{ if(!done){done=true; reject(new Error('timeout')); } }, 4000);
+      emb.onload = ()=>{ if(!done){ clearTimeout(t); done=true; resolve(true); } };
+      emb.onerror = ()=>{ if(!done){ clearTimeout(t); done=true; reject(new Error('error')); } };
+      emb.src = url;
+    });
+
+    try{
+      await tryEmbed(url1);
+    }catch{
+      if(url2){ await tryEmbed(url2); }
+    }
+
+    // Si llegamos aquí hay algo embebido
+    avatarBox.style.display = 'block';
+  }catch(e){
+    console.warn('Embed Heygen falló:', e.message);
+    // Dejamos oculto el avatar para no partir el layout
+    document.getElementById('avatar').style.display='none';
+  }
+}
 </script>
 
 <script type="module">
-  // ① Importar VAD
-  import { MicVAD } from "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/index.min.js";
+let mediaStream, mediaRec, chunks=[];
+let ctx, analyser, source, muted=false;
+let vadInstance=null;
 
-  // ② Reproductor global para poder pararlo (barge-in)
-  let ttsAudio = null;
+async function ensureMic(){
+  if (mediaStream) return;
+  mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+  ctx = new (window.AudioContext||window.webkitAudioContext)();
+  source = ctx.createMediaStreamSource(mediaStream);
+  analyser = ctx.createAnalyser(); analyser.fftSize=512; source.connect(analyser);
+  vu();
+}
 
-  async function playSandra(text){
-    try{
-      const r = await fetch('/.netlify/functions/tts', {
-        method:'POST',
-        headers:{'Content-Type':'application/json'},
-        body: JSON.stringify({ text })
-      });
-      if(!r.ok){ console.error('TTS', await r.text()); return; }
-      const buf = await r.arrayBuffer();
-      const url = URL.createObjectURL(new Blob([buf], {type:'audio/mpeg'}));
-      if (ttsAudio) { try{ ttsAudio.pause(); }catch{} }
-      ttsAudio = new Audio(url);
-      await ttsAudio.play();
-      ttsAudio.onended = ()=> { /* al terminar la respuesta, el VAD seguirá escuchando */ };
-    }catch(e){ console.error(e); }
+async function tryVAD(){
+  try{
+    // Carga desde CDN permitido por CSP
+    const mod = await import('https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/index.browser.esm.js');
+    vadInstance = await mod.MicVAD.new({
+      onSpeechStart: ()=> log("🗣️ voz detectada"),
+      onSpeechEnd: async (audio) => {
+        // Paramos cualquier TTS que esté sonando aquí si procede (barge-in)
+        await sendAudio(new Blob([audio], { type: "audio/webm" }));
+      },
+      positiveSpeechThreshold: 0.55,
+      negativeSpeechThreshold: 0.35,
+      // usa el AudioContext existente
+      audioContext: ctx,
+      source: source,
+      workletURL: 'https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/vad.worklet.bundle.min.js'
+    });
+    log("✅ VAD listo");
+  }catch(e){
+    log("⚠️ VAD no disponible ("+e.message+"), seguimos sin VAD");
+    vadInstance=null;
   }
+}
 
-  // ③ STT con Web Speech (rápido y sin backend para esta fase)
-  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-  let recog = null;
-  let recActive = false;
+document.getElementById("btnTalk").onclick = async ()=>{
+  try{
+    await ensureMic();
+    if (!vadInstance) await tryVAD();
 
-  function ensureRecognizer() {
-    if (!SpeechRecognition) {
-      console.warn("Web Speech API no disponible en este navegador.");
-      return null;
+    if (!vadInstance) {
+      // fallback simple: grabamos hasta pulsar Silencio/Parar
+      mediaRec = new MediaRecorder(mediaStream, { mimeType: "audio/webm;codecs=opus" });
+      chunks=[];
+      mediaRec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
+      mediaRec.onstop = async ()=>{ await sendAudio(new Blob(chunks, {type:"audio/webm"})); chunks=[]; };
+      mediaRec.start();
+      log("🎤 Escuchando… pulsa Silencio para enviar");
+    } else {
+      // VAD ya está escuchando por debajo
+      log("🎤 VAD escuchando… (corta TTS al hablar)");
     }
-    if (!recog) {
-      recog = new SpeechRecognition();
-      recog.lang = 'es-ES';
-      recog.interimResults = false;
-      recog.maxAlternatives = 1;
-
-      recog.onstart = ()=> { recActive = true; };
-      recog.onend   = ()=> { recActive = false; };
-      recog.onerror = (e)=> console.warn('STT error', e.error);
-
-      recog.onresult = async (ev)=>{
-        const text = ev.results?.[0]?.[0]?.transcript || "";
-        if (text) {
-          logRT(`👤 Tú: ${text}`);
-          // Aquí puedes llamar a tu /chat si quieres re-usar lógica de servidor
-          // const reply = await fetch('/.netlify/functions/chat', { ... });
-          // Por ahora, respondemos directo con TTS:
-          await playSandra(text); // (eco). Cambia por la respuesta real de tu /chat
-        }
-      };
-    }
-    return recog;
+  }catch(e){
+    log("Error mic: " + e.message);
   }
+};
 
-  // ④ Logger simple (opcional)
-  function logRT(msg){
-    const el = document.getElementById("log-realtime");
-    if (!el) return;
-    const d = document.createElement("div");
-    d.textContent = msg;
-    el.appendChild(d);
-    el.scrollTop = el.scrollHeight;
-  }
-
-  // ⑤ VAD con barge-in
-  const vad = await MicVAD.new({
-    startOnLoad: true,
-    // umbrales sensibles para barge-in rápido
-    positiveSpeechThreshold: 0.55,
-    negativeSpeechThreshold: 0.35,
-    minSpeechFrames: 3,
-    preSpeechPadFrames: 5,
-    onSpeechStart: () => {
-      logRT("⛔ Barge-in: detectado inicio de voz del usuario");
-      // Parar inmediatamente la voz de Sandra
-      if (ttsAudio && !ttsAudio.paused) {
-        try { ttsAudio.pause(); } catch {}
-      }
-      // Asegurar reconocimiento activo
-      const r = ensureRecognizer();
-      if (r && !recActive) {
-        try { r.start(); } catch {}
-      }
-    },
-    onSpeechEnd: () => {
-      logRT("…silencio del usuario");
-      // Si el navegador corta STT solo, nada que hacer; recog.onend volverá a escuchar al detectar speechStart
-    },
-    onVADMisfire: () => { /* opcional */ }
-  });
-
-  // ⑥ Botón Enviar por texto (si ya lo tienes, solo apunta a playSandra o a tu /chat + TTS)
-  document.getElementById("btnSend")?.addEventListener("click", async ()=>{
-    const t = document.getElementById("txt")?.value?.trim();
-    if (!t) return;
-    logRT("📨 Texto → TTS");
-    await playSandra(t);
-  });
-  document.getElementById("txt")?.addEventListener("keydown", (e)=>{
-    if(e.key==="Enter"){ e.preventDefault(); document.getElementById("btnSend")?.click(); }
-  });
-
-  // ⑦ (opcional) Botón "Hablar" si lo usas
-  document.getElementById("btnTalk")?.addEventListener("click", ()=>{
-    const r = ensureRecognizer();
-    if (r && !recActive) { try { r.start(); } catch{} }
-  });
+document.getElementById("btnMute").onclick = ()=>{
+  if (mediaRec && mediaRec.state!=='inactive') { mediaRec.stop(); }
+  muted = !muted;
+};
 </script>
 </body>
 </html>
