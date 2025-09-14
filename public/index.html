@@ -194,7 +194,6 @@
 
   <button id="open-chat-btn" aria-label="Abrir chat">🗣️</button>
 
-  <!-- Avatar siempre visible -->
   <div id="avatar" style="position:fixed;right:16px;bottom:16px;width:360px;height:520px;background:#fff;border-radius:20px;box-shadow:0 10px 30px rgba(0,0,0,.18);overflow:hidden;display:flex;flex-direction:column;z-index:1000">
     <div style="padding:10px 12px;background:#0d9488;color:#fff;font-weight:600;display:flex;justify-content:space-between;align-items:center">
       <span>Sandra IA · Avatar</span>
@@ -216,6 +215,7 @@
           <span class="pill" id="mic">🎙️ Mic apagado</span>
         </div>
         <div id="log"></div>
+        <div id="log-realtime" style="height:100px;overflow:auto;background:#f8f9fa;border:1px solid #e9ecef;border-radius:6px;padding:8px;font-family:monospace;font-size:12px;margin-top:8px"></div>
         <div id="vu"><div></div></div>
         <div style="margin-top:6px; display:flex;gap:10px;align-items:center;flex-wrap:wrap">
           <button id="btnTalk" class="btn primary">Hablar</button>
@@ -234,44 +234,130 @@
   <script src="./js/app.js"></script>
 
   <script>
-    // Avatar siempre visible - carga automática
-    (async ()=>{
-      try{
-        const r = await fetch('/.netlify/functions/heygen-embed');
-        const {url} = await r.json();
-        document.getElementById('emb').src = url || 'about:blank';
-      }catch{
-        document.getElementById('emb').src='about:blank';
+(async ()=>{
+  try{
+    const r = await fetch('/.netlify/functions/heygen-embed');
+    const {url} = await r.json();
+    document.getElementById('emb').src = url || 'about:blank';
+  }catch{ document.getElementById('emb').src='about:blank'; }
+})();
+document.getElementById('minAvatar').onclick = ()=>{
+  const box = document.getElementById('avatar');
+  box.style.height = (box.style.height==='56px' ? '520px' : '56px');
+};
+</script>
+
+<script type="module">
+  // ① Importar VAD
+  import { MicVAD } from "https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/index.min.js";
+
+  // ② Reproductor global para poder pararlo (barge-in)
+  let ttsAudio = null;
+
+  async function playSandra(text){
+    try{
+      const r = await fetch('/.netlify/functions/tts', {
+        method:'POST',
+        headers:{'Content-Type':'application/json'},
+        body: JSON.stringify({ text })
+      });
+      if(!r.ok){ console.error('TTS', await r.text()); return; }
+      const buf = await r.arrayBuffer();
+      const url = URL.createObjectURL(new Blob([buf], {type:'audio/mpeg'}));
+      if (ttsAudio) { try{ ttsAudio.pause(); }catch{} }
+      ttsAudio = new Audio(url);
+      await ttsAudio.play();
+      ttsAudio.onended = ()=> { /* al terminar la respuesta, el VAD seguirá escuchando */ };
+    }catch(e){ console.error(e); }
+  }
+
+  // ③ STT con Web Speech (rápido y sin backend para esta fase)
+  const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+  let recog = null;
+  let recActive = false;
+
+  function ensureRecognizer() {
+    if (!SpeechRecognition) {
+      console.warn("Web Speech API no disponible en este navegador.");
+      return null;
+    }
+    if (!recog) {
+      recog = new SpeechRecognition();
+      recog.lang = 'es-ES';
+      recog.interimResults = false;
+      recog.maxAlternatives = 1;
+
+      recog.onstart = ()=> { recActive = true; };
+      recog.onend   = ()=> { recActive = false; };
+      recog.onerror = (e)=> console.warn('STT error', e.error);
+
+      recog.onresult = async (ev)=>{
+        const text = ev.results?.[0]?.[0]?.transcript || "";
+        if (text) {
+          logRT(`👤 Tú: ${text}`);
+          // Aquí puedes llamar a tu /chat si quieres re-usar lógica de servidor
+          // const reply = await fetch('/.netlify/functions/chat', { ... });
+          // Por ahora, respondemos directo con TTS:
+          await playSandra(text); // (eco). Cambia por la respuesta real de tu /chat
+        }
+      };
+    }
+    return recog;
+  }
+
+  // ④ Logger simple (opcional)
+  function logRT(msg){
+    const el = document.getElementById("log-realtime");
+    if (!el) return;
+    const d = document.createElement("div");
+    d.textContent = msg;
+    el.appendChild(d);
+    el.scrollTop = el.scrollHeight;
+  }
+
+  // ⑤ VAD con barge-in
+  const vad = await MicVAD.new({
+    startOnLoad: true,
+    // umbrales sensibles para barge-in rápido
+    positiveSpeechThreshold: 0.55,
+    negativeSpeechThreshold: 0.35,
+    minSpeechFrames: 3,
+    preSpeechPadFrames: 5,
+    onSpeechStart: () => {
+      logRT("⛔ Barge-in: detectado inicio de voz del usuario");
+      // Parar inmediatamente la voz de Sandra
+      if (ttsAudio && !ttsAudio.paused) {
+        try { ttsAudio.pause(); } catch {}
       }
-    })();
-
-    // Control minimizar avatar
-    document.getElementById('minAvatar').onclick = ()=>{
-      const box = document.getElementById('avatar');
-      box.style.height = (box.style.height==='56px' ? '520px' : '56px');
-    };
-
-    // Wire del botón Enviar con ElevenLabs TTS
-    document.addEventListener('DOMContentLoaded', ()=>{
-      const input = document.getElementById('txt');
-      const btn = document.getElementById('btnSend');
-
-      if (btn && input) {
-        btn.addEventListener('click', () => {
-          const text = input.value?.trim();
-          if (text && window.playSandraFromText) {
-            window.playSandraFromText(text);
-          }
-        });
-
-        input.addEventListener('keydown', e => {
-          if (e.key === 'Enter') {
-            e.preventDefault();
-            btn?.click();
-          }
-        });
+      // Asegurar reconocimiento activo
+      const r = ensureRecognizer();
+      if (r && !recActive) {
+        try { r.start(); } catch {}
       }
-    });
-  </script>
+    },
+    onSpeechEnd: () => {
+      logRT("…silencio del usuario");
+      // Si el navegador corta STT solo, nada que hacer; recog.onend volverá a escuchar al detectar speechStart
+    },
+    onVADMisfire: () => { /* opcional */ }
+  });
+
+  // ⑥ Botón Enviar por texto (si ya lo tienes, solo apunta a playSandra o a tu /chat + TTS)
+  document.getElementById("btnSend")?.addEventListener("click", async ()=>{
+    const t = document.getElementById("txt")?.value?.trim();
+    if (!t) return;
+    logRT("📨 Texto → TTS");
+    await playSandra(t);
+  });
+  document.getElementById("txt")?.addEventListener("keydown", (e)=>{
+    if(e.key==="Enter"){ e.preventDefault(); document.getElementById("btnSend")?.click(); }
+  });
+
+  // ⑦ (opcional) Botón "Hablar" si lo usas
+  document.getElementById("btnTalk")?.addEventListener("click", ()=>{
+    const r = ensureRecognizer();
+    if (r && !recActive) { try { r.start(); } catch{} }
+  });
+</script>
 </body>
 </html>

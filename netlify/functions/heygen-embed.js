@@ -1,6 +1,3 @@
-// netlify/functions/heygen-embed.js
-// Sirve el embed URL sin exponer claves
-
 export const handler = async () => ({
   statusCode: 200,
   headers: {
