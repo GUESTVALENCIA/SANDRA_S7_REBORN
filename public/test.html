@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Test Sandra S7</title>
+  <style>body{font-family:system-ui;margin:20px} button{padding:8px 12px;margin:6px}</style>
+</head>
+<body>
+  <h1>🔎 Test conexión Sandra S7</h1>
+  <button onclick="pingChat()">Probar /chat</button>
+  <button onclick="pingToken()">Probar /token/realtime</button>
+  <pre id="out"></pre>
+
+  <script>
+    async function pingChat(){
+      const t0=performance.now();
+      try{
+        const r = await fetch('/chat',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({message:'ping de test'})});
+        const data = await r.json();
+        log('✅ /chat', data, t0);
+      }catch(e){ log('❌ /chat', String(e), t0); }
+    }
+    async function pingToken(){
+      const t0=performance.now();
+      try{
+        const r = await fetch('/token/realtime',{method:'POST'});
+        const data = await r.json();
+        log('✅ /token/realtime', data, t0);
+      }catch(e){ log('❌ /token/realtime', String(e), t0); }
+    }
+    function log(label, data, t0){
+      const ms = Math.round(performance.now()-t0);
+      const pre = document.getElementById('out');
+      pre.textContent = `${label} (${ms} ms)\n${JSON.stringify(data,null,2)}\n\n` + pre.textContent;
+    }
+  </script>
+</body>
+</html>

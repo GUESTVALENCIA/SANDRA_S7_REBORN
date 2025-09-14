@@ -1,0 +1,38 @@
+[build]
+  publish = "public"
+  functions = "netlify/functions"
+
+[functions]
+  node_bundler = "esbuild"
+
+[[headers]]
+  for = "/assets/js/*"
+  [headers.values]
+    Content-Type = "application/javascript; charset=utf-8"
+    Cache-Control = "public, max-age=0, must-revalidate"
+
+[[headers]]
+  for = "/chat"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://guestsvalencia.es"
+    Access-Control-Allow-Headers = "Authorization, Content-Type"
+    Access-Control-Allow-Methods = "POST, OPTIONS"
+
+[[headers]]
+  for = "/token/realtime"
+  [headers.values]
+    Access-Control-Allow-Origin = "https://guestsvalencia.es"
+    Access-Control-Allow-Headers = "Authorization, Content-Type"
+    Access-Control-Allow-Methods = "POST, OPTIONS"
+
+[[redirects]]
+  from = "/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+  force = true
+
+[[redirects]]
+  from = "/token/realtime"
+  to = "/.netlify/functions/token-realtime"
+  status = 200
+  force = true

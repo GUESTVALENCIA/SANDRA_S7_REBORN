@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sandra S7 • Reborn</title>
+  <meta name="description" content="Sandra IA S7 — chat + voz listo para producción con Netlify Functions" />
+  <style>
+    :root { --bg:#0b1116; --fg:#e6eef3; --muted:#93a4b2; --primary:#00c2a8; --border:#1a2a36; }
+    html,body{height:100%}
+    body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif}
+    a{color:var(--primary);text-decoration:none}
+    .wrap{max-width:980px;margin:0 auto;padding:28px}
+    header{display:flex;gap:12px;align-items:center;justify-content:space-between}
+    .logo{font-weight:700;letter-spacing:.4px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 14px;border-radius:999px;background:#0f151b;border:1px solid var(--border);color:var(--fg)}
+    .btn{background:var(--primary);color:#041217;border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer}
+    .btn.secondary{background:#0f151b;color:var(--fg);border:1px solid var(--border)}
+    .grid{display:grid;grid-template-columns:1fr;gap:16px}
+    .card{border:1px solid var(--border);border-radius:14px;background:#0f151b;padding:16px}
+    #chat-log{height:240px;overflow:auto;border:1px solid var(--border);border-radius:12px;padding:12px;background:#0b1116}
+    #chat-log .msg{margin:6px 0}
+    #chat-log .me{color:#9ad4ff}
+    #chat-log .ai{color:#aef0df}
+    input[type="text"]{background:#0b1116;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--fg);flex:1}
+    .row{display:flex;gap:10px;flex-wrap:wrap}
+    iframe{width:100%;height:320px;border:1px solid var(--border);border-radius:12px;background:#000}
+    footer{opacity:.7;margin-top:28px;font-size:12px}
+    .hidden{display:none}
+  </style>
+</head>
+<body>
+  <div class="wrap">
+    <header>
+      <div class="logo">Sandra S7 • Reborn</div>
+      <a href="#sandra" class="chip">Habla con Sandra</a>
+    </header>
+
+    <main class="grid">
+      <section id="sandra">
+        <h2>Atención con Sandra IA 7★</h2>
+
+        <div style="display:flex;gap:10px;flex-wrap:wrap;margin:12px 0">
+          <button class="chip" onclick="SandraUI.show('text')">Texto</button>
+          <button class="chip" onclick="SandraUI.show('voice')">Voz</button>
+          <button class="chip" onclick="SandraUI.show('avatar')">Avatar</button>
+        </div>
+
+        <div id="panel-text" class="card">
+          <div id="chat-log"></div>
+          <div class="row" style="margin-top:10px">
+            <input id="chat-input" placeholder="Escribe tu mensaje para Sandra..." />
+            <button class="btn" onclick="SandraAPI.sendText()">Enviar</button>
+          </div>
+        </div>
+
+        <div id="panel-voice" class="card hidden">
+          <p class="small" style="opacity:.8">Pulsa “Mantener” para dictar y suelta para enviar. Usa auriculares si puedes.</p>
+          <div class="row">
+            <button class="btn" onmousedown="SandraAPI.startDictation()" onmouseup="SandraAPI.stopDictation()">🎙️ Mantener para dictar</button>
+            <button class="btn secondary" onclick="SandraAPI.speak('Hola, soy Sandra. Sistema listo.')">Probar voz</button>
+          </div>
+          <div id="voice-status" class="small" style="margin-top:8px;opacity:.8"></div>
+        </div>
+
+        <div id="panel-avatar" class="card hidden">
+          <iframe id="avatar-frame" src="about:blank" title="Avatar Sandra"></iframe>
+          <div style="margin-top:10px">
+            <button class="btn" onclick="SandraAPI.loadAvatar()">Cargar Avatar</button>
+            <button class="btn secondary" onclick="SandraAPI.sendAvatarCommand('hola')">Decir hola</button>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <footer>© 2025 Guests Valencia · Sistema Sandra S7</footer>
+  </div>
+
+  <script src="/assets/js/config.js" type="text/javascript"></script>
+  <script src="/assets/js/sandra.js" type="text/javascript"></script>
+</body>
+</html>
