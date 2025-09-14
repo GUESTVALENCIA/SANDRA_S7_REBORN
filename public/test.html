@@ -1,107 +1,24 @@
 <!doctype html>
-<html lang="es">
-<head>
-  <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Test TTS (ElevenLabs MP3)</title>
-  <style>
-    :root { --bg:#0b1116; --fg:#e6eef3; --primary:#00c2a8; --border:#1a2a36; }
-    body{margin:0;background:var(--bg);color:var(--fg);font:15px/1.5 system-ui; padding:20px}
-    .btn{background:var(--primary);color:#041217;border:0;border-radius:10px;padding:10px 14px;font-weight:600;cursor:pointer;margin:5px}
-    input{background:#0b1116;border:1px solid var(--border);border-radius:10px;padding:10px 12px;color:var(--fg);width:400px;margin:5px}
-    .result{margin:10px 0;padding:10px;background:#0f151b;border:1px solid var(--border);border-radius:8px;font-family:monospace;font-size:12px}
-  </style>
-</head>
-<body>
-  <h1>🧪 Test Sandra S7 Functions</h1>
-
-  <div>
-    <h2>Test TTS (ElevenLabs MP3)</h2>
-    <input id="txtTTS" value="Hola Sandra, ¿tienes disponibilidad para el fin de semana?">
-    <button class="btn" onclick="testTTS()">🔊 Reproducir TTS</button>
-    <div id="resultTTS" class="result"></div>
-  </div>
-
-  <div>
-    <h2>Test Functions</h2>
-    <button class="btn" onclick="testPing()">📡 Test /ping</button>
-    <button class="btn" onclick="testChat()">💬 Test /chat</button>
-    <button class="btn" onclick="testHeygen()">🎭 Test /heygen-share</button>
-    <div id="resultFunctions" class="result"></div>
-  </div>
-
-  <script>
-    function log(msg) {
-      console.log(msg);
-      const results = document.querySelectorAll('.result');
-      results.forEach(r => r.innerHTML += msg + '<br>');
-    }
-
-    async function testTTS() {
-      const text = document.getElementById('txtTTS').value || 'Hola Sandra';
-      document.getElementById('resultTTS').innerHTML = 'Probando TTS...<br>';
-
-      try {
-        const r = await fetch('/.netlify/functions/tts', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ text })
-        });
-
-        if (!r.ok) {
-          const msg = await r.text();
-          log(`❌ TTS Error ${r.status}: ${msg}`);
-          return;
-        }
-
-        const buf = await r.arrayBuffer();
-        const blob = new Blob([buf], {type:'audio/mpeg'});
-        const url = URL.createObjectURL(blob);
-        const audio = new Audio(url);
-
-        log(`✅ TTS Success: ${(buf.byteLength/1024).toFixed(1)}KB MP3`);
-        audio.play();
-      } catch (e) {
-        log(`❌ TTS Network Error: ${e.message}`);
-      }
-    }
-
-    async function testPing() {
-      try {
-        const r = await fetch('/.netlify/functions/ping');
-        const j = await r.json();
-        log(`✅ Ping: ${JSON.stringify(j)}`);
-      } catch (e) {
-        log(`❌ Ping Error: ${e.message}`);
-      }
-    }
-
-    async function testChat() {
-      try {
-        const r = await fetch('/.netlify/functions/chat', {
-          method: 'POST',
-          headers: {'Content-Type':'application/json'},
-          body: JSON.stringify({ message: 'ping desde test' })
-        });
-        const j = await r.json();
-        log(`✅ Chat: ${JSON.stringify(j)}`);
-      } catch (e) {
-        log(`❌ Chat Error: ${e.message}`);
-      }
-    }
-
-    async function testHeygen() {
-      try {
-        const r = await fetch('/.netlify/functions/heygen-share', { method:'POST' });
-        const j = await r.json();
-        log(`✅ HeyGen: ${JSON.stringify(j)}`);
-      } catch (e) {
-        log(`❌ HeyGen Error: ${e.message}`);
-      }
-    }
-
-    // Auto test ping on load
-    document.addEventListener('DOMContentLoaded', testPing);
-  </script>
-</body>
-</html>
+<html><head><meta charset="utf-8"><title>Test Sandra IA</title>
+<style>body{font-family:ui-sans-serif,system-ui;margin:20px} pre{background:#111;color:#0f0;padding:12px;border-radius:8px;white-space:pre-wrap}</style>
+</head><body>
+  <h1>🔎 Test funciones Netlify</h1>
+  <button onclick="ping()">/.netlify/functions/ping</button>
+  <button onclick="reply()">/.netlify/functions/reply</button>
+  <button onclick="heygen()">/.netlify/functions/heygen-share</button>
+  <pre id="out"></pre>
+<script>
+const out = document.getElementById('out');
+function log(o){ out.textContent = typeof o==='string'?o:JSON.stringify(o,null,2); }
+async function ping(){ const r = await fetch('/.netlify/functions/ping'); log(await r.json()); }
+async function reply(){
+  const r = await fetch('/.netlify/functions/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'ping de test'})});
+  const ct = r.headers.get('content-type')||'';
+  log(ct.includes('json') ? await r.json() : await r.text());
+}
+async function heygen(){
+  const r = await fetch('/.netlify/functions/heygen-share',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:'demo'})});
+  log(await r.json());
+}
+</script>
+</body></html>

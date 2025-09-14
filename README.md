@@ -1,34 +1,33 @@
-# Sandra S7 • Reborn (Netlify-Ready)
+# HouseRentValencia · Recovery Pack
 
-**Qué incluye**
-- `/public/index.html` con UI Texto/Voz/Avatar.
-- JS limpio en `/public/assets/js/`:
-  - `config.js`: endpoints y ajustes.
-  - `sandra.js`: chat + TTS + dictado (webkitSpeechRecognition) + avatar postMessage.
-- `netlify/functions`:
-  - `chat.js`: proxy a tu backend (`UPSTREAM_API_URL` + `UPSTREAM_API_KEY`) o respuesta demo.
-  - `token-realtime.js`: token efímero de ejemplo.
-- `netlify.toml`: publish=`public`, CORS y redirects `/chat` y `/token/realtime` → Functions.
-- `/public/test.html`: pruebas rápidas.
+Minimal re-encendido de **HouseRentValencia + Sandra IA** listo para Netlify.
 
-**Despliegue (Netlify)**
-1. Conecta repo y deja publish = `public` (este repo ya trae `netlify.toml`).
-2. Variables de entorno (en Netlify → Site settings → Environment):
-   - `UPSTREAM_API_URL` = `https://api.guestsvalencia.com/sandra/v7` (opcional; si no, echo demo)
-   - `UPSTREAM_API_KEY` = `gv_sandra_7_prod_2024_auth_token_valencia_premium` (si tienes backend propio)
-   - `ALLOW_ORIGIN` = `https://guestsvalencia.es`
-3. Deploy. Abre `/test.html` y verifica ✅.
-4. Usa `/` (index) para la UI completa.
+## Estructura
 
-**Uso rápido en la página**
-- Escribe y pulsa **Enviar**.
-- Pestaña **Voz** → botón “Mantener para dictar” → suelta para enviar → la IA responde y **lee** en voz alta.
-- **Avatar**: pulsa *Cargar Avatar* (requiere que el origen permita ser embebido).
+```
+public/
+  index.html
+  js/app.js
+  test.html
+netlify/
+  functions/
+    ping.js
+    reply.js
+    heygen-share.js
+netlify.toml
+```
 
-**Seguridad**
-- La API Key nunca está en el navegador: vive en las Functions del servidor.
-- CORS limitado a tu dominio.
+## Despliegue rápido (Netlify)
 
-**Personalización**
-- Cambia color/estilos en `<style>` de `index.html`.
-- Cambia idioma por defecto en `config.js` → `LANGUAGE`.
+1. **Crear sitio** → *Import from Git* o **Deploys → Upload deploy** y sube este ZIP.
+2. Variables de entorno (opcional para avatar real):
+   - `HEYGEN_API_KEY` (si quieres URL de embed real; sin esto devuelve demo).
+3. Abre `/test.html` para verificar:
+   - `/.netlify/functions/ping` ✅
+   - `/.netlify/functions/reply` ✅
+   - `/.netlify/functions/heygen-share` ✅
+4. En `index.html` pulsa 🗣️ para abrir el panel. El botón **Enviar** usa `reply.js` (devuelve JSON) y el cliente
+   locuta con **voz del navegador** (modo seguro, sin depender de TTS externo).
+
+> Cuando quieras TTS en servidor (Cartesia/ElevenLabs), cambia `reply.js` para devolver audio (audio/mpeg) y el
+> cliente ya lo reproducirá automáticamente si el `Content-Type` no es JSON.

@@ -1,6 +1,5 @@
 // netlify/functions/tts.js
 // Devuelve audio/mpeg con la respuesta de Sandra usando ElevenLabs.
-// Usa (opcional) tu backend UPSTREAM para generar el texto de respuesta, y si falla, hace echo.
 
 export const handler = async (event) => {
   const allow = process.env.ALLOW_ORIGIN || "*";
@@ -34,8 +33,8 @@ export const handler = async (event) => {
     // (1) Obtener el texto de respuesta (tu "cerebro")
     let replyText = "";
     try {
-      const base = process.env.UPSTREAM_API_URL;            // p.ej. https://api.guestsvalencia.com/sandra/v7
-      const key  = process.env.UPSTREAM_API_KEY || "";      // si tienes auth
+      const base = process.env.UPSTREAM_API_URL;
+      const key  = process.env.UPSTREAM_API_KEY || "";
       if (base) {
         const r = await fetch(`${base.replace(/\/$/, "")}/chat`, {
           method: "POST",
@@ -46,12 +45,12 @@ export const handler = async (event) => {
           body: JSON.stringify({ message: text }),
         });
         const j = await r.json().catch(() => ({}));
-        replyText = j.reply || j.text || `Recibido: "${text}"`;
+        replyText = j.reply || j.text || `Hola, he recibido tu mensaje: "${text}". ¿En qué más puedo ayudarte con tu estancia en Valencia?`;
       } else {
-        replyText = `Recibido: "${text}"`;
+        replyText = `Hola, he recibido tu mensaje: "${text}". ¿En qué más puedo ayudarte con tu estancia en Valencia?`;
       }
     } catch {
-      replyText = `Recibido: "${text}"`;
+      replyText = `Hola, he recibido tu mensaje: "${text}". ¿En qué más puedo ayudarte con tu estancia en Valencia?`;
     }
 
     // (2) Convertir a voz con ElevenLabs → audio/mpeg
