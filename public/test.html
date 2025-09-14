@@ -1,24 +1,14 @@
-<!doctype html>
-<html><head><meta charset="utf-8"><title>Test Sandra IA</title>
-<style>body{font-family:ui-sans-serif,system-ui;margin:20px} pre{background:#111;color:#0f0;padding:12px;border-radius:8px;white-space:pre-wrap}</style>
-</head><body>
-  <h1>🔎 Test funciones Netlify</h1>
-  <button onclick="ping()">/.netlify/functions/ping</button>
-  <button onclick="reply()">/.netlify/functions/reply</button>
-  <button onclick="heygen()">/.netlify/functions/heygen-share</button>
-  <pre id="out"></pre>
+<!doctype html><meta charset="utf-8">
+<button id="b">Probar TTS</button>
 <script>
-const out = document.getElementById('out');
-function log(o){ out.textContent = typeof o==='string'?o:JSON.stringify(o,null,2); }
-async function ping(){ const r = await fetch('/.netlify/functions/ping'); log(await r.json()); }
-async function reply(){
-  const r = await fetch('/.netlify/functions/reply',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({text:'ping de test'})});
-  const ct = r.headers.get('content-type')||'';
-  log(ct.includes('json') ? await r.json() : await r.text());
-}
-async function heygen(){
-  const r = await fetch('/.netlify/functions/heygen-share',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({video_id:'demo'})});
-  log(await r.json());
-}
+  document.getElementById("b").onclick = async () => {
+    const r = await fetch("/.netlify/functions/tts", {
+      method:"POST",
+      headers:{"Content-Type":"application/json"},
+      body: JSON.stringify({ text: "Hola, soy Sandra en MP3 ElevenLabs." })
+    });
+    const buf = await r.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], {type:"audio/mpeg"}));
+    new Audio(url).play();
+  };
 </script>
-</body></html>

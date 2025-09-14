@@ -1,14 +1,21 @@
+# netlify.toml
 [build]
-  publish = "public"
+  publish   = "public"
   functions = "netlify/functions"
 
-[[headers]]
-  for = "/*"
-  [headers.values]
-    Access-Control-Allow-Origin = "*"
+# Compatibilidad con rutas antiguas /api/*
+[[redirects]]
+  from = "/api/tts"
+  to   = "/.netlify/functions/tts"
+  status = 200
 
 [[redirects]]
   from = "/api/heygen-share"
-  to = "/.netlify/functions/heygen-share"
+  to   = "/.netlify/functions/heygen-embed"
   status = 200
-  force = true
+
+# Fallback SPA (evita 404 en rutas internas)
+[[redirects]]
+  from = "/*"
+  to   = "/index.html"
+  status = 200
