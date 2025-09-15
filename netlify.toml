@@ -2,6 +2,19 @@
   publish = "public"
   functions = "netlify/functions"
 
+[functions]
+  directory = "netlify/functions"
+
+[[redirects]]
+  from = "/.netlify/functions/heygen-embed"
+  to = "/404.html"
+  status = 410
+
+[[redirects]]
+  from = "/.netlify/functions/heygen-share"
+  to = "/404.html"
+  status = 410
+
 [[redirects]]
   from = "/*"
   to = "/index.html"
