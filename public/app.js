@@ -123,3 +123,77 @@ async function pushOne(){
   }
 }
 
+
+async function sendChat(){
+  await ensureKey();
+  const text = $("#chat-text").value.trim();
+  if(!text) return;
+  const persona = $("#chat-persona").value;
+  $("#chat-text").value = "";
+  writeLog(`Tú: ${text}`);
+
+  try{
+    const payload = { text, persona };
+    // 1º intenta /api/chat
+    let res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "X-Sandra-Key": SKEY},
+      body: JSON.stringify(payload)
+    });
+    // si 404 (redirect roto), prueba directo a /.netlify/functions/chat
+    if (res.status === 404) {
+      res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text })
+      });
+    }
+    if (!res.ok) {
+      const t = await res.text().catch(()=>res.statusText);
+      throw new Error(`Error chat ${res.status}: ${t.slice(0,120)}`);
+    }
+    const buf = await res.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type: "audio/mpeg" }));
+    new Audio(url).play();
+    writeLog("🔊 (Sandra respondiendo por audio)");
+  }catch(e){
+    writeLog(`⚠️ Error de red en chat: ${e.message}`);
+  }
+}
+
+async function sendChat(){
+  await ensureKey();
+  const text = $("#chat-text").value.trim();
+  if(!text) return;
+  const persona = $("#chat-persona").value;
+  $("#chat-text").value = "";
+  writeLog(`Tú: ${text}`);
+
+  try{
+    const payload = { text, persona };
+    // 1º intenta /api/chat
+    let res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "X-Sandra-Key": SKEY},
+      body: JSON.stringify(payload)
+    });
+    // si 404 (redirect roto), prueba directo a /.netlify/functions/chat
+    if (res.status === 404) {
+      res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text })
+      });
+    }
+    if (!res.ok) {
+      const t = await res.text().catch(()=>res.statusText);
+      throw new Error("Error chat " + res.status + ": " + t.slice(0,120));
+    }
+    const buf = await res.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type: "audio/mpeg" }));
+    new Audio(url).play();
+    writeLog("🔊 (Sandra respondiendo por audio)");
+  }catch(e){
+    writeLog("⚠️ Error de red en chat: " + e.message);
+  }
+}
