@@ -1,28 +1,27 @@
-[build]
-  publish = "public"
-  functions = "netlify/functions"
-
 [functions]
   directory = "netlify/functions"
 
-[[redirects]]
-  from = "/.netlify/functions/heygen-embed"
-  to = "/404.html"
-  status = 410
-
-[[redirects]]
-  from = "/.netlify/functions/heygen-share"
-  to = "/404.html"
-  status = 410
-
-[[redirects]]
-  from = "/*"
-  to = "/index.html"
-  status = 200
-
+# ====== HEADERS (CSP + permisos) ======
 [[headers]]
   for = "/*"
   [headers.values]
-  Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://*.heygen.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://console.heygen.com https://labs.heygen.com; media-src 'self' blob: data: https://api.elevenabs.io https://api.elevenlabs.io;"
+  # OJO con los dominios: heygen embebe desde console.heygen.com
+  Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://console.heygen.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://console.heygen.com; media-src 'self' blob: data: https://api.elevenlabs.io;"
   Permissions-Policy = "microphone=*, camera=()"
   Referrer-Policy = "strict-origin-when-cross-origin"
+
+# ====== API bonitas -> Functions ======
+[[redirects]]
+  from = "/api/reply"
+  to = "/.netlify/functions/reply"
+  status = 200
+
+[[redirects]]
+  from = "/api/chat"
+  to = "/.netlify/functions/chat"
+  status = 200
+
+[[redirects]]
+  from = "/api/ask"
+  to = "/.netlify/functions/ask"
+  status = 200
