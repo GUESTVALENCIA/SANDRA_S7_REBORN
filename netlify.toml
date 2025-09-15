@@ -1,27 +1,17 @@
-[functions]
-  directory = "netlify/functions"
+[build]
+  command = ""
+  publish = "public"
+  functions = "netlify/functions"
 
-# ====== HEADERS (CSP + permisos) ======
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# Seguridad mínima para permitir audio y el embed si lo usas aquí
 [[headers]]
   for = "/*"
   [headers.values]
-  # OJO con los dominios: heygen embebe desde console.heygen.com
-  Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://console.heygen.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://console.heygen.com; media-src 'self' blob: data: https://api.elevenlabs.io;"
-  Permissions-Policy = "microphone=*, camera=()"
-  Referrer-Policy = "strict-origin-when-cross-origin"
-
-# ====== API bonitas -> Functions ======
-[[redirects]]
-  from = "/api/reply"
-  to = "/.netlify/functions/reply"
-  status = 200
-
-[[redirects]]
-  from = "/api/chat"
-  to = "/.netlify/functions/chat"
-  status = 200
-
-[[redirects]]
-  from = "/api/ask"
-  to = "/.netlify/functions/ask"
-  status = 200
+    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.netlify.app https://*.guestsvalencia.es; img-src * data: blob:; media-src * data: blob: https://api.elevenlabs.io; connect-src * data: blob: https://api.elevenlabs.io; frame-src https://app.heygen.com https://console.heygen.com; frame-ancestors 'self' https://*.netlify.app https://guestsvalencia.es;"
+    Permissions-Policy = "microphone=*, clipboard-read=(), clipboard-write=()"
+    Referrer-Policy = "strict-origin-when-cross-origin"
