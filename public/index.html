@@ -255,11 +255,11 @@
     </section>
 
     <div id="avatar" style="width:100%;height:420px;background:#000">
-<iframe
-  id="emb"
+<iframe id="emb"
   src="https://console.heygen.com/embeds/a7a7e63f00a74ff984d4b43f984c438c"
-  style="width:100%;height:100%;border:0;display:block;flex:1;background:#000"
-  allow="autoplay; microphone; clipboard-read; clipboard-write; fullscreen; display-capture">
+  allow="autoplay; microphone; clipboard-read; clipboard-write; fullscreen; display-capture"
+  referrerpolicy="strict-origin-when-cross-origin"
+  style="width:100%;height:100%;border:0">
 </iframe>
     </div>
   </div>
@@ -285,13 +285,32 @@ async function loadAvatar(videoId){
 </script>
 
 <script>
-  const $logEl = document.getElementById("log-realtime");
-  const logger = (t) => {
-    const el=document.createElement("div");
-    el.textContent=t;
-    $logEl.appendChild(el);
-    $logEl.scrollTop=$logEl.scrollHeight;
+  const API_ORIGIN = ""; // deja vacío para usar rutas relativas /.netlify/functions
+  const writeLog = (t)=>{
+    const el = document.createElement("div");
+    el.textContent = String(t);
+    const $log = document.getElementById("log-realtime");
+    if ($log){ $log.appendChild(el); $log.scrollTop = $log.scrollHeight; }
   };
+  // compat por si quedó alguna llamada a log()
+  const log = writeLog;
+
+  const setMic = (on)=>{
+    const $mic = document.getElementById("mic");
+    if($mic) $mic.textContent = on ? "🎙️ Mic activo" : "🎙️ Mic apagado";
+  };
+
+  async function speak(text){
+    const r = await fetch(API_ORIGIN + "/.netlify/functions/reply", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ text })
+    });
+    if(!r.ok){ writeLog("Error TTS: "+r.status); return; }
+    const buf = await r.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+    const a = new Audio(url); a.play();
+  }
 </script>
 
 <script>
@@ -311,35 +330,40 @@ async function loadAvatar(videoId){
 
   let muted=false, mediaStream, mediaRec, chunks=[];
 
-  btnSend.addEventListener("click", () => sendText($txt.value));
-  $txt.addEventListener("keydown", (e)=>{
-    if (e.key === "Enter") { e.preventDefault(); sendText($txt.value); }
+  const $txt = document.getElementById("txt");
+  document.getElementById("btnSend").addEventListener("click", ()=> sendText($txt.value));
+  $txt.addEventListener("keydown",(e)=>{
+    if(e.key === "Enter"){ e.preventDefault(); sendText($txt.value); }
   });
-  btnTalk.addEventListener("click", startTalk);
-  btnMute.addEventListener("click", ()=> {
-    muted = !muted;
-    $mic.textContent = muted ? "🎙️ Mic apagado" : "🎙️ Mic activo";
-  });
-
-  async function startTalk(){
+  let mediaStream, mediaRec, chunks=[];
+  document.getElementById("btnTalk").onclick = async ()=>{
     try{
       if(!mediaStream){
         mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-        $mic.textContent = "🎙️ Mic activo";
-        writeLog("Micrófono concedido.");
       }
-      mediaRec = new MediaRecorder(mediaStream, { mimeType: "audio/webm;codecs=opus" });
+      setMic(true);
       chunks = [];
-      mediaRec.ondataavailable = e => e.data.size && chunks.push(e.data);
-      mediaRec.onstop = async () => {
+      mediaRec = new MediaRecorder(mediaStream, { mimeType:"audio/webm;codecs=opus" });
+      mediaRec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+      mediaRec.onstop = async ()=>{
+        setMic(false);
         const blob = new Blob(chunks, { type:"audio/webm" });
         chunks = [];
-        await sendAudio(blob);
+        // envía al ASR+LLM+TTS del servidor
+        const form = new FormData(); form.append("audio", blob, "input.webm");
+        const r = await fetch(API_ORIGIN + "/.netlify/functions/ask", { method:"POST", body: form });
+        if(!r.ok){ writeLog("Error servidor(ask): "+r.status); return; }
+        const buf = await r.arrayBuffer();
+        const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+        new Audio(url).play();
       };
       mediaRec.start();
-      writeLog("🎤 Escuchando… (pulsa Silencio para parar y enviar)");
-    }catch(e){ writeLog("Error micrófono: "+e.message); }
-  }
+      writeLog("🎤 Escuchando… pulsa Silencio para enviar");
+    }catch(e){ writeLog("Error micrófono: " + e.message); }
+  };
+  document.getElementById("btnMute").onclick = ()=>{
+    if(mediaRec && mediaRec.state !== "inactive"){ mediaRec.stop(); }
+  };
 
   async function sendText(text){
     if(!text.trim()) return;
