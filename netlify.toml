@@ -1,17 +1,22 @@
 [build]
-  command = ""
-  publish = "public"
   functions = "netlify/functions"
+  publish   = "public"
 
 [[redirects]]
   from = "/api/*"
-  to = "/.netlify/functions/:splat"
+  to   = "/.netlify/functions/:splat"
   status = 200
 
-# Seguridad mínima para permitir audio y el embed si lo usas aquí
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self' 'unsafe-inline' 'unsafe-eval' data: blob: https://*.netlify.app https://*.guestsvalencia.es; img-src * data: blob:; media-src * data: blob: https://api.elevenlabs.io; connect-src * data: blob: https://api.elevenlabs.io; frame-src https://app.heygen.com https://console.heygen.com; frame-ancestors 'self' https://*.netlify.app https://guestsvalencia.es;"
-    Permissions-Policy = "microphone=*, clipboard-read=(), clipboard-write=()"
-    Referrer-Policy = "strict-origin-when-cross-origin"
+  Content-Security-Policy = """
+    default-src 'self';
+    connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://api.guestsvalencia.es/sandra/v7 blob:;
+    media-src 'self' blob: https://api.elevenlabs.io;
+    img-src 'self' https://images.unsplash.com data: blob:;
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    frame-src https://app.heygen.com https://console.heygen.com;
+  """
