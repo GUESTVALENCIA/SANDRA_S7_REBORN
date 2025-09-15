@@ -255,7 +255,12 @@
     </section>
 
     <div id="avatar" style="width:100%;height:420px;background:#000">
-      <iframe id="emb" src="about:blank" style="width:100%;height:100%;border:0"></iframe>
+<iframe
+  id="emb"
+  src="https://console.heygen.com/embeds/a7a7e63f00a74ff984d4b43f984c438c"
+  style="width:100%;height:100%;border:0;display:block;flex:1;background:#000"
+  allow="autoplay; microphone; clipboard-read; clipboard-write; fullscreen; display-capture">
+</iframe>
     </div>
   </div>
 </div>
@@ -289,75 +294,74 @@ async function loadAvatar(videoId){
   };
 </script>
 
-<script type="module">
-let mediaStream, mediaRec, chunks=[];
-let ctx, analyser, source, vadInstance=null;
+<script>
+  const $txt  = document.getElementById("txt");
+  const $mic  = document.getElementById("mic");
+  const $log  = document.getElementById("log-realtime");
+  const btnSend = document.getElementById("btnSend");
+  const btnTalk = document.getElementById("btnTalk");
+  const btnMute = document.getElementById("btnMute");
 
-const $micPill = document.getElementById("mic");
-const setMic = (on) => ($micPill.textContent = on ? "🎙️ Mic activo" : "🎙️ Mic apagado");
-
-async function ensureMic(){
-  if (mediaStream) return;
-  mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-  setMic(true);
-  ctx = new (window.AudioContext||window.webkitAudioContext)();
-  source = ctx.createMediaStreamSource(mediaStream);
-  analyser = ctx.createAnalyser(); analyser.fftSize=512; source.connect(analyser);
-}
-
-async function startVAD(){
-  try{
-    const mod = await import('https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/index.browser.esm.js');
-    vadInstance = await mod.MicVAD.new({
-      audioContext: ctx, source,
-      positiveSpeechThreshold: 0.55, negativeSpeechThreshold: 0.35,
-      onSpeechStart: () => logger("🗣️ voz detectada"),
-      onSpeechEnd: async (audio) => {
-        // envía el fragmento capturado automáticamente → TTS IA
-        await sendAudio(new Blob([audio], { type: "audio/webm" }));
-      },
-      workletURL: 'https://cdn.jsdelivr.net/npm/@ricky0123/vad-web@0.0.16/dist/vad.worklet.bundle.min.js'
-    });
-    logger("✅ VAD listo");
-  }catch(e){
-    logger("⚠️ VAD no disponible ("+e.message+")");
-    vadInstance = null;
+  function writeLog(t){
+    const el = document.createElement("div");
+    el.textContent = t;
+    $log.appendChild(el);
+    $log.scrollTop = $log.scrollHeight;
   }
-}
 
-async function sendAudio(blob){
-  const form = new FormData(); form.append("audio", blob, "input.webm");
-  const r = await fetch("/.netlify/functions/ask", { method:"POST", body: form });
-  if(!r.ok){ logger("Error servidor: "+r.status); return; }
-  const buf = await r.arrayBuffer();
-  const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
-  const a = new Audio(url); a.play();
-}
+  let muted=false, mediaStream, mediaRec, chunks=[];
 
-document.getElementById("btnTalk").onclick = async ()=>{
-  try{
-    await ensureMic();
-    if (!vadInstance) await startVAD();
-    if (!vadInstance) {
-      // Fallback: grabación manual
+  btnSend.addEventListener("click", () => sendText($txt.value));
+  $txt.addEventListener("keydown", (e)=>{
+    if (e.key === "Enter") { e.preventDefault(); sendText($txt.value); }
+  });
+  btnTalk.addEventListener("click", startTalk);
+  btnMute.addEventListener("click", ()=> {
+    muted = !muted;
+    $mic.textContent = muted ? "🎙️ Mic apagado" : "🎙️ Mic activo";
+  });
+
+  async function startTalk(){
+    try{
+      if(!mediaStream){
+        mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+        $mic.textContent = "🎙️ Mic activo";
+        writeLog("Micrófono concedido.");
+      }
       mediaRec = new MediaRecorder(mediaStream, { mimeType: "audio/webm;codecs=opus" });
-      chunks=[];
-      mediaRec.ondataavailable = e => { if (e.data.size) chunks.push(e.data); };
-      mediaRec.onstop = async ()=>{ await sendAudio(new Blob(chunks, {type:"audio/webm"})); chunks=[]; };
+      chunks = [];
+      mediaRec.ondataavailable = e => e.data.size && chunks.push(e.data);
+      mediaRec.onstop = async () => {
+        const blob = new Blob(chunks, { type:"audio/webm" });
+        chunks = [];
+        await sendAudio(blob);
+      };
       mediaRec.start();
-      logger("🎤 Grabando… pulsa Silencio para enviar");
-    } else {
-      logger("🎤 VAD activo (barge-in)");
-    }
-  }catch(e){
-    setMic(false);
-    logger("Error mic: "+e.message);
+      writeLog("🎤 Escuchando… (pulsa Silencio para parar y enviar)");
+    }catch(e){ writeLog("Error micrófono: "+e.message); }
   }
-};
 
-document.getElementById("btnMute").onclick = ()=>{
-  if (mediaRec && mediaRec.state!=='inactive') mediaRec.stop();
-};
+  async function sendText(text){
+    if(!text.trim()) return;
+    writeLog("Tú: " + text);
+    $txt.value = "";
+    const r = await fetch("/.netlify/functions/chat", {
+      method:"POST",
+      headers:{ "Content-Type":"application/json" },
+      body: JSON.stringify({ text, plan: "visitor" })
+    });
+    if(!r.ok){ writeLog("Error servidor: "+r.status); return; }
+    const buf = await r.arrayBuffer();
+    new Audio(URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }))).play();
+  }
+
+  async function sendAudio(blob){
+    const form = new FormData(); form.append("audio", blob, "input.webm");
+    const r = await fetch("/.netlify/functions/ask", { method:"POST", body: form });
+    if(!r.ok){ writeLog("Error servidor: "+r.status); return; }
+    const buf = await r.arrayBuffer();
+    if(!muted) new Audio(URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }))).play();
+  }
 </script>
 </body>
 </html>

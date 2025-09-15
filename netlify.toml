@@ -10,7 +10,6 @@
 [[headers]]
   for = "/*"
   [headers.values]
-    Content-Security-Policy = "default-src 'self'; frame-src 'self' https://console.heygen.com https://labs.heygen.com; connect-src 'self' https://api.elevenlabs.io https://*.netlify.app blob:; img-src 'self' data: https:; media-src 'self' blob: data:; style-src 'self' 'unsafe-inline' https:; font-src 'self' https: data:; script-src 'self' 'unsafe-inline' 'unsafe-eval' https://cdn.jsdelivr.net https://unpkg.com; worker-src 'self' blob:; object-src 'none'; base-uri 'self'; form-action 'self'"
-    Permissions-Policy = "microphone=(*), camera=()"
-    Referrer-Policy = "strict-origin-when-cross-origin"
-    X-Content-Type-Options = "nosniff"
+  Content-Security-Policy = "default-src 'self'; connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://*.heygen.com; img-src 'self' https: data:; script-src 'self' 'unsafe-inline'; style-src 'self' 'unsafe-inline'; frame-src https://console.heygen.com https://labs.heygen.com; media-src 'self' blob: data: https://api.elevenlabs.io;"
+  Permissions-Policy = "microphone=*, camera=()"
+  Referrer-Policy = "strict-origin-when-cross-origin"
