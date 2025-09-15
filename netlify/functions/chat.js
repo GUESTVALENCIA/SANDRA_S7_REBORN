@@ -1,55 +1,37 @@
-// Netlify Function: /chat
-// If UPSTREAM_API_URL + UPSTREAM_API_KEY env vars are set, we forward the request.
-// Otherwise, we echo a friendly demo reply.
-
-const corsHeaders = {
-  "Access-Control-Allow-Origin": process.env.ALLOW_ORIGIN || "*",
-  "Access-Control-Allow-Headers": "Authorization, Content-Type",
-  "Access-Control-Allow-Methods": "POST, OPTIONS"
-};
+const fetch = global.fetch;
 
 exports.handler = async (event) => {
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 204, headers: corsHeaders, body: "" };
-  }
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers: corsHeaders, body: "Method Not Allowed" };
-  }
   try {
-    const body = JSON.parse(event.body || "{}");
-    const { message = "", language = "es" } = body;
+    const { text } = JSON.parse(event.body || "{}");
+    if(!text) return { statusCode: 400, body: JSON.stringify({ error:"Missing text" }) };
 
-    const upstream = process.env.UPSTREAM_API_URL;
-    const apiKey = process.env.UPSTREAM_API_KEY;
+    const UPSTREAM_API_URL = process.env.UPSTREAM_API_URL; // <-- https://api.guestsvalencia.es/sandra/v7
+    const UPSTREAM_API_KEY = process.env.UPSTREAM_API_KEY;
 
-    if (upstream && apiKey) {
-      const r = await fetch(`${upstream.replace(/\/$/,"")}/chat`, {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          "Authorization": `Bearer ${apiKey}`
-        },
-        body: JSON.stringify({ message, language })
-      });
-      const data = await r.json().catch(()=>({ reply:"(sin JSON válido del upstream)" }));
-      return {
-        statusCode: 200,
-        headers: corsHeaders,
-        body: JSON.stringify(data)
-      };
+    // Asumo POST JSON → {prompt:text} y {reply:"..."} como respuesta
+    const r = await fetch(UPSTREAM_API_URL, {
+      method: "POST",
+      headers: {
+        "Content-Type":"application/json",
+        "Authorization": `Bearer ${UPSTREAM_API_KEY}`
+      },
+      body: JSON.stringify({ prompt: text })
+    });
+
+    if(!r.ok){
+      const msg = await r.text();
+      return { statusCode: 502, body: JSON.stringify({ error:"Upstream error", detail: msg }) };
     }
 
-    // Fallback demo
+    const data = await r.json();
+    // Normaliza a {reply:"..."}
+    const reply = data.reply || data.text || data.message || "…";
     return {
       statusCode: 200,
-      headers: corsHeaders,
-      body: JSON.stringify({ reply: `Recibido: "${message}". (demo local)` })
+      headers: { "Content-Type":"application/json" },
+      body: JSON.stringify({ reply })
     };
   } catch (e) {
-    return {
-      statusCode: 500,
-      headers: corsHeaders,
-      body: JSON.stringify({ error: String(e) })
-    };
+    return { statusCode: 500, body: JSON.stringify({ error:e.message }) };
   }
 };

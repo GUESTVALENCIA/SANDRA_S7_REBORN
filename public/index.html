@@ -285,32 +285,38 @@ async function loadAvatar(videoId){
 </script>
 
 <script>
-  const API_ORIGIN = ""; // deja vacío para usar rutas relativas /.netlify/functions
+  // Usa rutas bonitas /api/* gracias a netlify.toml
+  const API_ORIGIN = "";
+
   const writeLog = (t)=>{
+    const $log = document.getElementById("log-realtime");
+    if(!$log) return;
     const el = document.createElement("div");
     el.textContent = String(t);
-    const $log = document.getElementById("log-realtime");
-    if ($log){ $log.appendChild(el); $log.scrollTop = $log.scrollHeight; }
+    $log.appendChild(el);
+    $log.scrollTop = $log.scrollHeight;
   };
-  // compat por si quedó alguna llamada a log()
+  // Compatibilidad con llamadas antiguas:
   const log = writeLog;
 
   const setMic = (on)=>{
     const $mic = document.getElementById("mic");
     if($mic) $mic.textContent = on ? "🎙️ Mic activo" : "🎙️ Mic apagado";
   };
+</script>
 
-  async function speak(text){
-    const r = await fetch(API_ORIGIN + "/.netlify/functions/reply", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ text })
-    });
-    if(!r.ok){ writeLog("Error TTS: "+r.status); return; }
-    const buf = await r.arrayBuffer();
-    const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
-    const a = new Audio(url); a.play();
-  }
+<script>
+async function speak(text){
+  const r = await fetch(API_ORIGIN + "/api/reply", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ text })
+  });
+  if(!r.ok){ writeLog("Error TTS: "+r.status); return; }
+  const buf = await r.arrayBuffer();
+  const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+  new Audio(url).play();
+}
 </script>
 
 <script>
@@ -330,62 +336,62 @@ async function loadAvatar(videoId){
 
   let muted=false, mediaStream, mediaRec, chunks=[];
 
-  const $txt = document.getElementById("txt");
-  document.getElementById("btnSend").addEventListener("click", ()=> sendText($txt.value));
-  $txt.addEventListener("keydown",(e)=>{
-    if(e.key === "Enter"){ e.preventDefault(); sendText($txt.value); }
+const $txt = document.getElementById("txt");
+document.getElementById("btnSend").addEventListener("click", ()=> sendText($txt.value));
+$txt.addEventListener("keydown", (e)=>{
+  if(e.key === "Enter"){ e.preventDefault(); sendText($txt.value); }
+});
+
+async function sendText(text){
+  if(!text.trim()) return;
+  writeLog("Tú: " + text);
+  $txt.value = "";
+  // Llama a tu backend real y NO eco:
+  const r = await fetch(API_ORIGIN + "/api/chat", {
+    method:"POST",
+    headers:{ "Content-Type":"application/json" },
+    body: JSON.stringify({ text })
   });
-  let mediaStream, mediaRec, chunks=[];
-  document.getElementById("btnTalk").onclick = async ()=>{
-    try{
-      if(!mediaStream){
-        mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
-      }
-      setMic(true);
+  if(!r.ok){ writeLog("Error chat: "+r.status); return; }
+  const data = await r.json();        // { reply: "..." }
+  const reply = data?.reply || "…";
+  writeLog("Sandra: " + reply);
+  speak(reply); // MP3 ElevenLabs
+}
+</script>
+
+<script>
+let mediaStream, mediaRec, chunks=[];
+document.getElementById("btnTalk").onclick = async ()=>{
+  try{
+    if(!mediaStream){
+      mediaStream = await navigator.mediaDevices.getUserMedia({ audio:true });
+    }
+    setMic(true);
+    chunks = [];
+    mediaRec = new MediaRecorder(mediaStream, { mimeType:"audio/webm;codecs=opus" });
+    mediaRec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
+    mediaRec.onstop = async ()=>{
+      setMic(false);
+      const blob = new Blob(chunks, { type:"audio/webm" });
       chunks = [];
-      mediaRec = new MediaRecorder(mediaStream, { mimeType:"audio/webm;codecs=opus" });
-      mediaRec.ondataavailable = e => { if(e.data.size) chunks.push(e.data); };
-      mediaRec.onstop = async ()=>{
-        setMic(false);
-        const blob = new Blob(chunks, { type:"audio/webm" });
-        chunks = [];
-        // envía al ASR+LLM+TTS del servidor
-        const form = new FormData(); form.append("audio", blob, "input.webm");
-        const r = await fetch(API_ORIGIN + "/.netlify/functions/ask", { method:"POST", body: form });
-        if(!r.ok){ writeLog("Error servidor(ask): "+r.status); return; }
-        const buf = await r.arrayBuffer();
-        const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
-        new Audio(url).play();
-      };
-      mediaRec.start();
-      writeLog("🎤 Escuchando… pulsa Silencio para enviar");
-    }catch(e){ writeLog("Error micrófono: " + e.message); }
-  };
-  document.getElementById("btnMute").onclick = ()=>{
-    if(mediaRec && mediaRec.state !== "inactive"){ mediaRec.stop(); }
-  };
-
-  async function sendText(text){
-    if(!text.trim()) return;
-    writeLog("Tú: " + text);
-    $txt.value = "";
-    const r = await fetch("/.netlify/functions/chat", {
-      method:"POST",
-      headers:{ "Content-Type":"application/json" },
-      body: JSON.stringify({ text, plan: "visitor" })
-    });
-    if(!r.ok){ writeLog("Error servidor: "+r.status); return; }
-    const buf = await r.arrayBuffer();
-    new Audio(URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }))).play();
+      const form = new FormData();
+      form.append("audio", blob, "input.webm");
+      const r = await fetch(API_ORIGIN + "/api/ask", { method:"POST", body: form });
+      if(!r.ok){ writeLog("Error voz (ask): "+r.status); return; }
+      const buf = await r.arrayBuffer();
+      const url = URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }));
+      new Audio(url).play();
+    };
+    mediaRec.start();
+    writeLog("🎤 Escuchando… pulsa Silencio para enviar");
+  }catch(e){
+    writeLog("Error micrófono: " + e.message);
   }
-
-  async function sendAudio(blob){
-    const form = new FormData(); form.append("audio", blob, "input.webm");
-    const r = await fetch("/.netlify/functions/ask", { method:"POST", body: form });
-    if(!r.ok){ writeLog("Error servidor: "+r.status); return; }
-    const buf = await r.arrayBuffer();
-    if(!muted) new Audio(URL.createObjectURL(new Blob([buf], { type:"audio/mpeg" }))).play();
-  }
+};
+document.getElementById("btnMute").onclick = ()=>{
+  if(mediaRec && mediaRec.state !== "inactive"){ mediaRec.stop(); }
+};
 </script>
 </body>
 </html>
