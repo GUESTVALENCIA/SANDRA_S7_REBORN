@@ -1,161 +1,56 @@
-// netlify/functions/chat.js - OPTIMIZADO CON MEMORIA NEON AUTOMÁTICA
-const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
-import { Client } from 'pg';
-
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
-const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVEN_VOICE = process.env.ELEVENLABS_VOICE_ID || "06H5cbUvetCmVYi9HUXk";
-const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "https://guestsvalencia.es,https://*.guestsvalencia.es,https://claytomsystems.com,https://*.claytomsystems.com,https://*.netlify.app,http://localhost:8888";
+const { makeCorsHeaders, preflight } = require('./_cors.js');
 
 exports.handler = async (event) => {
-  // Headers CORS
-  const headers = {
-    "Access-Control-Allow-Origin": ALLOW_ORIGIN,
-    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Sandra-Key",
-    "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
-    "Content-Type": "application/json"
-  };
+  const cors = makeCorsHeaders(event.headers.origin || event.headers.Origin);
+  const pf = preflight(event); if (pf) return pf;
+  if (event.httpMethod !== 'POST') return { statusCode:405, headers:cors, body:'Method Not Allowed' };
 
-  if (event.httpMethod === "OPTIONS") {
-    return { statusCode: 200, headers, body: "" };
+  // Si quisieras cerrar el chat, pon CHAT_REQUIRES_KEY=true en Netlify
+  if (String(process.env.CHAT_REQUIRES_KEY||'false')==='true') {
+    const k = event.headers['x-sandra-key'] || event.headers['X-Sandra-Key'];
+    if (!k || k !== process.env.TRAINING_API_KEY) return { statusCode:401, headers:cors, body:'Unauthorized' };
   }
 
-  if (event.httpMethod !== "POST") {
-    return { statusCode: 405, headers, body: JSON.stringify({ error: "Method Not Allowed" }) };
+  let body; try{ body=JSON.parse(event.body||'{}'); }catch{ return { statusCode:400, headers:cors, body:'Bad JSON' }; }
+  const text=(body.text||'').toString().trim();
+  const persona=(body.persona||'developer').toString();
+  const loras=Array.isArray(body.loras)? body.loras:[];
+
+  if(!text) return { statusCode:400, headers:cors, body:'Missing text' };
+
+  const { ELEVENLABS_API_KEY, ELEVENLABS_VOICE_ID, UPSTREAM_API_URL, UPSTREAM_CHAT_PATH='/chat', UPSTREAM_API_KEY } = process.env;
+
+  // 1) Upstream (opcional)
+  let reply='';
+  if (UPSTREAM_API_URL) {
+    try{
+      const base=UPSTREAM_API_URL.replace(/\/+$/,'');
+      const path=UPSTREAM_CHAT_PATH.startsWith('/')? UPSTREAM_CHAT_PATH : '/'+UPSTREAM_CHAT_PATH;
+      const r = await fetch(base+path, {
+        method:'POST',
+        headers:{ 'content-type':'application/json', ...(UPSTREAM_API_KEY? {'authorization':`Bearer ${UPSTREAM_API_KEY}`} : {}) },
+        body: JSON.stringify({ text, persona, meta:{ loras } })
+      });
+      if (r.ok) {
+        const ct=r.headers.get('content-type')||'';
+        reply = ct.includes('application/json') ? ((await r.json()).reply || '') : (await r.text());
+      }
+    }catch {}
+  }
+  if(!reply) reply = `He recibido: "${text}". Soy Sandra (${persona}). ¿Cómo sigo?`;
+
+  // 2) Si no hay ElevenLabs -> devuelve JSON
+  if(!ELEVENLABS_API_KEY || !ELEVENLABS_VOICE_ID){
+    return { statusCode:200, headers:{...cors,'Content-Type':'application/json'}, body: JSON.stringify({ reply, persona }) };
   }
 
-  try {
-    const { message = "", returnAudio = false } = JSON.parse(event.body || "{}");
-    const prompt = message.trim() || "Hola, ¿en qué puedo ayudarte?";
-
-    // 1) Respuesta de OpenAI GPT-4 (OPTIMIZADO)
-    let reply = "";
-    if (OPENAI_API_KEY) {
-      try {
-        const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "gpt-4",
-            messages: [
-              {
-                role: "system",
-                content: "Eres Sandra, una asistente virtual inteligente de ClayTom Systems especializada en desarrollo web, gestión hotelera y atención al cliente. Responde de manera profesional, concisa y útil en español."
-              },
-              {
-                role: "user",
-                content: prompt
-              }
-            ],
-            max_tokens: 150,
-            temperature: 0.7
-          })
-        });
-
-        if (openaiRes.ok) {
-          const openaiData = await openaiRes.json();
-          reply = openaiData.choices?.[0]?.message?.content || "";
-        }
-      } catch (err) {
-        console.error('OpenAI error:', err.message);
-      }
-    }
-
-    // Fallback response si no hay OpenAI
-    if (!reply) {
-      reply = `Hola, he recibido tu mensaje: "${prompt}". ¿En qué más puedo ayudarte?`;
-    }
-
-    // 2) Preparar respuesta JSON
-    const response = {
-      response: reply,
-      success: true
-    };
-
-    // 3) TTS ElevenLabs (SOLO SI SE SOLICITA Y HAY CLAVE)
-    if (returnAudio && ELEVEN_KEY) {
-      try {
-        const ttsRes = await fetch(
-          `https://api.elevenlabs.io/v1/text-to-speech/${ELEVEN_VOICE}`,
-          {
-            method: "POST",
-            headers: {
-              "xi-api-key": ELEVEN_KEY,
-              "Accept": "audio/mpeg",
-              "Content-Type": "application/json"
-            },
-            body: JSON.stringify({
-              text: reply,
-              model_id: "eleven_turbo_v2",
-              voice_settings: {
-                stability: 0.5,
-                similarity_boost: 0.7
-              }
-            })
-          }
-        );
-
-        if (ttsRes.ok) {
-          const mp3Buffer = Buffer.from(await ttsRes.arrayBuffer());
-          response.audioBase64 = mp3Buffer.toString("base64");
-        }
-      } catch (ttsErr) {
-        console.error('TTS error:', ttsErr.message);
-        // No fallar si TTS falla, solo enviar texto
-      }
-    }
-
-    // GUARDAR CONVERSACIÓN EN NEON AUTOMÁTICAMENTE
-    if (process.env.NEON_DATABASE_URL) {
-      try {
-        const client = new Client({ connectionString: process.env.NEON_DATABASE_URL });
-        await client.connect();
-
-        const sessionId = event.headers['x-session-id'] || 'anonymous-' + Date.now();
-        const persona = event.headers['x-persona'] || 'developer';
-
-        // Guardar conversación
-        await client.query(
-          `INSERT INTO sandra_conversations(session_id, user_message, sandra_response, persona, context)
-           VALUES($1, $2, $3, $4, $5)`,
-          [
-            sessionId,
-            prompt,
-            reply,
-            persona,
-            JSON.stringify({
-              returnAudio: returnAudio,
-              hasAudio: !!response.audioBase64,
-              timestamp: new Date().toISOString()
-            })
-          ]
-        );
-
-        await client.end();
-      } catch (dbError) {
-        console.error('Error guardando conversación en Neon:', dbError);
-        // No fallar el chat por error de BD
-      }
-    }
-
-    return {
-      statusCode: 200,
-      headers,
-      body: JSON.stringify(response)
-    };
-
-  } catch (e) {
-    console.error('Chat function error:', e.message);
-    return {
-      statusCode: 500,
-      headers,
-      body: JSON.stringify({
-        error: "Internal server error",
-        success: false
-      })
-    };
-  }
+  // 3) ElevenLabs → MP3
+  const url=`https://api.elevenlabs.io/v1/text-to-speech/${encodeURIComponent(ELEVENLABS_VOICE_ID)}/stream?optimize_streaming_latency=3&output_format=mp3_44100_128`;
+  const tts = await fetch(url, {
+    method:'POST',
+    headers:{ 'xi-api-key':ELEVENLABS_API_KEY, 'accept':'audio/mpeg', 'content-type':'application/json' },
+    body: JSON.stringify({ text: reply, model_id:'eleven_turbo_v2', voice_settings:{ stability:0.5, similarity_boost:0.7 } })
+  });
+  const buf = Buffer.from(await tts.arrayBuffer());
+  return { statusCode:tts.status, headers:{...cors,'Content-Type':'audio/mpeg','Cache-Control':'no-store'}, body: buf.toString('base64'), isBase64Encoded:true };
 };

@@ -1,0 +1,16 @@
+<!doctype html><html lang="es"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Sandra Trainer · RevB</title>
+<div id="log" style="height:200px;overflow:auto;border:1px solid #ccc"></div>
+<input id="txt" placeholder="Escribe..." style="width:70%"><button id="send">Enviar</button>
+<script>
+const log=document.getElementById('log'); const txt=document.getElementById('txt');
+document.getElementById('send').onclick=async()=>{
+  const v=txt.value; txt.value=''; if(!v) return;
+  log.innerHTML+='<div><b>Tú:</b> '+v+'</div>';
+  const r=await fetch('/api/chat',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({text:v,persona:'developer',loras:[]})});
+  if(!r.ok){ log.innerHTML+='<div style="color:#b00">Error '+r.status+'</div>'; return; }
+  const ct=r.headers.get('content-type')||'';
+  if(ct.includes('application/json')){ const j=await r.json(); log.innerHTML+='<div><b>Sandra:</b> '+(j.reply||JSON.stringify(j))+'</div>'; }
+  else{ const url=URL.createObjectURL(new Blob([await r.arrayBuffer()],{type:'audio/mpeg'})); new Audio(url).play(); log.innerHTML+='<div>🔊 MP3 reproducido</div>'; }
+};
+</script>
