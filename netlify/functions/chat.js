@@ -1,5 +1,6 @@
-// netlify/functions/chat.js - OPTIMIZADO PARA FRONTEND PREMIUM
+// netlify/functions/chat.js - OPTIMIZADO CON MEMORIA NEON AUTOMÁTICA
 const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
+import { Client } from 'pg';
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY;
@@ -104,6 +105,39 @@ exports.handler = async (event) => {
       } catch (ttsErr) {
         console.error('TTS error:', ttsErr.message);
         // No fallar si TTS falla, solo enviar texto
+      }
+    }
+
+    // GUARDAR CONVERSACIÓN EN NEON AUTOMÁTICAMENTE
+    if (process.env.NEON_DATABASE_URL) {
+      try {
+        const client = new Client({ connectionString: process.env.NEON_DATABASE_URL });
+        await client.connect();
+
+        const sessionId = event.headers['x-session-id'] || 'anonymous-' + Date.now();
+        const persona = event.headers['x-persona'] || 'developer';
+
+        // Guardar conversación
+        await client.query(
+          `INSERT INTO sandra_conversations(session_id, user_message, sandra_response, persona, context)
+           VALUES($1, $2, $3, $4, $5)`,
+          [
+            sessionId,
+            prompt,
+            reply,
+            persona,
+            JSON.stringify({
+              returnAudio: returnAudio,
+              hasAudio: !!response.audioBase64,
+              timestamp: new Date().toISOString()
+            })
+          ]
+        );
+
+        await client.end();
+      } catch (dbError) {
+        console.error('Error guardando conversación en Neon:', dbError);
+        // No fallar el chat por error de BD
       }
     }
 
