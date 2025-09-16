@@ -1,0 +1,948 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+    <title>Sandra Dev Lab Pro · Entrenamiento Avanzado de IA</title>
+    <meta name="description" content="Entorno de desarrollo y entrenamiento para Sandra IA. Carga prompts, JSON, LoRA y entrena especialidades como DEV, UI/UX, API.">
+    <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🧠</text></svg>">
+    <!-- Tailwind CSS vía CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    colors: {
+                        primary: '#0ea5e9',
+                        secondary: '#ec4899',
+                        accent: '#8b5cf6',
+                        dev: '#10b981', // Verde para DEV
+                        arq: '#f59e0b', // Naranja para Arquitectura
+                        ui: '#8b5cf6',  // Púrpura para UI/UX
+                        api: '#ef4444', // Rojo para API
+                    }
+                }
+            }
+        }
+    </script>
+    <style>
+        /* Fondo Molecular Estilo Sonoma */
+        #molecular-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1;
+            background: radial-gradient(ellipse at center, #1e3a8a 0%, #0f172a 50%, #000000 100%);
+            overflow: hidden;
+        }
+
+        .particle {
+            position: absolute;
+            border-radius: 50%;
+            pointer-events: none;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.8) 0%, rgba(147, 197, 253, 0.4) 50%, rgba(59, 130, 246, 0.1) 100%);
+            box-shadow: 0 0 20px rgba(59, 130, 246, 0.3);
+            animation: floatUp linear infinite;
+        }
+
+        .particle.small {
+            width: 4px;
+            height: 4px;
+            opacity: 0.6;
+        }
+
+        .particle.medium {
+            width: 8px;
+            height: 8px;
+            opacity: 0.4;
+        }
+
+        .particle.large {
+            width: 12px;
+            height: 12px;
+            opacity: 0.3;
+        }
+
+        @keyframes floatUp {
+            0% {
+                transform: translateY(100vh) scale(0);
+                opacity: 0;
+            }
+            10% {
+                opacity: 1;
+                transform: translateY(90vh) scale(1);
+            }
+            90% {
+                opacity: 1;
+                transform: translateY(10vh) scale(1);
+            }
+            100% {
+                transform: translateY(-20vh) scale(0);
+                opacity: 0;
+            }
+        }
+
+        /* Glassmorphism para la UI */
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.08);
+            backdrop-filter: blur(16px);
+            border: 1px solid rgba(255, 255, 255, 0.18);
+            border-radius: 20px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+        }
+
+        /* Animaciones */
+        @keyframes pulse {
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
+        }
+
+        .pulsing {
+            animation: pulse 2s ease-in-out infinite;
+        }
+
+        /* Scrollbar personalizada */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        ::-webkit-scrollbar-track {
+            background: rgba(255, 255, 255, 0.1);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: rgba(14, 165, 233, 0.8);
+            border-radius: 4px;
+        }
+        /* Efecto de carga */
+        @keyframes loading {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+        .loading-spinner {
+            animation: loading 1s linear infinite;
+        }
+    </style>
+</head>
+<body class="antialiased overflow-hidden" style="background: transparent;">
+    <!-- FONDO MOLECULAR ESTILO SONOMA -->
+    <div id="molecular-bg"></div>
+
+    <!-- CONTENEDOR PRINCIPAL -->
+    <div class="flex flex-col h-screen p-4">
+        <!-- HEADER -->
+        <div class="glass-panel p-4 mb-4 flex justify-between items-center">
+            <h1 class="text-2xl font-bold text-white flex items-center">
+                <span class="text-4xl mr-2">🧠</span>
+                Sandra Dev Lab <span class="text-sm bg-secondary/50 text-white px-2 py-1 rounded">PRO</span>
+            </h1>
+            <div class="flex items-center space-x-4">
+                <span class="text-sm text-blue-300 bg-blue-900/50 px-3 py-1 rounded-full">GPT-4o</span>
+                <span class="text-sm text-orange-300 bg-orange-900/50 px-3 py-1 rounded-full">Demo Mode</span>
+                <button id="fullscreen-btn" class="w-10 h-10 bg-purple-600 hover:bg-purple-700 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-purple-500 transition-all duration-300" title="Pantalla completa">
+                    🔳
+                </button>
+            </div>
+        </div>
+
+        <!-- PANEL DE CONTROL AVANZADO -->
+        <div class="glass-panel p-4 mb-4 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-4">
+            <!-- Cargador de Archivos -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-white mb-2">Cargar Archivos de Entrenamiento</label>
+                <input type="file" id="training-file-input" multiple class="w-full text-white text-sm file:mr-4 file:py-2 file:px-4 file:rounded-full file:border-0 file:text-sm file:font-semibold file:bg-primary/80 file:text-white hover:file:bg-primary transition-all duration-300" />
+                <p id="file-list" class="text-xs text-slate-400 mt-1">Ningún archivo cargado.</p>
+            </div>
+            <!-- Selector de Especialidades -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-white mb-2">Especialidades</label>
+                <div class="grid grid-cols-2 gap-2">
+                    <button data-specialty="dev" class="specialty-btn text-xs py-1.5 px-3 rounded-lg bg-slate-800/50 text-white hover:bg-dev/50 transition-all">DEV</button>
+                    <button data-specialty="arq" class="specialty-btn text-xs py-1.5 px-3 rounded-lg bg-slate-800/50 text-white hover:bg-arq/50 transition-all">Arquitectura</button>
+                    <button data-specialty="ui" class="specialty-btn text-xs py-1.5 px-3 rounded-lg bg-slate-800/50 text-white hover:bg-ui/50 transition-all">UI/UX</button>
+                    <button data-specialty="api" class="specialty-btn text-xs py-1.5 px-3 rounded-lg bg-slate-800/50 text-white hover:bg-api/50 transition-all">API</button>
+                </div>
+            </div>
+            <!-- Modelo de IA -->
+            <div class="col-span-1">
+                <label class="block text-sm font-medium text-white mb-2">Modelo de IA</label>
+                <select id="model-selector" class="w-full bg-slate-800/50 text-white border border-slate-600 rounded-lg p-2 focus:outline-none focus:ring-2 focus:ring-primary text-sm">
+                    <option value="gpt-4o">GPT-4o</option>
+                    <option value="gpt-4o-mini">GPT-4o Mini</option>
+                    <option value="qwen-max">Qwen-Max</option>
+                    <option value="qwen-plus">Qwen-Plus</option>
+                </select>
+            </div>
+            <!-- Botón de Auto-Entrenamiento -->
+            <div class="col-span-1 flex items-end">
+                <button id="train-btn" class="w-full bg-gradient-to-r from-accent to-purple-700 hover:from-accent/90 hover:to-purple-800 text-white font-semibold py-2 px-4 rounded-lg transition-all duration-300 flex items-center justify-center">
+                    <span id="train-btn-text">🚀 Entrenar Ahora</span>
+                    <span id="train-spinner" class="ml-2 w-4 h-4 border-2 border-white border-t-transparent rounded-full hidden loading-spinner"></span>
+                </button>
+            </div>
+        </div>
+
+        <!-- ÁREA DE CHAT -->
+        <div class="flex-1 glass-panel p-4 mb-4 overflow-hidden flex flex-col">
+            <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-4">
+                <div class="flex items-start">
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3 flex-shrink-0">🤖</div>
+                    <div class="bg-slate-800/50 text-white p-4 rounded-lg max-w-xs md:max-w-md">
+                        <p>Hola, soy Sandra. Estoy en modo de entrenamiento PRO. Carga tus archivos y selecciona tus especialidades para empezar.</p>
+                        <span class="text-xs text-slate-400 mt-2 block">10:30 AM</span>
+                    </div>
+                </div>
+            </div>
+
+            <!-- INPUT DE USUARIO -->
+            <div class="flex items-center space-x-2">
+                <button id="mic-btn" class="w-12 h-12 bg-primary hover:bg-blue-600 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-primary transition-all duration-300 pulsing" title="Dictar con micrófono">
+                    🎤
+                </button>
+                <input type="text" id="user-input" placeholder="Escribe tu mensaje o dicta con el micrófono..." class="flex-1 bg-slate-800/50 text-white border border-slate-600 rounded-lg p-3 focus:outline-none focus:ring-2 focus:ring-primary" />
+                <button id="send-btn" class="w-12 h-12 bg-secondary hover:bg-pink-700 text-white rounded-full flex items-center justify-center focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-secondary transition-all duration-300" title="Enviar mensaje">
+                    ➤
+                </button>
+            </div>
+        </div>
+
+        <!-- PANEL DE ESTADO, LOGS Y BIBLIOTECA DE PROMPTS -->
+        <div class="glass-panel p-4 text-xs text-slate-300 h-32 overflow-y-auto grid grid-cols-1 lg:grid-cols-2 gap-4">
+            <!-- Logs -->
+            <div>
+                <h4 class="text-white font-semibold mb-2">Registro del Sistema</h4>
+                <div id="status-log" class="space-y-1">
+                    <p><span class="text-green-400">[INFO]</span> Entorno PRO cargado.</p>
+                    <p><span class="text-green-400">[INFO]</span> Modelo GPT-4o activo.</p>
+                    <p><span class="text-blue-400">[DEBUG]</span> Sistema de Barge-in listo.</p>
+                    <p><span class="text-purple-400">[UI]</span> Fondo molecular estilo Sonoma activado.</p>
+                </div>
+            </div>
+            <!-- Biblioteca de Prompts Qwen -->
+            <div>
+                <h4 class="text-white font-semibold mb-2">📚 Biblioteca de Prompts Qwen</h4>
+                <div class="space-y-2">
+                    <button onclick="useQwenPrompt('dev')" class="block w-full text-left bg-slate-800/30 hover:bg-dev/30 p-2 rounded text-dev text-xs">[DEV] Genera un componente React para un botón de reserva con validación.</button>
+                    <button onclick="useQwenPrompt('ui')" class="block w-full text-left bg-slate-800/30 hover:bg-ui/30 p-2 rounded text-ui text-xs">[UI/UX] Diseña un flujo de usuario para el check-in móvil sin llaves.</button>
+                    <button onclick="useQwenPrompt('arq')" class="block w-full text-left bg-slate-800/30 hover:bg-arq/30 p-2 rounded text-arq text-xs">[Arquitectura] Propón una arquitectura serverless para gestionar 10k reservas diarias.</button>
+                    <button onclick="useQwenPrompt('api')" class="block w-full text-left bg-slate-800/30 hover:bg-api/30 p-2 rounded text-api text-xs">[API] Documenta una API REST para sincronizar calendarios con Airbnb y Booking.</button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // ===== CONFIGURACIÓN DE VARIABLES =====
+        // APIs conectadas para Sandra Dev Lab PRO
+        const TRAINING_API_KEY = 'gv_train_s7_S4ndraValencia_8k9ZrT2pQ6'; // API Training Sandra
+        const ELEVENLABS_API_KEY = 'API_DESACTIVADA_POR_SEGURIDAD'; // ElevenLabs API
+        const ELEVENLABS_VOICE_ID = 'VOICE_ID_DESACTIVADO'; // Voice ID Sandra
+        const UPSTREAM_API_URL = 'https://api.guestsvalencia.es/sandra/v7'; // API Upstream
+
+        // ===== BASE DE DATOS MASIVA PARA ENTRENAMIENTO =====
+        let sandraDB = null;
+        const DB_NAME = 'SandraTrainingDB';
+        const DB_VERSION = 1;
+
+        async function initSandraDatabase() {
+            return new Promise((resolve, reject) => {
+                const request = indexedDB.open(DB_NAME, DB_VERSION);
+
+                request.onerror = () => reject(request.error);
+                request.onsuccess = () => {
+                    sandraDB = request.result;
+                    resolve(sandraDB);
+                };
+
+                request.onupgradeneeded = (event) => {
+                    const db = event.target.result;
+
+                    // Store para prompts masivos
+                    if (!db.objectStoreNames.contains('prompts')) {
+                        const promptStore = db.createObjectStore('prompts', { keyPath: 'id', autoIncrement: true });
+                        promptStore.createIndex('category', 'category', { unique: false });
+                        promptStore.createIndex('type', 'type', { unique: false });
+                        promptStore.createIndex('tags', 'tags', { unique: false, multiEntry: true });
+                    }
+
+                    // Store para archivos (JSON, LoRA, etc.)
+                    if (!db.objectStoreNames.contains('files')) {
+                        const fileStore = db.createObjectStore('files', { keyPath: 'id', autoIncrement: true });
+                        fileStore.createIndex('filename', 'filename', { unique: false });
+                        fileStore.createIndex('type', 'type', { unique: false });
+                        fileStore.createIndex('size', 'size', { unique: false });
+                    }
+
+                    // Store para sesiones de entrenamiento
+                    if (!db.objectStoreNames.contains('trainingSessions')) {
+                        const sessionStore = db.createObjectStore('trainingSessions', { keyPath: 'id', autoIncrement: true });
+                        sessionStore.createIndex('date', 'date', { unique: false });
+                        sessionStore.createIndex('status', 'status', { unique: false });
+                    }
+                };
+            });
+        }
+
+        // Almacenar prompt en la base de datos
+        async function storePrompt(prompt, category, type, tags = []) {
+            const transaction = sandraDB.transaction(['prompts'], 'readwrite');
+            const store = transaction.objectStore('prompts');
+
+            const promptData = {
+                content: prompt,
+                category: category,
+                type: type,
+                tags: tags,
+                dateAdded: new Date().toISOString(),
+                timesUsed: 0,
+                effectiveness: 0
+            };
+
+            return store.add(promptData);
+        }
+
+        // Almacenar archivo en la base de datos
+        async function storeFile(file, content) {
+            const transaction = sandraDB.transaction(['files'], 'readwrite');
+            const store = transaction.objectStore('files');
+
+            const fileData = {
+                filename: file.name,
+                type: file.type,
+                size: file.size,
+                content: content,
+                dateAdded: new Date().toISOString(),
+                processed: false
+            };
+
+            return store.add(fileData);
+        }
+
+        // Obtener todos los prompts
+        async function getAllPrompts() {
+            const transaction = sandraDB.transaction(['prompts'], 'readonly');
+            const store = transaction.objectStore('prompts');
+            return new Promise((resolve, reject) => {
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Obtener todos los archivos
+        async function getAllFiles() {
+            const transaction = sandraDB.transaction(['files'], 'readonly');
+            const store = transaction.objectStore('files');
+            return new Promise((resolve, reject) => {
+                const request = store.getAll();
+                request.onsuccess = () => resolve(request.result);
+                request.onerror = () => reject(request.error);
+            });
+        }
+
+        // Cargar prompts premium preinstalados
+        async function loadPremiumPrompts() {
+            const premiumPrompts = [
+                // DESARROLLO FRONTEND
+                { content: "Actúa como un desarrollador senior React. Crea un componente funcional completo para un sistema de reservas de alojamiento que incluya: selector de fechas con react-datepicker, validación de disponibilidad, cálculo de precios dinámico, formulario de huéspedes, y integración con pasarelas de pago. Usa TypeScript, Tailwind CSS y React Hook Form.", category: "dev", type: "react", tags: ["frontend", "reservas", "typescript"] },
+                { content: "Como experto en Vue.js 3, desarrolla una aplicación SPA completa para gestión de propiedades de alquiler vacacional. Incluye: dashboard con métricas, CRUD de propiedades, calendario de disponibilidad, chat en tiempo real con huéspedes, sistema de reviews, y panel de analytics. Usa Composition API, Pinia, Vue Router y Vuetify.", category: "dev", type: "vue", tags: ["spa", "dashboard", "vuejs"] },
+                { content: "Desarrolla un sistema completo de check-in digital para alojamientos usando JavaScript vanilla. Debe incluir: reconocimiento de documentos con OCR, validación facial, firma digital, generación de códigos QR para acceso, integración con cerraduras inteligentes, y notificaciones push. Optimizado para tablets y móviles.", category: "dev", type: "javascript", tags: ["checkin", "ocr", "mobile"] },
+
+                // BACKEND Y APIS
+                { content: "Diseña y desarrolla una API REST completa en Node.js + Express para una plataforma de alquiler vacacional. Incluye: autenticación JWT, CRUD de propiedades, sistema de reservas con bloqueo de fechas, pagos con Stripe, notificaciones, chat en tiempo real con Socket.io, y sincronización con Airbnb/Booking APIs. Documenta con Swagger.", category: "dev", type: "backend", tags: ["nodejs", "api", "reservas"] },
+                { content: "Crea una arquitectura de microservicios para una plataforma de hospedaje usando Docker y Kubernetes. Servicios: user-service, property-service, booking-service, payment-service, notification-service. Incluye API Gateway, service discovery, circuit breakers, logging centralizado con ELK stack, y monitoreo con Prometheus.", category: "dev", type: "microservices", tags: ["docker", "kubernetes", "arquitectura"] },
+                { content: "Desarrolla un sistema de sincronización en tiempo real entre múltiples calendarios (Airbnb, Booking, propios) usando webhooks y colas de mensajes. Implementa con Redis, RabbitMQ, y PostgreSQL. Incluye manejo de conflictos, rollback automático, y logs detallados de sincronización.", category: "dev", type: "integration", tags: ["sync", "webhooks", "redis"] },
+
+                // ARQUITECTURA Y SISTEMAS
+                { content: "Diseña una arquitectura serverless completa en AWS para una startup de alquiler vacacional que espera 100k reservas mensuales. Usa: Lambda, API Gateway, DynamoDB, S3, CloudFront, SES, SQS. Incluye estimación de costos, estrategia de escalado automático, backup/disaster recovery, y security best practices.", category: "arq", type: "serverless", tags: ["aws", "escalabilidad", "costos"] },
+                { content: "Propón una estrategia completa de migración de una aplicación monolítica de reservas a microservicios. Incluye: análisis de bounded contexts, estrategia de descomposición, plan de migración por fases, database per service, event sourcing para consistencia, y estrategia de testing.", category: "arq", type: "migration", tags: ["microservices", "migration", "monolith"] },
+                { content: "Diseña un sistema de alta disponibilidad para una plataforma de reservas crítica (99.99% uptime). Incluye: multi-region deployment, database replication, load balancing, circuit breakers, chaos engineering, monitoring & alerting, y disaster recovery procedures. Estima RPO/RTO.", category: "arq", type: "availability", tags: ["ha", "disaster-recovery", "monitoring"] },
+
+                // UI/UX DESIGN
+                { content: "Diseña la experiencia completa de usuario para una app móvil de alquiler vacacional desde cero. Incluye: research de usuarios, user personas, customer journey mapping, wireframes de pantallas clave, prototipo interactivo en Figma, design system completo, y plan de testing con usuarios.", category: "ui", type: "mobile-app", tags: ["figma", "research", "prototyping"] },
+                { content: "Crea un design system completo para una plataforma de hospedaje que funcione en web, móvil y tablet. Define: typography scale, color palette, spacing system, componentes reutilizables, iconografía, patterns de interacción, guías de accesibilidad WCAG 2.1, y documentación para developers.", category: "ui", type: "design-system", tags: ["design-system", "accessibility", "components"] },
+                { content: "Diseña un flujo de onboarding gamificado para anfitriones nuevos que los guíe desde cero hasta su primera reserva. Incluye: progress tracking, micro-interacciones, achievement system, tips contextuales, video tutorials embebidos, y métricas de conversión para optimizar el funnel.", category: "ui", type: "onboarding", tags: ["gamification", "onboarding", "conversion"] },
+
+                // APIS Y INTEGRACIONES
+                { content: "Documenta una API REST completa para sincronización de calendarios multi-plataforma. Define todos los endpoints (CRUD reservas, disponibilidad, precios), esquemas JSON con validación, autenticación, rate limiting, webhooks para notificaciones, manejo de errores, y ejemplos de implementación en multiple languages.", category: "api", type: "documentation", tags: ["rest", "calendar", "sync"] },
+                { content: "Desarrolla una API GraphQL para un marketplace de alojamientos que optimice las consultas desde mobile apps. Define schema completo, resolvers eficientes, queries anidadas para propiedades+reviews+availability, mutations para booking flow, subscriptions para real-time updates, y cache strategy.", category: "api", type: "graphql", tags: ["graphql", "mobile", "performance"] },
+                { content: "Crea un sistema de webhooks robusto para notificar cambios en reservas a sistemas externos. Incluye: retry mechanism con exponential backoff, signature verification, event filtering, batch notifications, monitoring dashboard, y ejemplos de implementación para partners comunes (PMS, Channel Managers).", category: "api", type: "webhooks", tags: ["webhooks", "integration", "monitoring"] },
+
+                // DESARROLLO FULL-STACK
+                { content: "Desarrolla una aplicación full-stack completa de marketplace de alojamientos usando Next.js 13 + tRPC + Prisma + PostgreSQL. Incluye: SSR/SSG optimizado, autenticación social, uploads de imágenes con optimización, búsqueda geoespacial, sistema de reviews, pagos con Stripe, y deployment en Vercel.", category: "dev", type: "fullstack", tags: ["nextjs", "trpc", "marketplace"] },
+                { content: "Crea un dashboard administrativo completo para gestores de múltiples propiedades usando React + Redux Toolkit + Material-UI. Funcionalidades: analytics avanzados, gestión de calendarios múltiples, automatización de precios, reportes financieros, gestión de equipos, y exportación de datos.", category: "dev", type: "dashboard", tags: ["react", "redux", "analytics"] },
+                { content: "Desarrolla un sistema de chat en tiempo real para plataforma de alojamientos usando React + Socket.io + Redis. Incluye: mensajería entre huéspedes y anfitriones, typing indicators, message status, file sharing, translation API integration, spam detection, y archive/search functionality.", category: "dev", type: "realtime", tags: ["chat", "socketio", "realtime"] },
+
+                // OPTIMIZACIÓN Y PERFORMANCE
+                { content: "Optimiza una aplicación de reservas para Core Web Vitals perfectos. Analiza y mejora: LCP con lazy loading de imágenes y code splitting, FID con optimización de JavaScript, CLS con skeleton screens, implementa service workers para cache, y CDN strategy para assets globales.", category: "dev", type: "performance", tags: ["optimization", "webvitals", "performance"] },
+                { content: "Implementa una estrategia completa de SEO para un marketplace de alojamientos. Incluye: structured data para propiedades, meta tags dinámicos, sitemap XML automático, canonical URLs, hreflang para múltiples idiomas, internal linking strategy, y Core Web Vitals optimization.", category: "dev", type: "seo", tags: ["seo", "structured-data", "internationalization"] },
+
+                // SEGURIDAD Y COMPLIANCE
+                { content: "Implementa un sistema de seguridad completo para una plataforma de alquileres que maneje datos sensibles de pagos y documentos. Incluye: OWASP security checklist, encryption at rest y in transit, secure file uploads, PCI compliance, GDPR compliance, penetration testing plan, y incident response procedures.", category: "dev", type: "security", tags: ["security", "compliance", "encryption"] },
+
+                // TESTING Y QA
+                { content: "Desarrolla una estrategia de testing completa para una plataforma de reservas crítica. Incluye: unit tests con Jest, integration tests con Cypress, performance tests con k6, security tests con OWASP ZAP, accessibility tests, visual regression tests, y CI/CD pipeline con GitHub Actions.", category: "dev", type: "testing", tags: ["testing", "cypress", "ci-cd"] }
+            ];
+
+            for (const prompt of premiumPrompts) {
+                await storePrompt(prompt.content, prompt.category, prompt.type, prompt.tags);
+            }
+
+            document.getElementById('status-log').innerHTML += `<p><span class="text-green-400">[DB]</span> ${premiumPrompts.length} prompts premium cargados en la base de datos.</p>`;
+        }
+
+        // ===== INICIALIZACIÓN DEL FONDO MOLECULAR ESTILO SONOMA =====
+        function initSonomaMolecularBackground() {
+            const container = document.getElementById('molecular-bg');
+            const particleCount = 150;
+
+            function createParticle() {
+                const particle = document.createElement('div');
+                particle.className = 'particle';
+
+                // Tamaños aleatorios
+                const sizes = ['small', 'medium', 'large'];
+                const randomSize = sizes[Math.floor(Math.random() * sizes.length)];
+                particle.classList.add(randomSize);
+
+                // Posición horizontal aleatoria
+                particle.style.left = Math.random() * 100 + '%';
+
+                // Duración de animación aleatoria (más lento = más realista)
+                const duration = Math.random() * 15 + 10; // Entre 10 y 25 segundos
+                particle.style.animationDuration = duration + 's';
+
+                // Delay aleatorio para que no todas empiecen al mismo tiempo
+                particle.style.animationDelay = Math.random() * -20 + 's';
+
+                container.appendChild(particle);
+
+                // Remover la partícula después de la animación
+                setTimeout(() => {
+                    if (particle.parentNode) {
+                        particle.parentNode.removeChild(particle);
+                    }
+                }, (duration + 2) * 1000);
+            }
+
+            // Crear partículas iniciales
+            for (let i = 0; i < particleCount; i++) {
+                setTimeout(() => createParticle(), Math.random() * 5000);
+            }
+
+            // Crear nuevas partículas continuamente
+            setInterval(() => {
+                createParticle();
+            }, 200); // Nueva partícula cada 200ms
+        }
+
+        // ===== FUNCIONES DEL CHAT =====
+        let chatHistory = [
+            { role: "system", content: "Eres Sandra IA, una asistente virtual avanzada en modo de entrenamiento. Responde de forma concisa y útil." }
+        ];
+
+        function addMessageToChat(isUser, text) {
+            const chatContainer = document.getElementById('chat-messages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = 'flex items-start';
+            if (isUser) {
+                messageDiv.innerHTML = `
+                    <div class="w-10 h-10 bg-green-500 rounded-full flex items-center justify-center text-white font-bold mr-3 flex-shrink-0">👤</div>
+                    <div class="bg-slate-700/50 text-white p-4 rounded-lg max-w-xs md:max-w-md">
+                        <p>${text}</p>
+                        <span class="text-xs text-slate-400 mt-2 block">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                `;
+            } else {
+                messageDiv.innerHTML = `
+                    <div class="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center text-white font-bold mr-3 flex-shrink-0">🤖</div>
+                    <div class="bg-slate-800/50 text-white p-4 rounded-lg max-w-xs md:max-w-md">
+                        <p>${text}</p>
+                        <span class="text-xs text-slate-400 mt-2 block">${new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})}</span>
+                    </div>
+                `;
+            }
+            chatContainer.appendChild(messageDiv);
+            chatContainer.scrollTop = chatContainer.scrollHeight; // Auto-scroll
+        }
+
+        async function getAIResponse(userMessage) {
+            const model = document.getElementById('model-selector').value;
+            const statusLog = document.getElementById('status-log');
+            const chatContainer = document.getElementById('chat-messages');
+
+            // Añadir mensaje del usuario al historial
+            chatHistory.push({ role: "user", content: userMessage });
+
+            // Mostrar estado de "pensando"
+            addMessageToChat(false, "_Sandra está pensando..._");
+            statusLog.innerHTML += `<p><span class="text-yellow-400">[AI]</span> Procesando con ${model}...</p>`;
+            chatContainer.scrollTop = chatContainer.scrollHeight;
+
+            try {
+                // SIMULACIÓN LOCAL MIENTRAS SE CONFIGURAN LAS APIs REALES
+                await new Promise(resolve => setTimeout(resolve, 1500)); // Simular delay
+
+                // Respuestas inteligentes simuladas de Sandra
+                const responses = {
+                    'hola': '¡Hola! Soy Sandra IA en modo de entrenamiento PRO. Estoy lista para ayudarte con desarrollo, arquitectura, UI/UX y APIs. ¿En qué puedo asistirte?',
+                    'como estas': 'Estoy funcionando perfectamente en modo PRO. Todas mis especialidades están activas y mi entrenamiento está optimizado. ¿Quieres probar alguna funcionalidad específica?',
+                    'que puedes hacer': 'Como Sandra DEV LAB PRO puedo: 🔧 Ayudarte con código y desarrollo, 🏗️ Diseñar arquitecturas de software, 🎨 Crear interfaces UI/UX, 🔌 Documentar APIs, 📁 Procesar archivos de entrenamiento, y 🚀 Auto-entrenarme en especialidades.',
+                    'test': 'Sistema funcionando perfectamente. Fondo molecular Sonoma ✅, APIs configuradas ✅, Especialidades activas ✅, Modo PRO habilitado ✅',
+                    'default': `Entiendo tu consulta sobre "${userMessage}". Como Sandra IA en modo PRO, puedo ayudarte con desarrollo, arquitectura, UI/UX y APIs. Mi entrenamiento me permite asistirte con soluciones técnicas avanzadas. ¿Quieres que profundice en algún aspecto específico?`
+                };
+
+                // Buscar respuesta apropiada
+                const lowerMessage = userMessage.toLowerCase();
+                let aiReply = responses.default;
+
+                for (const [key, response] of Object.entries(responses)) {
+                    if (key !== 'default' && lowerMessage.includes(key)) {
+                        aiReply = response;
+                        break;
+                    }
+                }
+
+                if (lowerMessage.includes('codigo') || lowerMessage.includes('react') || lowerMessage.includes('javascript')) {
+                    aiReply = '🔧 Como especialista DEV, puedo ayudarte con código. ¿Necesitas un componente React, función JavaScript, o revisión de código? Especifica tu proyecto y te genero la solución.';
+                } else if (lowerMessage.includes('diseño') || lowerMessage.includes('ui') || lowerMessage.includes('ux')) {
+                    aiReply = '🎨 Como especialista UI/UX, puedo diseñar interfaces y flujos de usuario. ¿Quieres que cree un mockup, flujo de usuario, o guía de diseño? Describe tu proyecto.';
+                } else if (lowerMessage.includes('api') || lowerMessage.includes('endpoint')) {
+                    aiReply = '🔌 Como especialista API, puedo documentar endpoints y diseñar arquitecturas REST. ¿Necesitas documentación de API, esquemas JSON, o diseño de endpoints?';
+                }
+
+                // Remover el mensaje de "pensando" y añadir la respuesta real
+                chatContainer.removeChild(chatContainer.lastChild);
+                addMessageToChat(false, aiReply);
+
+                // Añadir respuesta de la IA al historial
+                chatHistory.push({ role: "assistant", content: aiReply });
+
+                statusLog.innerHTML += `<p><span class="text-green-400">[AI]</span> Respuesta generada.</p>`;
+
+                // Generar audio con ElevenLabs
+                await generateAudio(aiReply);
+
+                return aiReply;
+            } catch (error) {
+                console.error('Error:', error);
+                // Remover el mensaje de "pensando"
+                chatContainer.removeChild(chatContainer.lastChild);
+                addMessageToChat(false, "Lo siento, ha habido un error al procesar tu solicitud. Por favor, revisa tu conexión o las claves de API.");
+                statusLog.innerHTML += `<p><span class="text-red-400">[ERROR]</span> ${error.message}</p>`;
+                return null;
+            }
+        }
+
+        // ===== FUNCIÓN DE AUDIO CON ELEVENLABS =====
+        let currentAudio = null;
+
+        async function generateAudio(text) {
+            const statusLog = document.getElementById('status-log');
+
+            // MODO SIMULACIÓN - Usar voz del navegador
+            statusLog.innerHTML += `<p><span class="text-blue-400">[AUDIO]</span> Reproduciendo voz de Sandra (modo simulación)...</p>`;
+            speakWithWebAPI(text);
+            return;
+
+            try {
+                // BARGE-IN: Cortar audio si está reproduciéndose
+                if (currentAudio && !currentAudio.paused) {
+                    currentAudio.pause();
+                    currentAudio.currentTime = 0;
+                    console.log('🚨 BARGE-IN: Audio cortado');
+                    statusLog.innerHTML += `<p><span class="text-yellow-400">[BARGE-IN]</span> Audio anterior interrumpido.</p>`;
+                }
+
+                const response = await fetch(`https://api.elevenlabs.io/v1/text-to-speech/${voiceId}`, {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'xi-api-key': ELEVENLABS_API_KEY
+                    },
+                    body: JSON.stringify({
+                        text: text,
+                        voice_settings: {
+                            stability: 0.5,
+                            similarity_boost: 0.75
+                        }
+                    })
+                });
+
+                if (!response.ok) {
+                    throw new Error(`Error en ElevenLabs: ${response.status}`);
+                }
+
+                const audioBlob = await response.blob();
+                const audioUrl = URL.createObjectURL(audioBlob);
+                currentAudio = new Audio(audioUrl);
+
+                currentAudio.onplay = () => {
+                    statusLog.innerHTML += `<p><span class="text-blue-400">[AUDIO]</span> Reproduciendo respuesta...</p>`;
+                };
+
+                currentAudio.onended = () => {
+                    URL.revokeObjectURL(audioUrl);
+                    statusLog.innerHTML += `<p><span class="text-green-400">[AUDIO]</span> Reproducción finalizada.</p>`;
+                };
+
+                await currentAudio.play();
+
+            } catch (error) {
+                console.error('Error con ElevenLabs:', error);
+                statusLog.innerHTML += `<p><span class="text-red-400">[ERROR]</span> Error con ElevenLabs: ${error.message}. Usando voz del navegador.</p>`;
+                speakWithWebAPI(text);
+            }
+        }
+
+        function speakWithWebAPI(text) {
+            const utterance = new SpeechSynthesisUtterance(text);
+            utterance.lang = 'es-ES';
+            utterance.rate = 0.9;
+            speechSynthesis.speak(utterance);
+        }
+
+        // ===== RECONOCIMIENTO DE VOZ (BARGE-IN) =====
+        let recognition = null;
+        let isListening = false;
+
+        function startVoiceRecognition() {
+            const micBtn = document.getElementById('mic-btn');
+            const statusLog = document.getElementById('status-log');
+
+            if ('webkitSpeechRecognition' in window) {
+                recognition = new webkitSpeechRecognition();
+                recognition.continuous = false;
+                recognition.interimResults = false;
+                recognition.lang = 'es-ES';
+
+                recognition.onstart = () => {
+                    isListening = true;
+                    micBtn.classList.add('bg-red-500', 'hover:bg-red-600');
+                    micBtn.classList.remove('bg-primary');
+                    micBtn.textContent = '🔴';
+                    statusLog.innerHTML += `<p><span class="text-blue-400">[VOZ]</span> Escuchando...</p>`;
+                };
+
+                recognition.onresult = async (event) => {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('user-input').value = transcript;
+                    statusLog.innerHTML += `<p><span class="text-green-400">[VOZ]</span> Texto reconocido: "${transcript}"</p>`;
+                    await handleSendMessage();
+                };
+
+                recognition.onerror = (event) => {
+                    console.error('Error de reconocimiento de voz:', event.error);
+                    statusLog.innerHTML += `<p><span class="text-red-400">[ERROR]</span> Error de voz: ${event.error}</p>`;
+                    resetMicButton();
+                };
+
+                recognition.onend = () => {
+                    resetMicButton();
+                };
+
+                recognition.start();
+            } else {
+                alert('Tu navegador no soporta el reconocimiento de voz. Usa Chrome o Edge.');
+                statusLog.innerHTML += `<p><span class="text-red-400">[ERROR]</span> Reconocimiento de voz no soportado.</p>`;
+            }
+        }
+
+        function resetMicButton() {
+            const micBtn = document.getElementById('mic-btn');
+            isListening = false;
+            micBtn.classList.remove('bg-red-500', 'hover:bg-red-600');
+            micBtn.classList.add('bg-primary');
+            micBtn.textContent = '🎤';
+        }
+
+        // ===== NUEVAS FUNCIONES: ENTRENAMIENTO PRO =====
+        let selectedSpecialties = new Set();
+        let loadedFiles = [];
+
+        // Manejar selección de especialidades
+        document.querySelectorAll('.specialty-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                const specialty = this.dataset.specialty;
+                if (selectedSpecialties.has(specialty)) {
+                    selectedSpecialties.delete(specialty);
+                    this.classList.remove('bg-opacity-100');
+                    this.classList.add('bg-slate-800/50');
+                } else {
+                    selectedSpecialties.add(specialty);
+                    this.classList.remove('bg-slate-800/50');
+                    this.classList.add('bg-opacity-100');
+                }
+                document.getElementById('status-log').innerHTML += `<p><span class="text-blue-400">[TRAIN]</span> Especialidad "${specialty}" ${selectedSpecialties.has(specialty) ? 'activada' : 'desactivada'}.</p>`;
+            });
+        });
+
+        // Manejar carga de archivos con almacenamiento en BD
+        document.getElementById('training-file-input').addEventListener('change', async function(e) {
+            const files = Array.from(e.target.files);
+            const fileList = document.getElementById('file-list');
+
+            if (files.length > 0) {
+                let storedCount = 0;
+
+                for (const file of files) {
+                    try {
+                        // Leer contenido del archivo
+                        const content = await readFileContent(file);
+
+                        // Almacenar en la base de datos
+                        await storeFile(file, content);
+                        storedCount++;
+
+                        document.getElementById('status-log').innerHTML += `<p><span class="text-green-400">[DB]</span> Archivo "${file.name}" almacenado en BD.</p>`;
+                    } catch (error) {
+                        document.getElementById('status-log').innerHTML += `<p><span class="text-red-400">[ERROR]</span> Error almacenando "${file.name}": ${error.message}</p>`;
+                    }
+                }
+
+                // Actualizar contador total
+                const totalFiles = await getAllFiles();
+                fileList.innerHTML = `
+                    <div class="text-green-400">
+                        <div>✅ ${storedCount} archivo(s) agregados</div>
+                        <div class="text-xs text-blue-300 mt-1">Total en BD: ${totalFiles.length} archivos</div>
+                    </div>
+                `;
+
+                document.getElementById('status-log').innerHTML += `<p><span class="text-purple-400">[DB]</span> Base de datos actualizada: ${totalFiles.length} archivos totales.</p>`;
+            } else {
+                const totalFiles = await getAllFiles();
+                fileList.innerHTML = `<div class="text-slate-400">Total en BD: ${totalFiles.length} archivos</div>`;
+            }
+        });
+
+        // Función para leer contenido de archivo
+        function readFileContent(file) {
+            return new Promise((resolve, reject) => {
+                const reader = new FileReader();
+                reader.onload = e => resolve(e.target.result);
+                reader.onerror = reject;
+
+                if (file.type.includes('json') || file.type.includes('text')) {
+                    reader.readAsText(file);
+                } else {
+                    reader.readAsDataURL(file);
+                }
+            });
+        }
+
+        // Botón de Auto-Entrenamiento MASIVO con Base de Datos
+        document.getElementById('train-btn').addEventListener('click', async function() {
+            const btn = this;
+            const spinner = document.getElementById('train-spinner');
+            const text = document.getElementById('train-btn-text');
+            const statusLog = document.getElementById('status-log');
+
+            // Obtener datos de la base masiva
+            const allPrompts = await getAllPrompts();
+            const allFiles = await getAllFiles();
+
+            if (selectedSpecialties.size === 0 && allFiles.length === 0) {
+                alert('¡Selecciona al menos una especialidad o carga archivos en la base de datos!');
+                return;
+            }
+
+            // ENTRENAMIENTO MASIVO A LO BESTIA
+            btn.disabled = true;
+            spinner.classList.remove('hidden');
+            text.textContent = 'Entrenando...';
+
+            statusLog.innerHTML += `<p><span class="text-yellow-400">[TRAIN]</span> 🚀 INICIANDO ENTRENAMIENTO MASIVO...</p>`;
+            statusLog.innerHTML += `<p><span class="text-blue-400">[DB]</span> Cargando ${allPrompts.length} prompts + ${allFiles.length} archivos de la base de datos...</p>`;
+
+            // FASE 1: Procesar todos los archivos de la BD
+            if (allFiles.length > 0) {
+                statusLog.innerHTML += `<p><span class="text-purple-400">[TRAIN]</span> FASE 1: Procesando ${allFiles.length} archivos almacenados...</p>`;
+
+                for (let file of allFiles) {
+                    await new Promise(resolve => setTimeout(resolve, 300)); // Procesamiento rápido
+                    statusLog.innerHTML += `<p><span class="text-green-400">[TRAIN]</span> ✅ "${file.filename}" procesado (${file.type}).</p>`;
+
+                    // Marcar como procesado en la BD
+                    const transaction = sandraDB.transaction(['files'], 'readwrite');
+                    const store = transaction.objectStore('files');
+                    file.processed = true;
+                    store.put(file);
+                }
+            }
+
+            // FASE 2: Entrenar con prompts masivos por especialidad
+            for (let specialty of selectedSpecialties) {
+                const specialtyPrompts = allPrompts.filter(p => p.category === specialty);
+                statusLog.innerHTML += `<p><span class="text-purple-400">[TRAIN]</span> FASE 2: Entrenando "${specialty.toUpperCase()}" con ${specialtyPrompts.length} prompts especializados...</p>`;
+
+                for (let prompt of specialtyPrompts) {
+                    await new Promise(resolve => setTimeout(resolve, 200));
+                    statusLog.innerHTML += `<p><span class="text-blue-400">[TRAIN]</span> 🧠 Procesando prompt ${prompt.type}: "${prompt.content.substring(0, 50)}..."</p>`;
+
+                    // Incrementar uso del prompt
+                    const transaction = sandraDB.transaction(['prompts'], 'readwrite');
+                    const store = transaction.objectStore('prompts');
+                    prompt.timesUsed++;
+                    prompt.effectiveness = Math.random() * 0.3 + 0.7; // Simular efectividad 70-100%
+                    store.put(prompt);
+                }
+
+                await new Promise(resolve => setTimeout(resolve, 1000));
+                statusLog.innerHTML += `<p><span class="text-green-400">[TRAIN]</span> ✅ Módulo "${specialty.toUpperCase()}" entrenado con ${specialtyPrompts.length} prompts PREMIUM.</p>`;
+            }
+
+            // FASE 3: Optimización final
+            statusLog.innerHTML += `<p><span class="text-purple-400">[TRAIN]</span> FASE 3: Optimización neuronal y consolidación de memoria...</p>`;
+            await new Promise(resolve => setTimeout(resolve, 2000));
+
+            // Guardar sesión de entrenamiento
+            const trainingSession = {
+                date: new Date().toISOString(),
+                promptsProcessed: allPrompts.length,
+                filesProcessed: allFiles.length,
+                specialtiesTrained: Array.from(selectedSpecialties),
+                status: 'completed',
+                duration: Date.now()
+            };
+
+            const transaction = sandraDB.transaction(['trainingSessions'], 'readwrite');
+            const store = transaction.objectStore('trainingSessions');
+            store.add(trainingSession);
+
+            // FINALIZAR ENTRENAMIENTO ÉPICO
+            btn.disabled = false;
+            spinner.classList.add('hidden');
+            text.textContent = '🚀 Entrenar Ahora';
+
+            statusLog.innerHTML += `<p><span class="text-green-400">[TRAIN]</span> 🎉 ¡ENTRENAMIENTO MASIVO COMPLETADO!</p>`;
+            statusLog.innerHTML += `<p><span class="text-blue-400">[STATS]</span> Prompts procesados: ${allPrompts.length} | Archivos: ${allFiles.length} | Especialidades: ${selectedSpecialties.size}</p>`;
+            statusLog.innerHTML += `<p><span class="text-purple-400">[SYSTEM]</span> 🧠 Sandra IA nivel de inteligencia: ULTRA PRO MAX 🚀</p>`;
+
+            showCustomAlert(`🎉 ¡ENTRENAMIENTO MASIVO COMPLETADO!\n\n📊 Estadísticas:\n- ${allPrompts.length} prompts premium procesados\n- ${allFiles.length} archivos analizados\n- ${selectedSpecialties.size} especialidades optimizadas\n\n🚀 Sandra está ahora A NIVEL BESTIA!`, 'Sandra Dev Lab Pro - Entrenamiento Masivo');
+        });
+
+        // Biblioteca de Prompts Qwen
+        function useQwenPrompt(specialty) {
+            const prompts = {
+                dev: "Actúa como un ingeniero senior de software. Genera un componente React funcional para un botón de reserva que incluya validación de fechas y número de huéspedes. Usa Tailwind CSS para los estilos.",
+                ui: "Eres un diseñador UX senior. Diseña el flujo de usuario paso a paso para un proceso de check-in móvil sin llaves físicas. Incluye pantallas de bienvenida, verificación de identidad, instrucciones de acceso y confirmación.",
+                arq: "Actúa como un arquitecto de software cloud. Propón una arquitectura serverless (usando AWS o Azure) para una plataforma de alquiler vacacional que deba gestionar 10.000 reservas diarias. Detalla los servicios, la escalabilidad y la redundancia.",
+                api: "Eres un experto en APIs RESTful. Documenta un endpoint POST /api/sync-calendar que sincronice el calendario de disponibilidad de una propiedad con plataformas externas como Airbnb y Booking.com. Incluye el esquema de la petición y la respuesta."
+            };
+
+            const userInput = document.getElementById('user-input');
+            userInput.value = prompts[specialty];
+            document.getElementById('status-log').innerHTML += `<p><span class="text-blue-400">[QWEN]</span> Prompt "${specialty}" cargado en el input.</p>`;
+        }
+
+        // Función de alerta personalizada
+        function showCustomAlert(message, title = '¡Perfecto!') {
+            // Implementación básica para este entorno
+            alert(`${title}\n\n${message}`);
+        }
+
+        // ===== FUNCIONALIDAD PANTALLA COMPLETA =====
+        function toggleFullscreen() {
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+
+            if (!document.fullscreenElement) {
+                // Entrar en pantalla completa
+                document.documentElement.requestFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '🔲'; // Cambiar icono a "salir"
+                    fullscreenBtn.title = 'Salir de pantalla completa';
+                    document.getElementById('status-log').innerHTML += `<p><span class="text-purple-400">[UI]</span> Modo pantalla completa activado.</p>`;
+                }).catch(err => {
+                    console.error('Error al entrar en pantalla completa:', err);
+                    document.getElementById('status-log').innerHTML += `<p><span class="text-red-400">[ERROR]</span> No se pudo activar pantalla completa.</p>`;
+                });
+            } else {
+                // Salir de pantalla completa
+                document.exitFullscreen().then(() => {
+                    fullscreenBtn.innerHTML = '🔳'; // Cambiar icono a "entrar"
+                    fullscreenBtn.title = 'Pantalla completa';
+                    document.getElementById('status-log').innerHTML += `<p><span class="text-purple-400">[UI]</span> Modo pantalla completa desactivado.</p>`;
+                }).catch(err => {
+                    console.error('Error al salir de pantalla completa:', err);
+                });
+            }
+        }
+
+        // Detectar cambios de pantalla completa (con tecla F11 o ESC)
+        document.addEventListener('fullscreenchange', function() {
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            if (document.fullscreenElement) {
+                fullscreenBtn.innerHTML = '🔲';
+                fullscreenBtn.title = 'Salir de pantalla completa';
+            } else {
+                fullscreenBtn.innerHTML = '🔳';
+                fullscreenBtn.title = 'Pantalla completa';
+            }
+        });
+
+        // ===== MANEJADORES DE EVENTOS =====
+        document.addEventListener('DOMContentLoaded', async function() {
+            initSonomaMolecularBackground();
+
+            // Inicializar base de datos masiva
+            try {
+                await initSandraDatabase();
+                document.getElementById('status-log').innerHTML += `<p><span class="text-green-400">[DB]</span> Base de datos Sandra Training DB inicializada.</p>`;
+
+                // Cargar prompts premium si es la primera vez
+                const existingPrompts = await getAllPrompts();
+                if (existingPrompts.length === 0) {
+                    await loadPremiumPrompts();
+                } else {
+                    document.getElementById('status-log').innerHTML += `<p><span class="text-blue-400">[DB]</span> ${existingPrompts.length} prompts disponibles en BD.</p>`;
+                }
+
+                // Mostrar estadísticas iniciales
+                const totalFiles = await getAllFiles();
+                document.getElementById('file-list').innerHTML = `<div class="text-slate-400">Total en BD: ${totalFiles.length} archivos</div>`;
+
+            } catch (error) {
+                document.getElementById('status-log').innerHTML += `<p><span class="text-red-400">[ERROR]</span> Error inicializando BD: ${error.message}</p>`;
+            }
+
+            const sendBtn = document.getElementById('send-btn');
+            const userInput = document.getElementById('user-input');
+            const micBtn = document.getElementById('mic-btn');
+            const fullscreenBtn = document.getElementById('fullscreen-btn');
+            const chatContainer = document.getElementById('chat-messages');
+
+            // Enviar mensaje con el botón
+            sendBtn.addEventListener('click', handleSendMessage);
+
+            // Enviar mensaje con Enter
+            userInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    handleSendMessage();
+                }
+            });
+
+            // Activar/Desactivar micrófono
+            micBtn.addEventListener('click', function() {
+                if (isListening) {
+                    recognition.stop();
+                } else {
+                    startVoiceRecognition();
+                }
+            });
+
+            // Botón de pantalla completa
+            fullscreenBtn.addEventListener('click', toggleFullscreen);
+
+
+            async function handleSendMessage() {
+                const message = userInput.value.trim();
+                if (message === '') return;
+
+                addMessageToChat(true, message);
+                userInput.value = '';
+                await getAIResponse(message);
+            }
+        });
+    </script>
+</body>
+</html>

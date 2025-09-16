@@ -1,11 +1,8 @@
 // netlify/functions/chat.js
 const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args));
 
-const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVEN_KEY   = process.env.ELEVENLABS_API_KEY;
 const ELEVEN_VOICE = process.env.ELEVENLABS_VOICE_ID || "Rachel";
-const HEYGEN_API_KEY = process.env.HEYGEN_API_KEY;
-const HEYGEN_AVATAR_ID = process.env.HEYGEN_AVATAR_ID;
 const UPSTREAM_URL = process.env.UPSTREAM_API_URL;       // ej: https://api.guestsvalencia.es/sandra/v7
 const UPSTREAM_KEY = process.env.UPSTREAM_API_KEY || "";
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "*";
@@ -33,42 +30,9 @@ exports.handler = async (event) => {
     const { text = "" } = JSON.parse(event.body || "{}");
     const prompt = text.trim() || "Hola, ¿en qué puedo ayudarte?";
 
-    // 1) OpenAI ChatGPT respuesta
+    // 1) Intento de respuesta real del UPSTREAM (opcional)
     let reply = "";
-    if (OPENAI_API_KEY) {
-      try {
-        const openaiRes = await fetch("https://api.openai.com/v1/chat/completions", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            "Authorization": `Bearer ${OPENAI_API_KEY}`
-          },
-          body: JSON.stringify({
-            model: "gpt-4",
-            messages: [
-              {
-                role: "system",
-                content: "Eres Sandra, una asistente virtual inteligente de ClayTom Systems especializada en desarrollo web, gestión hotelera y atención al cliente. Responde de manera profesional, concisa y útil en español."
-              },
-              {
-                role: "user",
-                content: prompt
-              }
-            ],
-            max_tokens: 150,
-            temperature: 0.7
-          })
-        });
-
-        if (openaiRes.ok) {
-          const openaiData = await openaiRes.json();
-          reply = openaiData.choices?.[0]?.message?.content || "";
-        }
-      } catch (_) { /* fallback abajo */ }
-    }
-
-    // 2) Fallback UPSTREAM (opcional)
-    if (!reply && UPSTREAM_URL) {
+    if (UPSTREAM_URL) {
       try {
         const r = await fetch(`${UPSTREAM_URL}/chat`, {
           method: "POST",
@@ -84,11 +48,9 @@ exports.handler = async (event) => {
         }
       } catch (_) { /* fallback abajo */ }
     }
-
-    // 3) Fallback final
     if (!reply) reply = `He recibido tu mensaje: "${prompt}". ¿Qué necesitas?`;
 
-    // 4) TTS ElevenLabs → MP3
+    // 2) TTS ElevenLabs → MP3
     if (!ELEVEN_KEY) {
       // Si no hay clave, devolvemos MP3 "silencioso" cortito para no romper el flujo
       const silent = Buffer.alloc(0);
