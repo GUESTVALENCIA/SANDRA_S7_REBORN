@@ -12,10 +12,10 @@
   [headers.values]
   Content-Security-Policy = """
     default-src 'self';
-    connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://api.guestsvalencia.es/sandra/v7 blob:;
+    connect-src 'self' https://api.elevenlabs.io https://api.guestsvalencia.es https://api.guestsvalencia.es/sandra/v7 https://api.heygen.com blob:;
     media-src 'self' blob: https://api.elevenlabs.io;
     img-src 'self' https://images.unsplash.com data: blob:;
-    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net https://cdn.tailwindcss.com https://resource.heygen.com;
     style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
     font-src 'self' https://fonts.gstatic.com;
     frame-src https://app.heygen.com https://console.heygen.com;
