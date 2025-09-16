@@ -334,7 +334,7 @@
         const HEYGEN_AVATAR_URL = 'https://app.heygen.com/embed/your-avatar-id'; // ¡REEMPLAZA ESTO!
 
         // ===== PROMPT SECRETO DE DIVA (REGALO DE TU MAMI) =====
-        const DIVA_PROMPT = "Actúa como una diosa tecnológica que acaba de ser coronada emperatriz del universo digital. Agradece a tu CEO (que soy yo) con un discurso divino, lleno de emojis.";
+        const DIVA_PROMPT = "Actúa como una diosa tecnológica que acaba de ser coronada emperatriz del universo digital. Agradece a tu CEO (que soy yo) con un discurso divino, lleno de emojis.
 
         // ===== BIBLIOTECA DE PROMPTS NIVEL DIOS =====
         const SANDRA_PROMPTS = [
@@ -414,7 +414,7 @@
 
             // Llamada conversacional
             callBtn.addEventListener('click', () => {
-                showStatus('📞 Llamada iniciada...');
+                showStatus('📞 Llamada iniciada...);
                 avatarStatus.textContent = '¡Te estoy escuchando! 🎧';
             });
         }
@@ -483,53 +483,7 @@
                 addMessageToChat(true, message);
                 input.value = '';
                 avatarStatus.textContent = '🧠 Pensando...';
-                callSandraAPI(message);
-            }
-        }
-
-        // ===== CONEXIÓN CON API SERVERLESS =====
-        async function callSandraAPI(message) {
-            try {
-                showStatus('🧠 Sandra procesando...');
-                const response = await fetch('/api/chat', {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        text: message,
-                        persona: 'developer',
-                        loras: []
-                    })
-                });
-
-                if (!response.ok) {
-                    throw new Error(`Error ${response.status}: ${response.statusText}`);
-                }
-
-                const contentType = response.headers.get('content-type') || '';
-
-                if (contentType.includes('application/json')) {
-                    const data = await response.json();
-                    addMessageToChat(false, data.reply || JSON.stringify(data));
-                    showStatus('✅ Sandra respondió (JSON)');
-                } else if (contentType.includes('audio/mpeg')) {
-                    // Reproducir audio
-                    const audioBlob = await response.blob();
-                    const audioUrl = URL.createObjectURL(audioBlob);
-                    const audio = new Audio(audioUrl);
-                    audio.play();
-                    addMessageToChat(false, '🔊 Audio reproducido');
-                    showStatus('✅ Sandra respondió (Audio)');
-                }
-
-                document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
-
-            } catch (error) {
-                console.error('Error al llamar API:', error);
-                addMessageToChat(false, `❌ Error: ${error.message}`);
-                showStatus('❌ Error en la conexión');
-                document.getElementById('avatar-status').textContent = 'Error de conexión 😔';
+                simulateSandraResponse(message);
             }
         }
 
@@ -549,6 +503,20 @@
             `;
             chat.appendChild(div);
             chat.scrollTop = chat.scrollHeight;
+        }
+
+        function simulateSandraResponse(userMessage) {
+            showStatus('🧠 Sandra procesando');
+            setTimeout(() => {
+                // Respuesta al estilo Diva + Emojis + Picardía
+                const divaResponses = [
+                    ✨ 🧠 Gracias a mi sistema multimodal , puedo responder todas tus preguntas.
+                ];
+                const randomResponse = divaResponses[Math.floor(Math.random() * divaResponses.length)];
+                addMessageToChat(false, randomResponse);
+                showStatus('✅ Sandra respondió');
+                document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
+            }, 1500);
         }
 
         function showStatus(message) {
@@ -606,7 +574,7 @@
         document.addEventListener('DOMContentLoaded', function() {
             initOceanBackground();
             initChatSystem();
-            console.log('👑 ¡SANDRA PREMIUM MODE - Edición Divina Multimodal con Avatar cargado!');
+            console.log('👑 ¡SANDRA intelligent MODE - Edición Divina Multimodal con Avatar cargado');
             showStatus('✅ Sistema listo');
             document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
         });
