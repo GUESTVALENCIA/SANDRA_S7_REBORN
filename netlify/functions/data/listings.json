@@ -1,0 +1,88 @@
+[
+  {
+    "slug": "mendez-nunez-47-room-a",
+    "title": "Habitación A - Méndez Núñez 47 (Valencia)",
+    "short": "Habitación luminosa en apartamento de 4 habitaciones.",
+    "city": "Valencia",
+    "guests": 2,
+    "beds": 1,
+    "baths": 1,
+    "price": 55,
+    "images": [
+      "/images/mendez-a-1.jpg",
+      "/images/mendez-a-2.jpg"
+    ],
+    "amenities": [
+      "WiFi",
+      "Netflix",
+      "Cocina compartida",
+      "Aire acondicionado"
+    ],
+    "coords": [
+      39.4747,
+      -0.3763
+    ],
+    "highlights": [
+      "Llegada autónoma (caja de seguridad)",
+      "Ubicación céntrica"
+    ]
+  },
+  {
+    "slug": "altea-hills-vista-mar",
+    "title": "Villa Altea Hills - Vista al Mar (Alicante)",
+    "short": "Villa de lujo 2 habitaciones (hasta 6 pax) con terraza y piscina.",
+    "city": "Altea (Alicante)",
+    "guests": 6,
+    "beds": 3,
+    "baths": 2,
+    "price": 250,
+    "images": [
+      "/images/altea-1.jpg",
+      "/images/altea-2.jpg"
+    ],
+    "amenities": [
+      "WiFi",
+      "Netflix",
+      "Apple TV",
+      "Amazon Prime",
+      "Barbacoa",
+      "Piscina"
+    ],
+    "coords": [
+      38.65,
+      -0.05
+    ],
+    "highlights": [
+      "Urbanización de lujo",
+      "Vistas panorámicas",
+      "Paellero comunitario"
+    ]
+  },
+  {
+    "slug": "montanejos-duplex-termal",
+    "title": "Dúplex Montanejos - Termal",
+    "short": "Incluye acceso a Fuente de los Baños (planillas en turismo).",
+    "city": "Montanejos",
+    "guests": 6,
+    "beds": 4,
+    "baths": 2,
+    "price": 110,
+    "images": [
+      "/images/montanejos-1.jpg",
+      "/images/montanejos-2.jpg"
+    ],
+    "amenities": [
+      "WiFi",
+      "Smart TV",
+      "Cerradura digital"
+    ],
+    "coords": [
+      40.0669,
+      -0.5229
+    ],
+    "highlights": [
+      "Llegada autónoma con código",
+      "Acceso termal incluido"
+    ]
+  }
+]

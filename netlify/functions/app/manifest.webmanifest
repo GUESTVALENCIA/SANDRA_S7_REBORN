@@ -1,0 +1,9 @@
+{
+  "name": "Guests Valencia",
+  "short_name": "GV",
+  "start_url": "/",
+  "display": "standalone",
+  "background_color": "#0f172a",
+  "theme_color": "#ff6b00",
+  "icons": []
+}
