@@ -1,0 +1,20 @@
+{
+  "name": "sandra-s7-reborn",
+  "version": "1.0.0",
+  "description": "Sandra IA 7.0 with Avatar Integration",
+  "main": "public/index.html",
+  "scripts": {
+    "dev": "netlify dev",
+    "build": "echo 'Build completed'",
+    "deploy": "netlify deploy --prod"
+  },
+  "dependencies": {
+    "@heygen/streaming-avatar": "^2.1.0"
+  },
+  "devDependencies": {
+    "netlify-cli": "^17.0.0"
+  },
+  "keywords": ["avatar", "ai", "streaming", "heygen", "openai"],
+  "author": "ClayTom Systems",
+  "license": "MIT"
+}

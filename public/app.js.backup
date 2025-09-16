@@ -6,7 +6,7 @@ const LS_KEY = "sandra_trainer_dataset_v1";
 
 const $ = (sel)=>document.querySelector(sel);
 const logEl = $("#chat-log");
-function log(line, cls=""){ const div=document.createElement("div"); div.className="mono "+cls; div.textContent=line; logEl.appendChild(div); logEl.scrollTop=logEl.scrollHeight; }
+function writeLog(line, cls=""){ const div=document.createElement("div"); div.className="mono "+cls; div.textContent=line; logEl.appendChild(div); logEl.scrollTop=logEl.scrollHeight; }
 
 // Keep session key
 let SKEY = sessionStorage.getItem("SKEY") || "";
@@ -68,11 +68,11 @@ document.addEventListener("DOMContentLoaded", () => {
   $("#btn-start").addEventListener("click", async () => {
     await ensureKey();
     if(timer){ return; }
-    log("⚙️ Autoentreno iniciado");
+    writeLog("⚙️ Autoentreno iniciado");
     timer = setInterval(pushOne, Number($("#interval").value) * 1000);
   });
   $("#btn-stop").addEventListener("click", () => {
-    if(timer){ clearInterval(timer); timer=null; log("⏹️ Autoentreno detenido"); }
+    if(timer){ clearInterval(timer); timer=null; writeLog("⏹️ Autoentreno detenido"); }
   });
 
   // chat send
@@ -113,13 +113,51 @@ async function pushOne(){
     });
     if(!r.ok){
       const text = await r.text();
-      log(`⚠️ Entreno falló ${r.status} ${text}`, "error");
+      writeLog(`⚠️ Entreno falló ${r.status} ${text}`, "error");
     }else{
       const res = await r.json().catch(()=>({ok:true}));
-      log(`✅ Enviado ejemplo (${item.persona})`, "success");
+      writeLog(`✅ Enviado ejemplo (${item.persona})`, "success");
     }
   }catch(e){
-    log(`⚠️ Error de red en autoentreno: ${e.message}`, "error");
+    writeLog(`⚠️ Error de red en autoentreno: ${e.message}`, "error");
+  }
+}
+
+
+async function sendChat(){
+  await ensureKey();
+  const text = $("#chat-text").value.trim();
+  if(!text) return;
+  const persona = $("#chat-persona").value;
+  $("#chat-text").value = "";
+  writeLog(`Tú: ${text}`);
+
+  try{
+    const payload = { text, persona };
+    // 1º intenta /api/chat
+    let res = await fetch("/api/chat", {
+      method: "POST",
+      headers: {"Content-Type":"application/json", "X-Sandra-Key": SKEY},
+      body: JSON.stringify(payload)
+    });
+    // si 404 (redirect roto), prueba directo a /.netlify/functions/chat
+    if (res.status === 404) {
+      res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text })
+      });
+    }
+    if (!res.ok) {
+      const t = await res.text().catch(()=>res.statusText);
+      throw new Error(`Error chat ${res.status}: ${t.slice(0,120)}`);
+    }
+    const buf = await res.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type: "audio/mpeg" }));
+    new Audio(url).play();
+    writeLog("🔊 (Sandra respondiendo por audio)");
+  }catch(e){
+    writeLog(`⚠️ Error de red en chat: ${e.message}`);
   }
 }
 
@@ -129,25 +167,33 @@ async function sendChat(){
   if(!text) return;
   const persona = $("#chat-persona").value;
   $("#chat-text").value = "";
-  log(`Tú: ${text}`);
+  writeLog(`Tú: ${text}`);
 
   try{
-    const r = await fetch(`${API_BASE}/chat`, {
+    const payload = { text, persona };
+    // 1º intenta /api/chat
+    let res = await fetch("/api/chat", {
       method: "POST",
-      headers: { "Content-Type": "application/json", "X-Sandra-Key": SKEY },
-      body: JSON.stringify({ text, persona })
+      headers: {"Content-Type":"application/json", "X-Sandra-Key": SKEY},
+      body: JSON.stringify(payload)
     });
-    if(r.headers.get("content-type")?.includes("audio/mpeg")){
-      const buf = await r.arrayBuffer();
-      const url = URL.createObjectURL(new Blob([buf], { type: "audio/mpeg" }));
-      const a = new Audio(url);
-      a.play();
-      log("🔊 (audio MP3 de ElevenLabs)");
-    }else{
-      const data = await r.json();
-      log(`Sandra: ${data.reply}`);
+    // si 404 (redirect roto), prueba directo a /.netlify/functions/chat
+    if (res.status === 404) {
+      res = await fetch("/.netlify/functions/chat", {
+        method: "POST",
+        headers: {"Content-Type":"application/json"},
+        body: JSON.stringify({ text })
+      });
     }
+    if (!res.ok) {
+      const t = await res.text().catch(()=>res.statusText);
+      throw new Error("Error chat " + res.status + ": " + t.slice(0,120));
+    }
+    const buf = await res.arrayBuffer();
+    const url = URL.createObjectURL(new Blob([buf], { type: "audio/mpeg" }));
+    new Audio(url).play();
+    writeLog("🔊 (Sandra respondiendo por audio)");
   }catch(e){
-    log(`⚠️ Error de red en chat: ${e.message}`, "error");
+    writeLog("⚠️ Error de red en chat: " + e.message);
   }
 }

@@ -47,7 +47,6 @@
         </div>
       </div>
 
-<div class="panel avatar">        <h2>Avatar Sandra <span id="avatar-status">❌ Desconectado</span></h2>        <div class="body" style="display:flex; flex-direction:column; gap:10px">          <div id="avatar-container" style="width:100%; height:300px; background:#f0f0f0; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666">            Avatar aparecerá aquí          </div>          <div class="row">            <button class="btn primary" id="avatar-connect">Conectar Avatar</button>            <button class="btn" id="avatar-disconnect">Desconectar</button>            <select id="avatar-quality">              <option value="Low">Calidad Baja</option>              <option value="Medium">Calidad Media</option>              <option value="High">Calidad Alta</option>            </select>          </div>          <div class="small">Avatar HeyGen streaming. Requiere API key configurada en Netlify.</div>        </div>      </div>
       <div class="panel chat">
         <h2>Chat con Sandra (MP3 ElevenLabs · sin speechSynthesis)</h2>
         <div class="body" style="display:flex; flex-direction:column; gap:10px">
@@ -96,6 +95,6 @@
     </div>
   </footer>
 
-  <script type="module" src="./avatar.js"></script>  <script src="./app.js"></script>
+  <script src="./app.js"></script>
 </body>
 </html>
