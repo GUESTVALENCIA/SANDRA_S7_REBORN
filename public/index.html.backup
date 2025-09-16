@@ -1,0 +1,101 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Sandra IA S7 · Avatar Streaming</title>
+  <link rel="stylesheet" href="./style.css" />
+</head>
+<body>
+  <header class="header">
+    <div class="container header-inner">
+      <a href="#" class="brand"><span class="brand-mark">S7</span><span class="brand-name">Sandra IA · Avatar</span></a>
+      <span class="badge">HeyGen Avatar</span>
+    </div>
+  </header>
+
+  <main class="container">
+    <section class="board">
+      <div class="panel">
+        <h2>Dataset de Entrenamiento <span class="small">(<span id="count">0</span> ejemplos)</span></h2>
+        <div class="body">
+          <div class="grid">
+            <div>
+              <label>Entrada (usuario)</label>
+              <textarea id="in-text" rows="4" placeholder="Ej: 'Necesito una landing con 3 secciones y CTA'"></textarea>
+            </div>
+            <div>
+              <label>Salida (respuesta ideal de Sandra)</label>
+              <textarea id="out-text" rows="4" placeholder="Ej: 'Te preparo una landing en React con Tailwind... (pasos, código, etc.)'"></textarea>
+            </div>
+          </div>
+          <div class="row" style="margin-top:8px">
+            <label>Persona</label>
+            <select id="persona">
+              <option value="developer">Developer</option>
+              <option value="recepcion">Recepción</option>
+              <option value="ventas">Ventas</option>
+              <option value="soporte">Soporte</option>
+            </select>
+            <span class="badge" id="persona-badge">developer</span>
+            <input id="tags" class="input" placeholder="tags (coma-separados, opcional)" style="flex:1" />
+            <button class="btn primary" id="btn-add">Añadir ejemplo</button>
+            <button class="btn ghost" id="btn-export">Exportar JSONL</button>
+            <button class="btn ghost" id="btn-clear">Vaciar</button>
+          </div>
+          <div id="list" class="list" style="margin-top:10px"></div>
+        </div>
+      </div>
+
+<div class="panel avatar">        <h2>Avatar Sandra <span id="avatar-status">❌ Desconectado</span></h2>        <div class="body" style="display:flex; flex-direction:column; gap:10px">          <div id="avatar-container" style="width:100%; height:300px; background:#f0f0f0; border-radius:8px; display:flex; align-items:center; justify-content:center; color:#666">            Avatar aparecerá aquí          </div>          <div class="row">            <button class="btn primary" id="avatar-connect">Conectar Avatar</button>            <button class="btn" id="avatar-disconnect">Desconectar</button>            <select id="avatar-quality">              <option value="Low">Calidad Baja</option>              <option value="Medium">Calidad Media</option>              <option value="High">Calidad Alta</option>            </select>          </div>          <div class="small">Avatar HeyGen streaming. Requiere API key configurada en Netlify.</div>        </div>      </div>
+      <div class="panel chat">
+        <h2>Chat con Sandra (MP3 ElevenLabs · sin speechSynthesis)</h2>
+        <div class="body" style="display:flex; flex-direction:column; gap:10px">
+          <div id="chat-log" class="chat-log"></div>
+          <div class="row">
+            <select id="chat-persona">
+              <option value="developer">Developer</option>
+              <option value="recepcion">Recepción</option>
+              <option value="ventas">Ventas</option>
+              <option value="soporte">Soporte</option>
+            </select>
+            <input id="chat-text" class="input" placeholder="Escribe y Enter envía..." style="flex:1" />
+            <button class="btn primary" id="chat-send">Enviar</button>
+          </div>
+          <div class="small">Requiere clave de entrenamiento (solo para ti). Audio sale por ElevenLabs si hay clave, si no, texto.</div>
+        </div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Autoentrenamiento</h2>
+      <div class="body">
+        <div class="row">
+          <span class="badge">Cada</span>
+          <input id="interval" type="number" class="input" value="5" min="2" style="width:90px" />
+          <span class="badge">segundos envía 1 ejemplo → /api/train</span>
+          <button class="btn primary" id="btn-start">Iniciar</button>
+          <button class="btn" id="btn-stop">Detener</button>
+        </div>
+        <div class="small">Los ejemplos salen del dataset local (panel izquierdo). Si el servidor no implementa /api/train, al menos puedes <b>Exportar JSONL</b> y usarlo donde quieras.</div>
+      </div>
+    </section>
+
+    <section class="panel">
+      <h2>Avatar (Opcional aquí)</h2>
+      <div class="body">
+        <div class="small">Este trainer no exige avatar. Si pones <code>HEYGEN_EMBED_URL</code> en variables, puedes incrustarlo aparte.</div>
+      </div>
+    </section>
+  </main>
+
+  <footer class="container">
+    <div class="row">
+      <span class="small">© Sandra S7 · Trainer</span>
+      <span class="small">UI molecular · listo para Netlify</span>
+    </div>
+  </footer>
+
+  <script type="module" src="./avatar.js"></script>  <script src="./app.js"></script>
+</body>
+</html>
