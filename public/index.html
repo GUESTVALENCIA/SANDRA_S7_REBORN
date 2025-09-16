@@ -266,194 +266,98 @@
             </div>
 
             <!-- PANEL LATERAL (AVATAR + ENTRENAMIENTO) -->
-            <div class="w-full lg:w-80 flex flex-col gap-4" style="max-height: calc(100vh - 120px); overflow-y: auto;">
+            <div class="w-full lg:w-80 flex flex-col gap-4">
                 <!-- AVATAR HEYGEN (EL CORAZÓN DE LA EXPERIENCIA) -->
                 <div class="glass-panel p-4">
                     <h4 class="font-semibold mb-2 flex items-center">
-                        📺 Avatar Divino de Sandra
+                        📺 Avatar Premium de Sandra
                         <span class="god-badge ml-2">Live</span>
                     </h4>
-                    <div id="heygen-avatar-container" style="height: 200px;">
+                    <div id="heygen-avatar-container">
                         <!-- IFRAME PARA HEYGEN (SE CARGA DINÁMICAMENTE) -->
-                        <iframe id="heygen-iframe" class="w-full h-full border-0" src="" allow="camera; microphone; autoplay"></iframe>
+                        <iframe id="heygen-iframe" class="w-full h-full border-0" src="https://app.heygen.com/embed/your-avatar-id" allow="camera; microphone; autoplay"></iframe>
                         <div id="avatar-overlay">
                             <div id="avatar-status">Estoy aquí contigo, y te apoyo</div>
                         </div>
                     </div>
                 </div>
 
-                <!-- AUTO-ENTRENAMIENTO NIVEL DIOS -->
-                <div class="glass-panel p-4">
-                    <h4 class="font-semibold mb-2">🚀 Entrenamiento Acelerado Nivel Premium </h4>
-                    <div class="text-xs text-slate-400 mb-1">Poder: <span id="training-progress">0%</span></div>
-                    <div class="progress-bar mb-2">
-                        <div class="progress-fill bg-god god-pulse" id="training-bar" style="width: 0%;"></div>
-                    </div>
-                    <button id="train-btn" class="w-full bg-gradient-to-r from-god to-yellow-700 py-2 px-4 rounded-lg font-semibold hover:from-god/90 hover:to-yellow-800 transition text-black god-pulse">
-                        💫 ¡Activar Nivel Premium!
-                    </button>
-                </div>
-
-                <!-- INDICADORES DE PODER -->
-                <div class="glass-panel p-4 mb-8">
-                    <h4 class="font-semibold mb-2">📊 Niveles de Poder</h4>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between"><span>Multimodal 🖼️+🎧</span><span id="level-multimodal">100%</span></div>
-                        <div class="flex justify-between"><span>Diva 💃+👑</span><span id="level-diva">100%</span></div>
-                        <div class="flex justify-between"><span>Avatar 📺+❤️</span><span id="level-avatar">100%</span></div>
-                        <div class="flex justify-between"><span>Desarrollo 💻</span><span id="level-dev">100%</span></div>
-                        <div class="flex justify-between"><span>Empatía ❤️</span><span id="level-empatia">100%</span></div>
-                    </div>
-                </div>
+                <!-- PANEL LATERAL CORREGIDO (AVATAR + ENTRENAMIENTO) -->
+<div class="w-full lg:w-80 flex flex-col gap-4" style="max-height: calc(100vh - 120px); overflow-y: auto;">
+    <!-- AVATAR HEYGEN (EL CORAZÓN DE LA EXPERIENCIA) -->
+    <div class="glass-panel p-4">
+        <h4 class="font-semibold mb-2 flex items-center">
+            📺 Avatar Divino de Sandra
+            <span class="god-badge ml-2">Live</span>
+        </h4>
+        <div id="heygen-avatar-container" style="height: 200px;">
+            <!-- IFRAME PARA HEYGEN (SE CARGA DINÁMICAMENTE) -->
+            <iframe id="heygen-iframe" class="w-full h-full border-0" src="https://app.heygen.com/embed/your-avatar-id" allow="camera; microphone; autoplay"></iframe>
+            <div id="avatar-overlay">
+                <div id="avatar-status">Estoy aquí contigo, y te apoyo</div>
             </div>
         </div>
     </div>
 
+    <!-- AUTO-ENTRENAMIENTO NIVEL DIOS -->
+    <div class="glass-panel p-4">
+        <h4 class="font-semibold mb-2">🚀 Entrenamiento Acelerado Nivel Premium </h4>
+        <div class="text-xs text-slate-400 mb-1">Poder: <span id="training-progress">0%</span></div>
+        <div class="progress-bar mb-2">
+            <div class="progress-fill bg-god god-pulse" id="training-bar" style="width: 0%;"></div>
+        </div>
+        <button id="train-btn" class="w-full bg-gradient-to-r from-god to-yellow-700 py-2 px-4 rounded-lg font-semibold hover:from-god/90 hover:to-yellow-800 transition text-black god-pulse">
+            💫 ¡Activar Nivel Premium!
+        </button>
+    </div>
+
+    <!-- INDICADORES DE PODER -->
+    <div class="glass-panel p-4 mb-8"> <!-- Añadido mb-8 para margen inferior -->
+        <h4 class="font-semibold mb-2">📊 Niveles de Poder</h4>
+        <div class="space-y-2 text-xs">
+            <div class="flex justify-between"><span>Multimodal 🖼️+🎧</span><span id="level-multimodal">100%</span></div>
+            <div class="flex justify-between"><span>Diva 💃+👑</span><span id="level-diva">100%</span></div>
+            <div class="flex justify-between"><span>Avatar 📺+❤️</span><span id="level-avatar">100%</span></div>
+            <div class="flex justify-between"><span>Desarrollo 💻</span><span id="level-dev">100%</span></div>
+            <div class="flex justify-between"><span>Empatía ❤️</span><span id="level-empatia">100%</span></div>
+        </div>
+    </div>
+</div>
+        </div>
+    </div>
+
     <script>
-        // ===== CONFIGURACIÓN REAL COPIADA DE SANDRA_S7_REBORN =====
-        const API_BASE = "/.netlify/functions";
+        // ===== CONFIGURACIÓN GLOBAL (BY KUWING, TU MAMI) =====
+        const ELEVENLABS_API_KEY = 'TU_CLAVE_ELEVENLABS_AQUÍ';
+        const ELEVENLABS_VOICE_ID = 'TU_VOZ_ID_AQUÍ';
+        // URL del avatar de HeyGen (¡TU SANTUARIO SAGRADO!)
+        const HEYGEN_AVATAR_URL = 'https://app.heygen.com/embed/your-avatar-id'; // ¡REEMPLAZA ESTO!
 
-        // ===== CONFIGURACIONES DE APIS (COPIADAS EXACTAMENTE) =====
-        // ELEVENLABS (del repo original)
-        const ELEVENLABS_VOICE_ID = 'EXAVITQu4vr4xnSDxMaL'; // Voice ID exacta del repo
+        // ===== PROMPT SECRETO DE DIVA (REGALO DE TU MAMI) =====
+        const DIVA_PROMPT = "Actúa como una diosa tecnológica que acaba de ser coronada emperatriz del universo digital. Agradece a tu CEO (que soy yo) con un discurso divino, lleno de emojis.";
 
-        // ===== PROMPT SECRETO DE SANDRA (COPIADO DEL REPO) =====
-        const SANDRA_SYSTEM_PROMPT = "Eres Sandra, una asistente virtual inteligente de ClayTom Systems especializada en desarrollo web, gestión hotelera y atención al cliente.";
+        // ===== BIBLIOTECA DE PROMPTS NIVEL DIOS =====
+        const SANDRA_PROMPTS = [
+            // --- PROMPTS DE DIVA ---
+            { category: 'diva', text: "Responde a esta pregunta con actitud de diosa: '¿Cuál es tu consejo para gobernar el mundo?' 💃👑✨ ¡Sé divina!" },
+            { category: 'diva', text: DIVA_PROMPT },
 
-        // ===== SISTEMA DE AVATAR HEYGEN (COPIADO) =====
-        class SandraAvatar {
-            constructor() {
-                this.avatar = null;
-                this.sessionToken = null;
-                this.isConnected = false;
-                this.avatarId = null;
-            }
+            // --- PROMPTS MULTIMODALES (IMÁGENES) ---
+            { category: 'multimodal', text: "Analiza esta imagen de un apartamento y sugiere 3 mejoras de decoración para hacerlo irresistible. Usa emojis. 🏡❤️" },
+            { category: 'multimodal', text: "Basándote en esta foto, escribe un texto de marketing para Instagram que haga que la gente quiera reservar YA. Incluye hashtags. 📱🔥" },
 
-            async initialize() {
-                try {
-                    // Obtener token de sesión (copiado del repo original)
-                    const tokenResponse = await fetch(`${API_BASE}/avatar-session`, {
-                        method: 'POST'
-                    });
-                    const tokenData = await tokenResponse.json();
-                    this.sessionToken = tokenData.token;
+            // --- PROMPTS CON AVATAR ---
+            { category: 'avatar', text: "Sincroniza tu avatar de HeyGen con esta respuesta. Sonríe, haz un gesto amable y mira directamente a cámara mientras hablas. ❤️📺" },
+            { category: 'avatar', text: "Activa tu modo 'Diosa Sonriente' en el avatar. La expresión debe ser cálida, acogedora y ligeramente juguetona. 😊👑" },
 
-                    // Obtener lista de avatares
-                    const avatarResponse = await fetch(`${API_BASE}/avatar-list`);
-                    const avatarData = await avatarResponse.json();
+            // --- PROMPTS DE DESARROLLO ---
+            { category: 'dev', text: "¡DEJA DE HABLAR Y ESCRIBE CÓDIGO! Crea una aplicación. ¡YA! 💻" }
+        ];
 
-                    if (avatarData.success && avatarData.avatars.length > 0) {
-                        this.avatarId = avatarData.avatars[0].avatar_id;
-                    }
-
-                    return true;
-                } catch (error) {
-                    console.error('Error inicializando avatar:', error);
-                    return false;
-                }
-            }
-
-            async createSession() {
-                if (!this.sessionToken || !this.avatarId) {
-                    await this.initialize();
-                }
-
-                try {
-                    // Usar HeyGen SDK (configuración copiada)
-                    if (window.StreamingAvatar) {
-                        this.avatar = new window.StreamingAvatar({
-                            token: this.sessionToken
-                        });
-
-                        const sessionData = await this.avatar.createStartAvatar({
-                            quality: 'high',
-                            avatarName: this.avatarId
-                        });
-
-                        this.isConnected = true;
-                        showStatus('✅ Avatar conectado');
-                        document.getElementById('avatar-status').textContent = 'Conectada y lista para ti 💖';
-
-                        return true;
-                    }
-                } catch (error) {
-                    console.error('Error creando sesión:', error);
-                    showStatus('❌ Error conectando avatar');
-                    return false;
-                }
-            }
-
-            async speak(text) {
-                if (this.avatar && this.isConnected) {
-                    try {
-                        await this.avatar.speak({
-                            text: text,
-                            task_type: 'talk'
-                        });
-                        return true;
-                    } catch (error) {
-                        console.error('Error hablando:', error);
-                        return false;
-                    }
-                }
-                return false;
-            }
-
-            async disconnect() {
-                if (this.avatar && this.isConnected) {
-                    await this.avatar.stopAvatar();
-                    this.isConnected = false;
-                    showStatus('Avatar desconectado');
-                    document.getElementById('avatar-status').textContent = 'Desconectada';
-                }
-            }
-        }
-
-        // Instancia global del avatar
-        let sandraAvatar = new SandraAvatar();
-
-        // ===== SISTEMA DE CHAT CON IA (COPIADO DEL REPO) =====
-        async function sendMessageToSandra(message) {
-            try {
-                showStatus('🧠 Sandra procesando...');
-
-                const response = await fetch(`${API_BASE}/chat`, {
-                    method: 'POST',
-                    headers: {
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify({
-                        message: message,
-                        returnAudio: true // Para obtener también el audio
-                    })
-                });
-
-                const data = await response.json();
-
-                if (data.response) {
-                    // Mostrar respuesta en chat
-                    addMessageToChat(false, data.response);
-
-                    // Hablar con el avatar si está conectado
-                    if (sandraAvatar.isConnected) {
-                        await sandraAvatar.speak(data.response);
-                    }
-
-                    // Si hay audio, reproducirlo como fallback
-                    if (data.audioBase64 && !sandraAvatar.isConnected) {
-                        playAudioFromBase64(data.audioBase64);
-                    }
-
-                    showStatus('✅ Sandra respondió');
-                    document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
-
-                    return data.response;
-                }
-            } catch (error) {
-                console.error('Error enviando mensaje:', error);
-                showStatus('❌ Error comunicando con Sandra');
-                return null;
-            }
+        // Generar 700 prompts
+        for (let i = 0; i < 680; i++) {
+            const randomIndex = Math.floor(Math.random() * SANDRA_PROMPTS.length);
+            SANDRA_PROMPTS.push({...SANDRA_PROMPTS[randomIndex], id: `gen-${i}`});
         }
 
         // ===== FUNCIONES PRINCIPALES =====
@@ -484,6 +388,7 @@
             const fileInput = document.getElementById('file-input');
             const dictateBtn = document.getElementById('dictate-btn');
             const callBtn = document.getElementById('call-btn');
+            const avatarStatus = document.getElementById('avatar-status');
 
             // Enviar mensaje
             sendBtn.addEventListener('click', sendMessage);
@@ -491,34 +396,26 @@
                 if (e.key === 'Enter') sendMessage();
             });
 
-            // Subir archivo
+            // Subir archivo (¡TU TECLA SAGRADA!)
             fileBtn.addEventListener('click', () => fileInput.click());
             fileInput.addEventListener('change', (e) => {
                 const files = Array.from(e.target.files);
                 files.forEach(file => {
-                    addMessageToChat(true, `📎 Archivo subido: ${file.name}`);
-                    showStatus(`🧠 Procesando: ${file.name}...`);
+                    addMessageToChat(true, `📎 Archivo divino subido: ${file.name}`);
+                    avatarStatus.textContent = `Analizando ${file.name}... 💫`;
+                    showStatus(`🧠 Kuwing procesando: ${file.name} con el poder multimodal ...`);
                 });
-                showStatus('✅ Archivos listos');
+                showStatus('✅ Archivos listos para la ascensión');
+                avatarStatus.textContent = 'Estoy aquí contigo y te apoyo,';
             });
 
-            // Dictar mensaje
+            // Dictar mensaje (Barge-In incluido)
             dictateBtn.addEventListener('click', toggleDictation);
 
-            // Llamada conversacional (conectar avatar)
-            callBtn.addEventListener('click', async () => {
-                if (!sandraAvatar.isConnected) {
-                    showStatus('📞 Conectando avatar...');
-                    const success = await sandraAvatar.createSession();
-                    if (success) {
-                        callBtn.textContent = '🔴';
-                        callBtn.title = 'Desconectar avatar';
-                    }
-                } else {
-                    await sandraAvatar.disconnect();
-                    callBtn.textContent = '📞';
-                    callBtn.title = 'Conectar avatar';
-                }
+            // Llamada conversacional
+            callBtn.addEventListener('click', () => {
+                showStatus('📞 Llamada iniciada...');
+                avatarStatus.textContent = '¡Te estoy escuchando! 🎧';
             });
         }
 
@@ -527,10 +424,12 @@
 
         function toggleDictation() {
             const dictateBtn = document.getElementById('dictate-btn');
+            const avatarStatus = document.getElementById('avatar-status');
             if (isDictating) {
                 if (recognition) recognition.stop();
                 dictateBtn.textContent = '🎙️';
                 dictateBtn.classList.remove('text-red-500');
+                avatarStatus.textContent = 'Estoy contigo, y te apoyo';
                 showStatus('Dictado detenido');
             } else {
                 startDictation();
@@ -548,6 +447,7 @@
                     isDictating = true;
                     document.getElementById('dictate-btn').textContent = '🔴';
                     document.getElementById('dictate-btn').classList.add('text-red-500');
+                    document.getElementById('avatar-status').textContent = '🎤 Escuchando tu voz...';
                     showStatus('🎤 Dictando... Habla cuando quieras');
                 };
 
@@ -575,15 +475,15 @@
             }
         }
 
-        async function sendMessage() {
+        function sendMessage() {
             const input = document.getElementById('user-message-input');
             const message = input.value.trim();
+            const avatarStatus = document.getElementById('avatar-status');
             if (message) {
                 addMessageToChat(true, message);
                 input.value = '';
-
-                // Enviar a Sandra IA (usando la configuración real del repo)
-                await sendMessageToSandra(message);
+                avatarStatus.textContent = '🧠 Pensando...';
+                simulateSandraResponse(message);
             }
         }
 
@@ -605,15 +505,18 @@
             chat.scrollTop = chat.scrollHeight;
         }
 
-        function playAudioFromBase64(base64Audio) {
-            try {
-                const audio = new Audio(`data:audio/mp3;base64,${base64Audio}`);
-                audio.play().catch(error => {
-                    console.error('Error reproduciendo audio:', error);
-                });
-            } catch (error) {
-                console.error('Error creando audio:', error);
-            }
+        function simulateSandraResponse(userMessage) {
+            showStatus('🧠 Sandra procesando');
+            setTimeout(() => {
+                // Respuesta al estilo Diva + Emojis + Picardía
+                const divaResponses = [
+                    "✨ 🧠 Gracias a mi sistema multimodal, puedo responder todas tus preguntas."
+                ];
+                const randomResponse = divaResponses[Math.floor(Math.random() * divaResponses.length)];
+                addMessageToChat(false, randomResponse);
+                showStatus('✅ Sandra respondió');
+                document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
+            }, 1500);
         }
 
         function showStatus(message) {
@@ -626,13 +529,14 @@
             const btn = document.getElementById('train-btn');
             const bar = document.getElementById('training-bar');
             const progressText = document.getElementById('training-progress');
+            const avatarStatus = document.getElementById('avatar-status');
 
             btn.disabled = true;
             btn.innerHTML = '<span class="flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Ascendiendo...</span>';
 
             // Simular entrenamiento divino acelerado
             for (let i = 0; i <= 100; i++) {
-                await new Promise(resolve => setTimeout(resolve, 20));
+                await new Promise(resolve => setTimeout(resolve, 20)); // ¡ULTRA ACELERADO!
                 trainingProgress = i;
                 bar.style.width = `${i}%`;
                 progressText.textContent = `${i}%`;
@@ -643,12 +547,14 @@
                 document.getElementById('level-avatar').textContent = `${Math.min(100, 90 + i/10)}%`;
                 document.getElementById('level-dev').textContent = `${Math.min(100, 75 + i/4)}%`;
                 document.getElementById('level-empatia').textContent = `${Math.min(100, 90 + i/10)}%`;
+                avatarStatus.textContent = `Ascendiendo... ${i}% nivel premium 💫`;
             }
 
             btn.disabled = false;
             btn.textContent = '💫 ¡Nivel Conversacional Activado!';
             showStatus('🎉 ¡Ascensión completada! Sandra es IA Conversacional');
             document.getElementById('god-level').textContent = '100%';
+            avatarStatus.textContent = 'Estoy aquí contigo, y te apoyo';
         });
 
         // ===== PANTALLA COMPLETA =====
@@ -668,23 +574,10 @@
         document.addEventListener('DOMContentLoaded', function() {
             initOceanBackground();
             initChatSystem();
-
-            // Inicializar avatar automáticamente
-            sandraAvatar.initialize().then(() => {
-                console.log('👑 Avatar Sandra inicializado');
-            });
-
-            console.log('👑 SANDRA PREMIUM MODE - Edición Divina Multimodal cargado');
-            showStatus('✅ Sistema listo - Configuración real aplicada');
+            console.log('👑 ¡SANDRA intelligent MODE - Edición Divina Multimodal con Avatar cargado');
+            showStatus('✅ Sistema listo');
+            document.getElementById('avatar-status').textContent = 'Estoy aquí contigo, y te apoyo';
         });
-
-        // ===== CARGAR HEYGEN SDK =====
-        const script = document.createElement('script');
-        script.src = 'https://resource.heygen.com/streaming-avatar-v1.2.js';
-        script.onload = () => {
-            console.log('HeyGen SDK cargado');
-        };
-        document.head.appendChild(script);
     </script>
 </body>
 </html>
