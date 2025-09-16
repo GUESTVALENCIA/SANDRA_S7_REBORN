@@ -2,7 +2,7 @@
 function json(res, status=200){ return { statusCode: status, headers: { "Content-Type": "application/json" }, body: JSON.stringify(res) }; }
 function corsHeaders(){
   const h = {
-    "Access-Control-Allow-Origin": process.env.ALLOW_ORIGIN?.split(",")[0] || "*",
+    "Access-Control-Allow-Origin": process.env.ALLOW_ORIGIN || "https://guestsvalencia.es,https://*.guestsvalencia.es,https://claytomsystems.com,https://*.claytomsystems.com,https://*.netlify.app,http://localhost:8888",
     "Access-Control-Allow-Headers": "content-type, x-sandra-key",
     "Access-Control-Allow-Methods": "POST, OPTIONS"
   };

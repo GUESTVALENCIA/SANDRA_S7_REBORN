@@ -4,13 +4,13 @@ const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY;
 const ELEVEN_VOICE = process.env.ELEVENLABS_VOICE_ID || "06H5cbUvetCmVYi9HUXk";
-const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "*";
+const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "https://guestsvalencia.es,https://*.guestsvalencia.es,https://claytomsystems.com,https://*.claytomsystems.com,https://*.netlify.app,http://localhost:8888";
 
 exports.handler = async (event) => {
   // Headers CORS
   const headers = {
     "Access-Control-Allow-Origin": ALLOW_ORIGIN,
-    "Access-Control-Allow-Headers": "Content-Type, Authorization",
+    "Access-Control-Allow-Headers": "Content-Type, Authorization, X-Sandra-Key",
     "Access-Control-Allow-Methods": "GET, POST, OPTIONS",
     "Content-Type": "application/json"
   };
