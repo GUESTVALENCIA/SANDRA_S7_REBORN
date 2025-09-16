@@ -3,7 +3,7 @@ const fetch = (...args) => import('node-fetch').then(({default: f}) => f(...args
 
 const OPENAI_API_KEY = process.env.OPENAI_API_KEY;
 const ELEVEN_KEY = process.env.ELEVENLABS_API_KEY;
-const ELEVEN_VOICE = process.env.ELEVENLABS_VOICE_ID || "EXAVITQu4vr4xnSDxMaL";
+const ELEVEN_VOICE = process.env.ELEVENLABS_VOICE_ID || "06H5cbUvetCmVYi9HUXk";
 const ALLOW_ORIGIN = process.env.ALLOW_ORIGIN || "*";
 
 exports.handler = async (event) => {
