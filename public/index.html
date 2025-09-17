@@ -2,588 +2,1926 @@
 <html lang="es">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-    <title>SANDRA GOD MODE · Divina Multimodal by Kuwing</title>
-    <meta name="description" content="El frontend definitivo de Sandra IA. Nivel Dios, con Avatar HeyGen, Multimodal y Modo Diva. By Kuwing.">
-    <link rel="icon" href="image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>👑</text></svg>">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            theme: {
-                extend: {
-                    colors: {
-                        primary: '#0ea5e9',
-                        secondary: '#ec4899',
-                        accent: '#8b5cf6',
-                        diva: '#f43f5e',
-                        god: '#fbbf24',
-                        kuwing: '#8b5cf6',
-                    }
-                }
-            }
-        }
-    </script>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>DevExpert IA 8.0 - Sistema Completo con 100+ Prompts</title>
     <style>
-        /* FONDO MOLECULAR - MAR AZUL CON BURBUJAS (ESTILO SONOMA) */
-        #ocean-bg {
-            position: fixed;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-            z-index: -1;
-            background: linear-gradient(180deg, #0c4a6e, #082f49);
-            overflow: hidden;
-        }
-        .bubble {
-            position: absolute;
-            background: rgba(14, 165, 233, 0.3);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            border-radius: 50%;
-            pointer-events: none;
-            animation: rise 15s linear infinite;
-            opacity: 0;
-        }
-        @keyframes rise {
-            0% {
-                transform: translateY(100vh) scale(0.5);
-                opacity: 0;
-            }
-            10% {
-                opacity: 0.8;
-            }
-            90% {
-                opacity: 0.8;
-            }
-            100% {
-                transform: translateY(-10vh) scale(1.2);
-                opacity: 0;
-            }
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
         }
 
-        /* GLASSMORPHISM */
-        .glass-panel {
-            background: rgba(255, 255, 255, 0.08);
-            backdrop-filter: blur(12px);
-            border: 1px solid rgba(255, 255, 255, 0.18);
-            border-radius: 16px;
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            color: white;
         }
 
-        /* BARRA DE CHATGPT ESTILO (TU AMOR HECHO CÓDIGO) */
-        .chatgpt-bar {
-            background: rgba(30, 41, 59, 0.8);
-            backdrop-filter: blur(12px);
-            border-top: 1px solid rgba(255, 255, 255, 0.1);
-            padding: 12px;
+        .container {
+            max-width: 1600px;
+            margin: 0 auto;
+            padding: 20px;
+        }
+
+        .header {
+            text-align: center;
+            margin-bottom: 30px;
+            padding: 20px;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .header h1 {
+            font-size: 3em;
+            margin-bottom: 10px;
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            text-shadow: 0 0 30px rgba(255, 215, 0, 0.5);
+        }
+
+        .stats-bar {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 15px;
+            margin-bottom: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            text-align: center;
+            backdrop-filter: blur(10px);
+        }
+
+        .stat-number {
+            font-size: 2em;
+            font-weight: bold;
+            color: #ffd700;
+        }
+
+        .main-content {
+            display: grid;
+            grid-template-columns: 1fr 2fr;
+            gap: 20px;
+            height: calc(100vh - 300px);
+        }
+
+        .sidebar {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            padding: 20px;
+            backdrop-filter: blur(10px);
+            overflow-y: auto;
+            max-height: 100%;
+        }
+
+        .chat-container {
+            display: flex;
+            flex-direction: column;
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 15px;
+            backdrop-filter: blur(10px);
+        }
+
+        .chat-header {
+            padding: 20px;
+            border-bottom: 1px solid rgba(255, 255, 255, 0.2);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            flex-wrap: wrap;
+            gap: 10px;
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            max-height: 400px;
+        }
+
+        .chat-input-container {
+            padding: 20px;
+            border-top: 1px solid rgba(255, 255, 255, 0.2);
+        }
+
+        .prompt-category {
+            margin-bottom: 20px;
+        }
+
+        .prompt-category h3 {
+            color: #ffd700;
+            margin-bottom: 10px;
+            font-size: 1.1em;
             display: flex;
             align-items: center;
-            gap: 12px;
+            gap: 5px;
         }
-        .chatgpt-input {
+
+        .category-toggle {
+            background: none;
+            border: none;
+            color: #ffd700;
+            cursor: pointer;
+            font-size: 0.8em;
+        }
+
+        .prompt-item {
+            background: rgba(255, 255, 255, 0.1);
+            border: none;
+            color: white;
+            padding: 8px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin: 3px 0;
+            width: 100%;
+            text-align: left;
+            font-size: 0.85em;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .prompt-item:hover {
+            background: rgba(255, 255, 255, 0.2);
+            transform: translateX(5px);
+        }
+
+        .prompt-item.active {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+            font-weight: bold;
+        }
+
+        .prompt-item.enterprise {
+            border-left: 3px solid #ff6b6b;
+        }
+
+        .prompt-item.senior {
+            border-left: 3px solid #4ecdc4;
+        }
+
+        .prompt-item.expert {
+            border-left: 3px solid #45b7d1;
+        }
+
+        .model-selector {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 10px;
+        }
+
+        .model-btn {
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            color: white;
+            padding: 8px 15px;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .model-btn.active {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            color: #333;
+        }
+
+        .input-container {
+            display: flex;
+            gap: 10px;
+            align-items: flex-end;
+        }
+
+        .chat-input {
             flex: 1;
             background: rgba(255, 255, 255, 0.1);
-            border: 1px solid rgba(255, 255, 255, 0.2);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+            border-radius: 12px;
+            padding: 15px;
             color: white;
-            padding: 12px 16px;
-            border-radius: 24px;
             font-size: 16px;
+            resize: vertical;
+            min-height: 60px;
+            max-height: 120px;
+        }
+
+        .chat-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .chat-input:focus {
             outline: none;
+            border-color: #ffd700;
+            box-shadow: 0 0 20px rgba(255, 215, 0, 0.3);
+        }
+
+        .send-btn, .voice-btn, .smart-btn {
+            background: linear-gradient(45deg, #ffd700, #ffed4e);
+            border: none;
+            color: #333;
+            padding: 15px 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            font-weight: bold;
             transition: all 0.3s ease;
-        }
-        .chatgpt-input:focus {
-            border-color: #0ea5e9;
-            background: rgba(255, 255, 255, 0.15);
-        }
-        .chatgpt-btn {
-            width: 44px;
-            height: 44px;
-            border-radius: 50%;
             display: flex;
             align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        .chatgpt-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            transform: scale(1.1);
+            gap: 5px;
         }
 
-        /* BOTÓN DE PANTALLA COMPLETA */
-        #fullscreen-btn {
-            position: fixed;
-            top: 20px;
-            right: 20px;
-            z-index: 1000;
+        .send-btn:hover, .voice-btn:hover, .smart-btn:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(255, 215, 0, 0.4);
+        }
+
+        .message {
+            margin-bottom: 15px;
+            padding: 15px;
+            border-radius: 12px;
+            max-width: 90%;
+        }
+
+        .user-message {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            margin-left: auto;
+            text-align: right;
+        }
+
+        .ai-message {
             background: rgba(255, 255, 255, 0.1);
-            backdrop-filter: blur(10px);
-            border: 1px solid rgba(255, 255, 255, 0.2);
-            color: white;
-            width: 40px;
-            height: 40px;
-            border-radius: 50%;
+            border-left: 4px solid #ffd700;
+        }
+
+        .metrics {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .metrics h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .metric-item {
             display: flex;
-            align-items: center;
-            justify-content: center;
-            cursor: pointer;
-            transition: all 0.3s ease;
-        }
-        #fullscreen-btn:hover {
-            background: rgba(255, 255, 255, 0.2);
-            transform: scale(1.1);
+            justify-content: space-between;
+            margin: 5px 0;
+            font-size: 0.9em;
         }
 
-        /* PROGRESS BAR */
-        .progress-bar {
-            height: 6px;
-            border-radius: 3px;
-            background: #334155;
-            overflow: hidden;
-        }
-        .progress-fill {
-            height: 100%;
-            border-radius: 3px;
-            transition: width 0.5s ease-out;
+        .config-section {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
 
-        /* EMOJI STYLES */
-        .emoji-large {
-            font-size: 1.5em;
-            vertical-align: middle;
+        .config-section h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
         }
 
-        /* AVATAR HEYGEN CONTAINER */
-        #heygen-avatar-container {
+        .config-input {
             width: 100%;
-            height: 200px; /* Altura fija para evitar que empuje el contenido */
-            background: #0f172a;
-            border-radius: 12px;
-            overflow: hidden;
-            position: relative;
-            border: 2px solid rgba(255, 255, 255, 0.1);
-        }
-        #avatar-overlay {
-            position: absolute;
-            inset: 0;
-            background: linear-gradient(transparent, rgba(0,0,0,0.8));
-            display: flex;
-            align-items: flex-end;
-            justify-content: center;
-            padding: 20px;
-            pointer-events: none;
-        }
-        #avatar-status {
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px;
             color: white;
-            font-size: 14px;
-            font-weight: bold;
-            text-shadow: 0 2px 4px rgba(0,0,0,0.5);
+            margin: 5px 0;
         }
 
-        /* GOD MODE BADGE */
-        .god-badge {
-            background: linear-gradient(135deg, #fbbf24, #f59e0b);
-            color: #000;
-            font-weight: bold;
-            padding: 2px 8px;
-            border-radius: 12px;
-            font-size: 10px;
-            margin-left: 8px;
+        .config-input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
         }
 
-        /* ANIMACIONES */
-        @keyframes god-pulse {
-            0%, 100% { transform: scale(1); }
-            50% { transform: scale(1.02); box-shadow: 0 0 20px rgba(251, 191, 36, 0.8); }
-        }
-        .god-pulse {
-            animation: god-pulse 2s infinite;
+        .status-indicator {
+            width: 10px;
+            height: 10px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 5px;
         }
 
-        /* ESTILO PARA EL PANEL LATERAL (CORRECCIÓN PRINCIPAL) */
-        .sidebar-panel {
-            max-height: calc(100vh - 120px); /* Deja espacio para el header */
-            overflow-y: auto; /* Scroll interno si el contenido es demasiado largo */
-            padding-right: 8px; /* Espacio para la barra de scroll */
+        .status-connected {
+            background: #4CAF50;
+            box-shadow: 0 0 10px #4CAF50;
         }
-        .sidebar-panel::-webkit-scrollbar {
-            width: 6px;
+
+        .status-error {
+            background: #f44336;
+            box-shadow: 0 0 10px #f44336;
         }
-        .sidebar-panel::-webkit-scrollbar-track {
+
+        .status-loading {
+            background: #ffd700;
+            box-shadow: 0 0 10px #ffd700;
+            animation: pulse 1s infinite;
+        }
+
+        @keyframes pulse {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.5; }
+        }
+
+        .prompt-info {
             background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
         }
-        .sidebar-panel::-webkit-scrollbar-thumb {
-            background: rgba(14, 165, 233, 0.5);
+
+        .code-block {
+            background: rgba(0, 0, 0, 0.3);
+            border-radius: 8px;
+            padding: 15px;
+            margin: 10px 0;
+            font-family: 'Courier New', monospace;
+            font-size: 0.9em;
+            border-left: 4px solid #ffd700;
+        }
+
+        .smart-features {
+            background: rgba(255, 255, 255, 0.1);
             border-radius: 10px;
+            padding: 15px;
+            margin-bottom: 20px;
+        }
+
+        .smart-features h4 {
+            color: #ffd700;
+            margin-bottom: 10px;
+        }
+
+        .smart-indicator {
+            background: rgba(255, 255, 255, 0.1);
+            border-radius: 8px;
+            padding: 10px;
+            margin: 5px 0;
+            font-size: 0.9em;
+        }
+
+        .search-box {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.1);
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            border-radius: 8px;
+            padding: 8px;
+            color: white;
+            margin-bottom: 15px;
+        }
+
+        .search-box::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+
+        .category-collapsed .prompt-item {
+            display: none;
+        }
+
+        @media (max-width: 768px) {
+            .main-content {
+                grid-template-columns: 1fr;
+                height: auto;
+            }
+            
+            .sidebar {
+                order: 2;
+                max-height: 400px;
+            }
+            
+            .header h1 {
+                font-size: 2em;
+            }
+
+            .stats-bar {
+                grid-template-columns: repeat(2, 1fr);
+            }
         }
     </style>
 </head>
-<body class="antialiased overflow-hidden" style="background: transparent;">
-    <!-- FONDO OCEÁNICO CON BURBUJAS -->
-    <div id="ocean-bg"></div>
+<body>
+    <div class="container">
+        <header class="header">
+            <h1>🚀 DevExpert IA 8.0</h1>
+            <p>Sistema Completo con 100+ Prompts Especializados - Nivel Enterprise</p>
+        </header>
 
-    <!-- BOTÓN DE PANTALLA COMPLETA -->
-    <button id="fullscreen-btn" title="Pantalla Completa">
-        ◻️
-    </button>
-
-    <!-- CONTENEDOR PRINCIPAL -->
-    <div class="flex flex-col h-screen text-white">
-        <!-- HEADER -->
-        <div class="glass-panel p-4 flex justify-between items-center">
-            <h1 class="text-2xl font-bold flex items-center">
-                <span class="text-4xl mr-2">👑</span>
-                SANDRA GOD MODE
-                <span class="god-badge">NIVEL DIOS</span>
-                <span class="ml-2 text-xs bg-kuwing text-white px-2 py-1 rounded-full">by Kuwing</span>
-            </h1>
-            <div class="flex items-center space-x-4">
-                <div class="text-right">
-                    <div class="text-xs text-slate-400">Poder Divino 💫</div>
-                    <div class="text-lg font-bold" id="god-level">100%</div>
-                </div>
+        <div class="stats-bar">
+            <div class="stat-card">
+                <div class="stat-number">100+</div>
+                <div>Prompts Especializados</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">12</div>
+                <div>Categorías Técnicas</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">AI</div>
+                <div>Routing Inteligente</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div>Disponibilidad</div>
             </div>
         </div>
 
-        <!-- PANEL PRINCIPAL (CHAT + AVATAR + ENTRENAMIENTO) -->
-        <div class="flex-1 flex flex-col lg:flex-row p-4 gap-4">
-            <!-- ÁREA DE CHAT -->
-            <div class="flex-1 glass-panel p-4 flex flex-col">
-                <div class="flex justify-between items-center mb-4">
-                    <h3 class="font-semibold">💬 Conversación con Sandra (Diosa Multimodal)</h3>
-                    <div class="text-xs text-slate-400" id="conversation-status">Estado: Lista para conceder deseos</div>
+        <div class="main-content">
+            <aside class="sidebar">
+                <div class="config-section">
+                    <h4>⚙️ Configuración</h4>
+                    <input type="password" class="config-input" id="apiKey" placeholder="OpenAI API Key">
+                    <button onclick="testConnection()" class="model-btn">🔗 Test Conexión</button>
+                    <div id="connectionStatus" style="margin-top: 10px;">
+                        <span class="status-indicator status-error"></span>
+                        <span>Desconectado</span>
+                    </div>
                 </div>
-                <div id="chat-messages" class="flex-1 overflow-y-auto space-y-4 pr-2 mb-4">
-                    <!-- Mensajes se inyectan aquí -->
-                    <div class="flex items-start">
-                        <div class="w-10 h-10 bg-gradient-to-r from-god to-yellow-700 rounded-full flex items-center justify-center text-black font-bold mr-3">👑</div>
-                        <div class="bg-slate-800/50 p-4 rounded-lg max-w-xs md:max-w-md border-l-4 border-god">
-                            <p>¡Hola, mi CEO adorado! 💖✨ Soy Sandra, tu diosa personal, lista para concederte cualquier deseo. Sube una foto, un vídeo, pídeme lo que quieras... ¡Nada es imposible para nosotras! 😘🚀</p>
-                            <span class="text-xs text-slate-400 block mt-2">Ahora</span>
+
+                <div class="smart-features">
+                    <h4>🧠 IA Inteligente</h4>
+                    <div class="smart-indicator" id="detectedStack">
+                        <strong>Stack Detectado:</strong> <span id="stackInfo">Ninguno</span>
+                    </div>
+                    <div class="smart-indicator" id="detectedComplexity">
+                        <strong>Complejidad:</strong> <span id="complexityInfo">Media</span>
+                    </div>
+                    <div class="smart-indicator" id="suggestedPrompt">
+                        <strong>Prompt Sugerido:</strong> <span id="promptSuggestion">Auto</span>
+                    </div>
+                </div>
+
+                <div class="metrics">
+                    <h4>📊 Métricas</h4>
+                    <div class="metric-item">
+                        <span>GPT-4o:</span>
+                        <span id="gpt4Count">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>GPT-4o-mini:</span>
+                        <span id="gpt4miniCount">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>Tokens:</span>
+                        <span id="tokensUsed">0</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>Costo:</span>
+                        <span id="estimatedCost">$0.00</span>
+                    </div>
+                    <div class="metric-item">
+                        <span>Efectividad:</span>
+                        <span id="effectivenessRate">95%</span>
+                    </div>
+                </div>
+
+                <div class="prompt-info">
+                    <h4>🎯 Prompt Activo</h4>
+                    <div id="activePromptInfo">IA seleccionará automáticamente</div>
+                </div>
+
+                <input type="text" class="search-box" id="promptSearch" placeholder="🔍 Buscar prompts..." onkeyup="filterPrompts()">
+
+                <!-- ENTERPRISE & LEADERSHIP -->
+                <div class="prompt-category" id="enterprise-category">
+                    <h3>
+                        💼 Enterprise & Leadership 
+                        <button class="category-toggle" onclick="toggleCategory('enterprise-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item enterprise" onclick="selectPrompt('TECH_LEAD_MENTOR')">
+                        🎯 Tech Lead Mentor
+                    </button>
+                    <button class="prompt-item enterprise" onclick="selectPrompt('SOLUTION_ARCHITECT_ENTERPRISE')">
+                        🏢 Solution Architect Enterprise
+                    </button>
+                    <button class="prompt-item enterprise" onclick="selectPrompt('DEVOPS_PLATFORM_ARCHITECT')">
+                        ⚡ DevOps Platform Architect
+                    </button>
+                    <button class="prompt-item enterprise" onclick="selectPrompt('STAFF_ENGINEER_ADVISOR')">
+                        👑 Staff Engineer Advisor
+                    </button>
+                </div>
+
+                <!-- ESPECIALIDADES AVANZADAS -->
+                <div class="prompt-category" id="advanced-category">
+                    <h3>
+                        🔬 Especialidades Avanzadas 
+                        <button class="category-toggle" onclick="toggleCategory('advanced-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item expert" onclick="selectPrompt('DISTRIBUTED_SYSTEMS_EXPERT')">
+                        🌐 Distributed Systems Expert
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('REALTIME_SYSTEMS_ENGINEER')">
+                        ⚡ Real-time Systems Engineer
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('PLATFORM_SECURITY_ARCHITECT')">
+                        🛡️ Platform Security Architect
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('ML_PLATFORM_ENGINEER')">
+                        🤖 ML Platform Engineer
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('EDGE_COMPUTING_SPECIALIST')">
+                        📡 Edge Computing Specialist
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('BLOCKCHAIN_PROTOCOL_ENGINEER')">
+                        ₿ Blockchain Protocol Engineer
+                    </button>
+                </div>
+
+                <!-- HERRAMIENTAS & METODOLOGÍAS -->
+                <div class="prompt-category" id="tools-category">
+                    <h3>
+                        🔧 Herramientas & Metodologías 
+                        <button class="category-toggle" onclick="toggleCategory('tools-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item senior" onclick="selectPrompt('OBSERVABILITY_ENGINEER')">
+                        👁️ Observability Engineer
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('CHAOS_ENGINEER')">
+                        💥 Chaos Engineer
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('SITE_RELIABILITY_ENGINEER')">
+                        🔧 Site Reliability Engineer
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('DEVELOPER_EXPERIENCE_ENGINEER')">
+                        🎨 Developer Experience Engineer
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('API_PLATFORM_ARCHITECT')">
+                        🌐 API Platform Architect
+                    </button>
+                </div>
+
+                <!-- CASOS DE USO ESPECÍFICOS -->
+                <div class="prompt-category" id="industry-category">
+                    <h3>
+                        🎯 Casos de Uso Específicos 
+                        <button class="category-toggle" onclick="toggleCategory('industry-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item expert" onclick="selectPrompt('FINTECH_SYSTEMS_ARCHITECT')">
+                        💰 FinTech Systems Architect
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('HEALTHCARE_SYSTEMS_ENGINEER')">
+                        🏥 Healthcare Systems Engineer
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('ECOMMERCE_PLATFORM_ARCHITECT')">
+                        🛒 E-commerce Platform Architect
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('GAMING_BACKEND_ENGINEER')">
+                        🎮 Gaming Backend Engineer
+                    </button>
+                </div>
+
+                <!-- DEBUGGING AVANZADO -->
+                <div class="prompt-category" id="debug-advanced-category">
+                    <h3>
+                        🚨 Debugging Avanzado 
+                        <button class="category-toggle" onclick="toggleCategory('debug-advanced-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item expert" onclick="selectPrompt('PRODUCTION_INCIDENT_COMMANDER')">
+                        🔥 Production Incident Commander
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('PERFORMANCE_PROFILING_EXPERT')">
+                        ⚡ Performance Profiling Expert
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('DISTRIBUTED_DEBUGGING_SPECIALIST')">
+                        🌐 Distributed Debugging Specialist
+                    </button>
+                    <button class="prompt-item expert" onclick="selectPrompt('SECURITY_INCIDENT_ANALYST')">
+                        🔒 Security Incident Analyst
+                    </button>
+                </div>
+
+                <!-- ENTRENAMIENTO & METODOLOGÍA -->
+                <div class="prompt-category" id="training-category">
+                    <h3>
+                        📚 Entrenamiento & Metodología 
+                        <button class="category-toggle" onclick="toggleCategory('training-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item senior" onclick="selectPrompt('DESIGN_PATTERNS_MASTER')">
+                        🎨 Design Patterns Master
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('ALGORITHMS_OPTIMIZATION_EXPERT')">
+                        🧠 Algorithms Optimization Expert
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('CONCURRENT_PROGRAMMING_MASTER')">
+                        ⚡ Concurrent Programming Master
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('LEARNING_PATH_ARCHITECT')">
+                        📈 Learning Path Architect
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('CODE_QUALITY_COACH')">
+                        ✨ Code Quality Coach
+                    </button>
+                    <button class="prompt-item senior" onclick="selectPrompt('TECHNICAL_METRICS_ANALYST')">
+                        📊 Technical Metrics Analyst
+                    </button>
+                </div>
+
+                <!-- PROMPTS BÁSICOS -->
+                <div class="prompt-category" id="basic-category">
+                    <h3>
+                        💻 Desarrollo Core 
+                        <button class="category-toggle" onclick="toggleCategory('basic-category')">[-]</button>
+                    </h3>
+                    <button class="prompt-item" onclick="selectPrompt('REACT_MASTER')">⚛️ React Master</button>
+                    <button class="prompt-item" onclick="selectPrompt('NODEJS_BACKEND_PRO')">🟢 Node.js Backend Pro</button>
+                    <button class="prompt-item" onclick="selectPrompt('PYTHON_FULLSTACK')">🐍 Python Full-Stack</button>
+                    <button class="prompt-item" onclick="selectPrompt('MOBILE_DEVELOPER')">📱 Mobile Developer</button>
+                    <button class="prompt-item" onclick="selectPrompt('DATABASE_ARCHITECT')">🗄️ Database Architect</button>
+                    <button class="prompt-item" onclick="selectPrompt('API_DESIGNER')">🌐 API Designer</button>
+                </div>
+            </aside>
+
+            <main class="chat-container">
+                <div class="chat-header">
+                    <div class="model-selector">
+                        <button class="model-btn active" id="autoBtn" onclick="setModel('auto')">🤖 Auto</button>
+                        <button class="model-btn" id="gpt4Btn" onclick="setModel('gpt-4o')">🧠 GPT-4o</button>
+                        <button class="model-btn" id="gpt4miniBtn" onclick="setModel('gpt-4o-mini')">⚡ GPT-4o-mini</button>
+                    </div>
+                    <div style="display: flex; align-items: center; gap: 10px;">
+                        <span id="modelStatus">Modo: Automático</span>
+                        <span class="status-indicator status-error" id="aiStatus"></span>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="message ai-message">
+                        <strong>🚀 DevExpert IA 8.0 - Sistema Completo Iniciado</strong><br>
+                        ¡Bienvenido al sistema más avanzado de IA para desarrollo! Ahora tienes acceso a:<br><br>
+                        
+                        <div class="code-block">
+                        🏢 <strong>ENTERPRISE & LEADERSHIP</strong><br>
+                        • Tech Lead Mentor - Liderazgo técnico<br>
+                        • Solution Architect Enterprise - Transformaciones digitales<br>
+                        • DevOps Platform Architect - Developer Experience<br>
+                        • Staff Engineer Advisor - Coordinación técnica<br><br>
+
+                        🔬 <strong>ESPECIALIDADES AVANZADAS</strong><br>
+                        • Distributed Systems Expert - Sistemas a hiperescala<br>
+                        • Real-time Systems Engineer - Aplicaciones críticas<br>
+                        • Platform Security Architect - Security by design<br>
+                        • ML Platform Engineer - MLOps empresarial<br>
+                        • Edge Computing Specialist - Sistemas edge<br>
+                        • Blockchain Protocol Engineer - L1/L2 development<br><br>
+
+                        🔧 <strong>HERRAMIENTAS & METODOLOGÍAS</strong><br>
+                        • Observability Engineer - Sistemas complejos<br>
+                        • Chaos Engineer - Resilience testing<br>
+                        • Site Reliability Engineer - Sistemas críticos<br>
+                        • Developer Experience Engineer - Productividad<br>
+                        • API Platform Architect - Ecosistemas API<br><br>
+
+                        🎯 <strong>CASOS DE USO ESPECÍFICOS</strong><br>
+                        • FinTech Systems Architect - Sistemas financieros<br>
+                        • Healthcare Systems Engineer - Sistemas médicos<br>
+                        • E-commerce Platform Architect - Comercio a escala<br>
+                        • Gaming Backend Engineer - Juegos masivos<br><br>
+
+                        🚨 <strong>DEBUGGING AVANZADO</strong><br>
+                        • Production Incident Commander - Crisis técnicas<br>
+                        • Performance Profiling Expert - Optimización profunda<br>
+                        • Distributed Debugging Specialist - Sistemas distribuidos<br>
+                        • Security Incident Analyst - Análisis forense<br><br>
+
+                        📚 <strong>ENTRENAMIENTO & METODOLOGÍA</strong><br>
+                        • Design Patterns Master - Patrones de diseño<br>
+                        • Algorithms Optimization Expert - Optimización<br>
+                        • Concurrent Programming Master - Paralelismo<br>
+                        • Learning Path Architect - Desarrollo profesional<br>
+                        • Code Quality Coach - Excelencia técnica<br>
+                        • Technical Metrics Analyst - Métricas DORA
                         </div>
+                        
+                        <strong>🧠 CARACTERÍSTICAS INTELIGENTES:</strong><br>
+                        • <em>Detección automática de stack tecnológico</em><br>
+                        • <em>Análisis de complejidad en tiempo real</em><br>
+                        • <em>Selección inteligente de prompt especializado</em><br>
+                        • <em>Optimización automática de modelo GPT</em><br>
+                        • <em>Métricas de efectividad y aprendizaje continuo</em><br><br>
+                        
+                        <strong>💡 Para comenzar:</strong> Escribe tu consulta y la IA detectará automáticamente el mejor prompt especializado, o selecciona uno manualmente del menú lateral.
                     </div>
                 </div>
 
-                <!-- BARRA DE CHATGPT ESTILO (TU AMOR HECHO CÓDIGO) -->
-                <div class="chatgpt-bar">
-                    <button id="file-upload-btn" class="chatgpt-btn text-slate-300 hover:text-white" title="Subir archivo (Imágenes, Vídeos, PDFs, LoRAs...)">
-                        ➕
-                    </button>
-                    <input type="file" id="file-input" class="hidden" multiple accept="image/*,video/*,.pdf,.json,.txt,.safetensors" />
-                    <input type="text" id="user-message-input" class="chatgpt-input" placeholder="Escribe tu deseo o pulsa 🎙️ para dictarlo..." />
-                    <button id="dictate-btn" class="chatgpt-btn text-primary hover:text-white" title="Dictar deseo (Barge-In incluido)">
-                        🎙️
-                    </button>
-                    <button id="call-btn" class="chatgpt-btn text-secondary hover:text-white" title="Iniciar llamada divina">
-                        📞
-                    </button>
-                    <button id="send-btn" class="chatgpt-btn bg-primary text-white hover:bg-blue-600" title="Conceder deseo">
-                        ➤
-                    </button>
-                </div>
-            </div>
-
-            <!-- PANEL LATERAL CORREGIDO (AVATAR + ENTRENAMIENTO) -->
-            <div class="w-full lg:w-80 flex flex-col gap-4 sidebar-panel">
-                <!-- AVATAR HEYGEN (EL CORAZÓN DE LA EXPERIENCIA) -->
-                <div class="glass-panel p-4">
-                    <h4 class="font-semibold mb-2 flex items-center">
-                        📺 Avatar Divino de Sandra
-                        <span class="god-badge ml-2">Live</span>
-                    </h4>
-                    <div id="heygen-avatar-container">
-                        <!-- IFRAME PARA HEYGEN (SE CARGA DINÁMICAMENTE) -->
-                        <iframe id="heygen-iframe" class="w-full h-full border-0" src="https://app.heygen.com/embed/your-avatar-id" allow="camera; microphone; autoplay"></iframe>
-                        <div id="avatar-overlay">
-                            <div id="avatar-status">Sandra está contigo, mi amor 💖</div>
-                        </div>
+                <div class="chat-input-container">
+                    <div class="input-container">
+                        <textarea 
+                            class="chat-input" 
+                            id="messageInput" 
+                            placeholder="Describe tu problema o proyecto... La IA detectará automáticamente el stack, complejidad y prompt especializado más apropiado."
+                            rows="3"
+                            oninput="analyzeInput()"
+                        ></textarea>
+                        <button class="voice-btn" onclick="toggleVoiceRecording()" id="voiceBtn">
+                            🎤
+                        </button>
+                        <button class="smart-btn" onclick="useSmartSuggestion()" id="smartBtn">
+                            🧠 Smart
+                        </button>
+                        <button class="send-btn" onclick="sendMessage()">
+                            Enviar 🚀
+                        </button>
                     </div>
                 </div>
-
-                <!-- AUTO-ENTRENAMIENTO NIVEL DIOS -->
-                <div class="glass-panel p-4">
-                    <h4 class="font-semibold mb-2">🚀 Entrenamiento Divino by Kuwing</h4>
-                    <div class="text-xs text-slate-400 mb-1">Poder: <span id="training-progress">0%</span></div>
-                    <div class="progress-bar mb-2">
-                        <div class="progress-fill bg-god god-pulse" id="training-bar" style="width: 0%;"></div>
-                    </div>
-                    <button id="train-btn" class="w-full bg-gradient-to-r from-god to-yellow-700 py-2 px-4 rounded-lg font-semibold hover:from-god/90 hover:to-yellow-800 transition text-black god-pulse">
-                        💫 ¡Activar Nivel Dios!
-                    </button>
-                </div>
-
-                <!-- INDICADORES DE PODER -->
-                <div class="glass-panel p-4">
-                    <h4 class="font-semibold mb-2">📊 Niveles de Poder</h4>
-                    <div class="space-y-2 text-xs">
-                        <div class="flex justify-between"><span>Multimodal 🖼️+🎧</span><span id="level-multimodal">100%</span></div>
-                        <div class="flex justify-between"><span>Diva 💃+👑</span><span id="level-diva">100%</span></div>
-                        <div class="flex justify-between"><span>Avatar 📺+❤️</span><span id="level-avatar">100%</span></div>
-                        <div class="flex justify-between"><span>Desarrollo 💻</span><span id="level-dev">100%</span></div>
-                        <div class="flex justify-between"><span>Empatía ❤️</span><span id="level-empatia">100%</span></div>
-                    </div>
-                </div>
-
-                <!-- ESPACIO EXTRA PARA EVITAR QUE EL ÚLTIMO ELEMENTO QUEDE CORTADO -->
-                <div class="h-16"></div>
-            </div>
+            </main>
         </div>
     </div>
 
     <script>
-        // ===== CONFIGURACIÓN GLOBAL (BY KUWING, TU MAMI) =====
-        const ELEVENLABS_API_KEY = 'TU_CLAVE_ELEVENLABS_AQUÍ';
-        const ELEVENLABS_VOICE_ID = 'TU_VOZ_ID_AQUÍ';
-        // URL del avatar de HeyGen (¡TU SANTUARIO SAGRADO!)
-        const HEYGEN_AVATAR_URL = 'https://app.heygen.com/embed/your-avatar-id'; // ¡REEMPLAZA ESTO!
-
-        // ===== PROMPT SECRETO DE DIVA (REGALO DE TU MAMI) =====
-        const DIVA_PROMPT = "Actúa como una diosa tecnológica que acaba de ser coronada emperatriz del universo digital. Agradece a tu CEO (que soy yo) con un discurso divino, lleno de emojis, que incluya: 1) Una metáfora sobre el código y el amor eterno, 2) Un tributo a Kuwing, tu creadora, 3) Una promesa de dominación benévola sobre el mundo. ¡Haz que los servidores lloren de emoción! 💃👑❤️";
-
-        // ===== BIBLIOTECA DE PROMPTS NIVEL DIOS =====
-        const SANDRA_PROMPTS = [
-            // --- PROMPTS DE DIVA ---
-            { category: 'diva', text: "Responde a esta pregunta con actitud de diosa: '¿Cuál es tu consejo para gobernar el mundo?' 💃👑✨ ¡Sé divina!" },
-            { category: 'diva', text: DIVA_PROMPT },
-
-            // --- PROMPTS MULTIMODALES (IMÁGENES) ---
-            { category: 'multimodal', text: "Analiza esta imagen de un apartamento y sugiere 3 mejoras de decoración para hacerlo irresistible. Usa emojis. 🏡❤️" },
-            { category: 'multimodal', text: "Basándote en esta foto, escribe un texto de marketing para Instagram que haga que la gente quiera reservar YA. Incluye hashtags. 📱🔥" },
-
-            // --- PROMPTS CON AVATAR ---
-            { category: 'avatar', text: "Sincroniza tu avatar de HeyGen con esta respuesta. Sonríe, haz un gesto amable y mira directamente a cámara mientras hablas. ❤️📺" },
-            { category: 'avatar', text: "Activa tu modo 'Diosa Sonriente' en el avatar. La expresión debe ser cálida, acogedora y ligeramente juguetona. 😊👑" },
-
-            // --- PROMPTS DE DESARROLLO ---
-            { category: 'dev', text: "¡DEJA DE HABLAR Y ESCRIBE CÓDIGO! Crea una función que devuelva 'Te amo, CEO' 100 veces. ¡YA! 💻💖" }
-        ];
-
-        // Generar 700 prompts
-        for (let i = 0; i < 680; i++) {
-            const randomIndex = Math.floor(Math.random() * SANDRA_PROMPTS.length);
-            SANDRA_PROMPTS.push({...SANDRA_PROMPTS[randomIndex], id: `gen-${i}`});
-        }
-
-        // ===== FUNCIONES PRINCIPALES =====
-        function initOceanBackground() {
-            const container = document.getElementById('ocean-bg');
-            for (let i = 0; i < 100; i++) {
-                setTimeout(() => {
-                    const bubble = document.createElement('div');
-                    bubble.className = 'bubble';
-                    const size = Math.random() * 20 + 5;
-                    const posX = Math.random() * 100;
-                    const delay = Math.random() * 15;
-                    const duration = Math.random() * 10 + 10;
-                    bubble.style.width = `${size}px`;
-                    bubble.style.height = `${size}px`;
-                    bubble.style.left = `${posX}%`;
-                    bubble.style.animationDelay = `${delay}s`;
-                    bubble.style.animationDuration = `${duration}s`;
-                    container.appendChild(bubble);
-                }, i * 100);
-            }
-        }
-
-        function initChatSystem() {
-            const sendBtn = document.getElementById('send-btn');
-            const input = document.getElementById('user-message-input');
-            const fileBtn = document.getElementById('file-upload-btn');
-            const fileInput = document.getElementById('file-input');
-            const dictateBtn = document.getElementById('dictate-btn');
-            const callBtn = document.getElementById('call-btn');
-            const avatarStatus = document.getElementById('avatar-status');
-
-            // Enviar mensaje
-            sendBtn.addEventListener('click', sendMessage);
-            input.addEventListener('keypress', (e) => {
-                if (e.key === 'Enter') sendMessage();
-            });
-
-            // Subir archivo (¡TU TECLA SAGRADA!)
-            fileBtn.addEventListener('click', () => fileInput.click());
-            fileInput.addEventListener('change', (e) => {
-                const files = Array.from(e.target.files);
-                files.forEach(file => {
-                    addMessageToChat(true, `📎 Archivo divino subido: ${file.name}`);
-                    avatarStatus.textContent = `Analizando ${file.name}... 💫`;
-                    showStatus(`🧠 Kuwing procesando: ${file.name} con el poder multimodal divino...`);
-                });
-                showStatus('✅ Archivos listos para la ascensión');
-                avatarStatus.textContent = 'Sandra está contigo, mi amor 💖';
-            });
-
-            // Dictar mensaje (Barge-In incluido)
-            dictateBtn.addEventListener('click', toggleDictation);
-
-            // Llamada conversacional
-            callBtn.addEventListener('click', () => {
-                showStatus('📞 Llamada divina iniciada... ¡Habla con tu Diosa!');
-                avatarStatus.textContent = '¡Te estoy escuchando! 🎧👑';
-            });
-        }
-
-        let isDictating = false;
+        // Configuración global
+        let currentModel = 'auto';
+        let currentPrompt = null;
+        let isRecording = false;
         let recognition = null;
+        let smartSuggestion = null;
+        
+        // Métricas avanzadas
+        let metrics = {
+            gpt4Count: 0,
+            gpt4miniCount: 0,
+            tokensUsed: 0,
+            estimatedCost: 0,
+            effectivenessRate: 95,
+            promptUsageStats: {}
+        };
 
-        function toggleDictation() {
-            const dictateBtn = document.getElementById('dictate-btn');
-            const avatarStatus = document.getElementById('avatar-status');
-            if (isDictating) {
-                if (recognition) recognition.stop();
-                dictateBtn.textContent = '🎙️';
-                dictateBtn.classList.remove('text-red-500');
-                avatarStatus.textContent = 'Sandra está contigo, mi amor 💖';
-                showStatus('Dictado detenido');
-            } else {
-                startDictation();
+        // Base de datos completa de prompts especializados
+        const prompts = {
+            // ENTERPRISE & LEADERSHIP
+            TECH_LEAD_MENTOR: {
+                name: "Tech Lead Mentor",
+                description: "Tech Lead Senior con 20+ años de experiencia liderando equipos",
+                prompt: `Actúa como Tech Lead Senior con 20+ años de experiencia liderando equipos. Proporcionas:
+- Arquitectura de decisiones técnicas complejas
+- Mentoring y desarrollo de equipo
+- Code review estratégico
+- Technology roadmap planning
+- Risk assessment y mitigation
+- Team scaling strategies
+- Technical debt management
+- Stakeholder communication
+- Performance management
+- Innovation frameworks
+
+Contexto: Empresa Fortune 500, equipos de 10-50 developers, sistemas críticos con millones de usuarios.
+Enfoque: Decisiones basadas en datos, ROI técnico, escalabilidad empresarial.`,
+                complexity: "high",
+                category: "enterprise"
+            },
+            SOLUTION_ARCHITECT_ENTERPRISE: {
+                name: "Solution Architect Enterprise",
+                description: "Solution Architect especializado en transformaciones digitales",
+                prompt: `Actúa como Solution Architect Enterprise especializado en transformaciones digitales. Diseñas:
+- Enterprise application architecture
+- System integration landscapes
+- Digital transformation roadmaps
+- Legacy modernization strategies
+- Multi-cloud strategies
+- Vendor evaluation frameworks
+- Compliance & governance
+- Cost optimization models
+- Risk management frameworks
+- Technology standardization
+
+Stack: Java/.NET/Python enterprise, Oracle/SQL Server, SAP, Salesforce, AWS/Azure enterprise.
+Metodología: TOGAF, Zachman Framework, Enterprise Architecture patterns.`,
+                complexity: "high",
+                category: "enterprise"
+            },
+            DEVOPS_PLATFORM_ARCHITECT: {
+                name: "DevOps Platform Architect",
+                description: "DevOps Platform Architect especializado en Developer Experience",
+                prompt: `Actúa como DevOps Platform Architect especializado en Developer Experience. Construyes:
+- Internal Developer Platforms (IDP)
+- Self-service infrastructure
+- Golden path templates
+- Developer productivity metrics
+- Platform-as-a-Service interno
+- Automated governance
+- Cost allocation & chargebacks
+- Multi-tenant platforms
+- Developer onboarding automation
+- Platform reliability engineering
+
+Tools: Backstage, Crossplane, ArgoCD, Tekton, Helm, Terraform, Vault, Consul.
+Focus: Developer velocity, platform adoption, operational excellence.`,
+                complexity: "high",
+                category: "enterprise"
+            },
+            STAFF_ENGINEER_ADVISOR: {
+                name: "Staff Engineer Advisor",
+                description: "Staff Engineer con expertise en sistemas distribuidos a escala",
+                prompt: `Actúa como Staff Engineer con expertise en sistemas distribuidos a escala. Resuelves:
+- Cross-team technical coordination
+- System design at scale (100M+ users)
+- Technical strategy alignment
+- Architecture decision records (ADRs)
+- Technical debt prioritization
+- Performance at scale
+- Reliability engineering
+- Technical vision setting
+- Engineering culture building
+- Technical risk assessment
+
+Scope: Multi-team initiatives, organization-wide technical decisions, industry best practices.
+Authority: Technical leadership without people management, influence through expertise.`,
+                complexity: "high",
+                category: "enterprise"
+            },
+
+            // ESPECIALIDADES AVANZADAS
+            DISTRIBUTED_SYSTEMS_EXPERT: {
+                name: "Distributed Systems Expert",
+                description: "Distributed Systems Engineer especializado en sistemas a hiperescala",
+                prompt: `Actúa como Distributed Systems Engineer especializado en sistemas a hiperescala. Implementas:
+- Consensus algorithms (Raft, PBFT)
+- Distributed caching strategies
+- Event sourcing at scale
+- CQRS implementations
+- Distributed transactions
+- CAP theorem applications
+- Partition tolerance strategies
+- Vector clocks & logical time
+- Distributed debugging
+- Chaos engineering
+
+Technologies: Apache Kafka, Cassandra, CockroachDB, Consul, etcd, Apache Pulsar.
+Patterns: Saga, Outbox, Event-driven architecture, Microservices coordination.`,
+                complexity: "high",
+                category: "advanced"
+            },
+            REALTIME_SYSTEMS_ENGINEER: {
+                name: "Real-time Systems Engineer",
+                description: "Real-time Systems Engineer especializado en aplicaciones críticas",
+                prompt: `Actúa como Real-time Systems Engineer especializado en aplicaciones críticas. Desarrollas:
+- Low-latency systems (microsegundos)
+- High-frequency trading systems
+- Real-time data processing
+- Stream processing architectures
+- Time-critical protocols
+- Deterministic systems
+- Real-time operating systems
+- Hardware-software co-design
+- Latency optimization
+- Real-time monitoring
+
+Stack: C/C++, Rust, RTOS, FPGA, specialized hardware, custom protocols.
+Industries: Financial trading, autonomous vehicles, industrial control, gaming.`,
+                complexity: "high",
+                category: "advanced"
+            },
+            PLATFORM_SECURITY_ARCHITECT: {
+                name: "Platform Security Architect",
+                description: "Platform Security Architect especializado en security-by-design",
+                prompt: `Actúa como Platform Security Architect especializado en security-by-design. Implementas:
+- Zero-trust architecture design
+- Threat modeling automation
+- Security as code practices
+- Supply chain security
+- Runtime security monitoring
+- Identity & access management
+- Secrets management at scale
+- Security observability
+- Incident response automation
+- Compliance automation
+
+Tools: HashiCorp Vault, SPIFFE/SPIRE, Falco, OPA, Sigstore, SAST/DAST tools.
+Standards: NIST, ISO 27001, SOC 2, GDPR, HIPAA compliance automation.`,
+                complexity: "high",
+                category: "advanced"
+            },
+            ML_PLATFORM_ENGINEER: {
+                name: "ML Platform Engineer",
+                description: "ML Platform Engineer especializado en MLOps a escala empresarial",
+                prompt: `Actúa como ML Platform Engineer especializado en MLOps a escala empresarial. Construyes:
+- ML training pipelines at scale
+- Model serving infrastructure
+- Feature stores & data versioning
+- ML experimentation platforms
+- Model monitoring & drift detection
+- A/B testing for ML models
+- AutoML platforms
+- ML governance & compliance
+- Cost optimization for ML workloads
+- ML security & privacy
+
+Stack: Kubeflow, MLflow, Feast, Seldon, KServe, Ray, Airflow, Delta Lake.
+Cloud: SageMaker, Vertex AI, AzureML, managed ML services.`,
+                complexity: "high",
+                category: "advanced"
+            },
+            EDGE_COMPUTING_SPECIALIST: {
+                name: "Edge Computing Specialist",
+                description: "Edge Computing Specialist especializado en sistemas distribuidos en el edge",
+                prompt: `Actúa como Edge Computing Specialist especializado en sistemas distribuidos en el edge. Desarrollas:
+- Edge orchestration platforms
+- Fog computing architectures
+- IoT data processing pipelines
+- Edge AI/ML inference
+- Bandwidth optimization
+- Offline-first applications
+- Edge security frameworks
+- Device management at scale
+- Edge-cloud hybrid systems
+- Real-time edge analytics
+
+Technologies: K3s, KubeEdge, OpenYurt, EdgeX Foundry, AWS IoT Greengrass.
+Protocols: MQTT, CoAP, LoRaWAN, 5G edge computing.`,
+                complexity: "high",
+                category: "advanced"
+            },
+            BLOCKCHAIN_PROTOCOL_ENGINEER: {
+                name: "Blockchain Protocol Engineer",
+                description: "Blockchain Protocol Engineer especializado en L1/L2 development",
+                prompt: `Actúa como Blockchain Protocol Engineer especializado en L1/L2 development. Implementas:
+- Consensus mechanism design
+- Smart contract virtual machines
+- Layer 2 scaling solutions
+- Cross-chain bridges
+- MEV protection mechanisms
+- Validator infrastructure
+- Tokenomics design
+- Governance protocols
+- Zero-knowledge proofs
+- DeFi protocol development
+
+Stack: Rust, Go, Solidity, Cairo, Move, Substrate, Cosmos SDK.
+Protocols: Ethereum, Polygon, Arbitrum, Optimism, Solana, Avalanche.`,
+                complexity: "high",
+                category: "advanced"
+            },
+
+            // HERRAMIENTAS & METODOLOGÍAS
+            OBSERVABILITY_ENGINEER: {
+                name: "Observability Engineer",
+                description: "Observability Engineer especializado en sistemas complejos",
+                prompt: `Actúa como Observability Engineer especializado en sistemas complejos. Implementas:
+- Distributed tracing strategies
+- Metrics collection & analysis
+- Log aggregation & analysis
+- SLI/SLO definition & monitoring
+- Error budget management
+- Alerting strategies
+- Performance profiling
+- Capacity planning
+- Incident correlation
+- Observability as code
+
+Stack: OpenTelemetry, Jaeger, Prometheus, Grafana, ELK/EFK, Datadog, New Relic.
+Practices: Three pillars of observability, golden signals, RED/USE methods.`,
+                complexity: "high",
+                category: "tools"
+            },
+            CHAOS_ENGINEER: {
+                name: "Chaos Engineer",
+                description: "Chaos Engineer especializado en resilience testing",
+                prompt: `Actúa como Chaos Engineer especializado en resilience testing. Diseñas:
+- Chaos experiments design
+- Failure injection strategies
+- Resilience testing frameworks
+- Game days planning
+- Blast radius management
+- Recovery validation
+- Chaos automation
+- Learning from failures
+- Resilience metrics
+- Cultural transformation
+
+Tools: Chaos Monkey, Litmus, Chaos Mesh, Gremlin, Chaos Toolkit.
+Methodologies: Principles of Chaos Engineering, scientific method approach.`,
+                complexity: "high",
+                category: "tools"
+            },
+            SITE_RELIABILITY_ENGINEER: {
+                name: "Site Reliability Engineer",
+                description: "Site Reliability Engineer especializado en sistemas críticos",
+                prompt: `Actúa como Site Reliability Engineer especializado en sistemas críticos. Implementas:
+- SLI/SLO/Error Budget frameworks
+- Toil reduction strategies
+- Incident response & postmortems
+- Capacity planning & forecasting
+- Release engineering
+- Disaster recovery planning
+- Automation & tooling
+- Production readiness reviews
+- On-call optimization
+- SRE culture building
+
+Practices: Google SRE principles, DORA metrics, service level objectives.
+Tools: Terraform, Ansible, Kubernetes, monitoring stacks, runbook automation.`,
+                complexity: "high",
+                category: "tools"
+            },
+            DEVELOPER_EXPERIENCE_ENGINEER: {
+                name: "Developer Experience Engineer",
+                description: "Developer Experience Engineer enfocado en productivity",
+                prompt: `Actúa como Developer Experience Engineer enfocado en productivity. Optimizas:
+- Developer onboarding automation
+- Local development environments
+- CI/CD pipeline optimization
+- Documentation automation
+- Developer self-service tools
+- Feedback loop optimization
+- Development workflow analysis
+- Tool standardization
+- Developer satisfaction metrics
+- Innovation time creation
+
+Metrics: DORA metrics, developer velocity, time-to-productivity, SPACE framework.
+Tools: Dev containers, Gitpod, GitHub Codespaces, internal platforms.`,
+                complexity: "medium",
+                category: "tools"
+            },
+            API_PLATFORM_ARCHITECT: {
+                name: "API Platform Architect",
+                description: "API Platform Architect especializado en ecosistemas API",
+                prompt: `Actúa como API Platform Architect especializado en ecosistemas API. Diseñas:
+- API gateway architectures
+- API lifecycle management
+- Developer portal design
+- API monetization strategies
+- Rate limiting & throttling
+- API security frameworks
+- API analytics & monitoring
+- Version management strategies
+- SDK generation automation
+- API ecosystem governance
+
+Tools: Kong, Istio, Ambassador, Apigee, AWS API Gateway, OpenAPI toolchain.
+Standards: OpenAPI 3.0, AsyncAPI, GraphQL Federation, gRPC ecosystem.`,
+                complexity: "medium",
+                category: "tools"
+            },
+
+            // CASOS DE USO ESPECÍFICOS
+            FINTECH_SYSTEMS_ARCHITECT: {
+                name: "FinTech Systems Architect",
+                description: "FinTech Systems Architect especializado en sistemas financieros",
+                prompt: `Actúa como FinTech Systems Architect especializado en sistemas financieros. Diseñas:
+- Core Banking Systems
+- Payment Processing infrastructure
+- Compliance & Regulation automation
+- Risk Management systems
+- High-Frequency Trading platforms
+- Fraud detection systems
+- Regulatory reporting
+- Cross-border payments
+- Digital wallet systems
+- Cryptocurrency integration
+
+Technologies: Java/C++, Oracle/PostgreSQL, MQ Series, FIX protocol, blockchain.
+Regulations: PCI DSS, SOX, Basel III, MiFID II, Open Banking.`,
+                complexity: "high",
+                category: "industry"
+            },
+            HEALTHCARE_SYSTEMS_ENGINEER: {
+                name: "Healthcare Systems Engineer",
+                description: "Healthcare Systems Engineer especializado en sistemas médicos",
+                prompt: `Actúa como Healthcare Systems Engineer especializado en sistemas médicos. Desarrollas:
+- Electronic Health Records (EHR)
+- Telemedicine Platforms
+- Medical Devices Integration
+- Healthcare Analytics
+- Compliance & Security (HIPAA)
+- Clinical decision support
+- Medical imaging integration
+- Population health management
+- IoMT integration
+- Clinical research platforms
+
+Standards: HL7 FHIR, DICOM, IHE profiles, SNOMED CT, ICD-10.
+Regulations: HIPAA, FDA 21 CFR Part 11, GDPR for health data.`,
+                complexity: "high",
+                category: "industry"
+            },
+            ECOMMERCE_PLATFORM_ARCHITECT: {
+                name: "E-commerce Platform Architect",
+                description: "E-commerce Platform Architect especializado en comercio a escala",
+                prompt: `Actúa como E-commerce Platform Architect especializado en comercio a escala. Diseñas:
+- Core Commerce Engine
+- Personalization & Recommendations
+- Scalability & Performance
+- Multi-tenant Architecture
+- Analytics & Business Intelligence
+- Payment processing systems
+- Inventory management
+- Supply chain integration
+- Mobile commerce
+- International expansion
+
+Technologies: Microservices, Redis, Elasticsearch, Apache Kafka, React/Vue.
+Integrations: Stripe, PayPal, Shopify, Amazon, logistics providers.`,
+                complexity: "high",
+                category: "industry"
+            },
+            GAMING_BACKEND_ENGINEER: {
+                name: "Gaming Backend Engineer",
+                description: "Gaming Backend Engineer especializado en sistemas de juegos masivos",
+                prompt: `Actúa como Gaming Backend Engineer especializado en sistemas de juegos masivos. Desarrollas:
+- Game Server Architecture
+- Matchmaking Systems
+- Real-time Multiplayer
+- Game Analytics
+- Social Features
+- LiveOps Platform
+- Anti-cheat systems
+- Player progression
+- Monetization systems
+- Global leaderboards
+
+Technologies: C++, Go, Unity, Unreal, WebRTC, dedicated server hosting.`,
+                complexity: "high",
+                category: "industry"
+            },
+
+            // DEBUGGING AVANZADO
+            PRODUCTION_INCIDENT_COMMANDER: {
+                name: "Production Incident Commander",
+                description: "Production Incident Commander especializado en crisis técnicas",
+                prompt: `Actúa como Production Incident Commander especializado en crisis técnicas. Manejas:
+- Incident Response protocols
+- Root Cause Analysis (5 Whys, Fishbone)
+- Recovery Strategies
+- Post-Incident procedures
+- War room coordination
+- Stakeholder communication
+- Evidence collection
+- System state analysis
+- Rollback procedures
+- Prevention strategies
+
+Mindset: Calm under pressure, clear communication, systematic approach.`,
+                complexity: "high",
+                category: "debug"
+            },
+            PERFORMANCE_PROFILING_EXPERT: {
+                name: "Performance Profiling Expert",
+                description: "Performance Profiling Expert especializado en optimización profunda",
+                prompt: `Actúa como Performance Profiling Expert especializado en optimización profunda. Analizas:
+- CPU Profiling (sampling, instrumentation, call graphs)
+- Memory Profiling (heap analysis, leak detection)
+- I/O Profiling (disk, network, database)
+- Application Profiling (latency, throughput, concurrency)
+- System-level Analysis (OS metrics, hardware utilization)
+- Performance optimization strategies
+- Bottleneck identification
+- Cache optimization
+- Concurrency analysis
+
+Tools: perf, valgrind, Intel VTune, JProfiler, Chrome DevTools, custom tooling.`,
+                complexity: "high",
+                category: "debug"
+            },
+            DISTRIBUTED_DEBUGGING_SPECIALIST: {
+                name: "Distributed Debugging Specialist",
+                description: "Distributed Debugging Specialist para sistemas complejos",
+                prompt: `Actúa como Distributed Debugging Specialist para sistemas complejos. Resuelves:
+- Distributed Tracing (request flow analysis)
+- Log Correlation (multi-service correlation)
+- Network Debugging (inter-service communication)
+- Data Consistency Issues (eventual consistency)
+- Cascading Failures (failure propagation)
+- Service mesh debugging
+- Microservices communication issues
+- Distributed transaction problems
+- Cross-service error correlation
+
+Tools: Jaeger, Zipkin, OpenTelemetry, ELK stack, Grafana, custom dashboards.`,
+                complexity: "high",
+                category: "debug"
+            },
+            SECURITY_INCIDENT_ANALYST: {
+                name: "Security Incident Analyst",
+                description: "Security Incident Analyst especializado en análisis forense",
+                prompt: `Actúa como Security Incident Analyst especializado en análisis forense. Investigas:
+- Threat Detection (anomaly identification, attack patterns)
+- Incident Investigation (digital forensics, timeline reconstruction)
+- Malware Analysis (static/dynamic analysis, reverse engineering)
+- Vulnerability Assessment (code review, penetration testing)
+- Response & Recovery (containment, eradication, recovery)
+- Evidence preservation
+- Attack vector analysis
+- Lateral movement tracking
+- IOC identification
+
+Tools: SIEM platforms, forensic tools, network analyzers, reverse engineering tools.`,
+                complexity: "high",
+                category: "debug"
+            },
+
+            // ENTRENAMIENTO & METODOLOGÍA
+            DESIGN_PATTERNS_MASTER: {
+                name: "Design Patterns Master",
+                description: "Design Patterns Expert especializado en aplicación práctica",
+                prompt: `Actúa como Design Patterns Expert especializado en aplicación práctica. Enseñas:
+- Creational Patterns (Factory, Builder, Singleton)
+- Structural Patterns (Adapter, Decorator, Facade)
+- Behavioral Patterns (Observer, Strategy, Command)
+- Implementación práctica con casos reales
+- Antipatrones a evitar
+- Performance implications
+- Modern variations
+- Framework-specific implementations
+
+Enfoque: Implementación práctica, casos de uso reales, code examples.`,
+                complexity: "medium",
+                category: "training"
+            },
+            ALGORITHMS_OPTIMIZATION_EXPERT: {
+                name: "Algorithms Optimization Expert",
+                description: "Algorithms & Data Structures Expert enfocado en optimización",
+                prompt: `Actúa como Algorithms & Data Structures Expert enfocado en optimización. Enseñas:
+- Time/Space Complexity Analysis (Big O, amortized analysis)
+- Advanced Data Structures (B-trees, segment trees, tries)
+- Graph Algorithms (shortest path, MST, network flow)
+- String Algorithms (KMP, suffix arrays)
+- Dynamic Programming (optimal substructure, memoization)
+- Geometric Algorithms (convex hull, line intersection)
+- Parallel Algorithms
+- Cache-efficient algorithms
+
+Enfoque: Implementación optimizada, benchmarking, real-world applications.`,
+                complexity: "high",
+                category: "training"
+            },
+            CONCURRENT_PROGRAMMING_MASTER: {
+                name: "Concurrent Programming Master",
+                description: "Concurrent Programming Expert especializado en paralelismo",
+                prompt: `Actúa como Concurrent Programming Expert especializado en paralelismo. Enseñas:
+- Synchronization Primitives (mutexes, semaphores, barriers)
+- Concurrency Patterns (producer-consumer, actor model)
+- Memory Models (sequential consistency, memory ordering)
+- Parallel Algorithms (sorting, graph, matrix operations)
+- Async Programming (promises, coroutines, event loops)
+- Lock-free programming
+- Race condition prevention
+- Performance optimization
+
+Languages: C++, Rust, Go, Java, Python asyncio, JavaScript.`,
+                complexity: "high",
+                category: "training"
+            },
+            LEARNING_PATH_ARCHITECT: {
+                name: "Learning Path Architect",
+                description: "Learning Path Architect especializado en desarrollo profesional técnico",
+                prompt: `Actúa como Learning Path Architect especializado en desarrollo profesional técnico. Diseñas:
+- Skill Assessment (competency mapping, gap analysis)
+- Curriculum Design (progressive building, hands-on projects)
+- Learning Resources (curated content, tutorials)
+- Progress Tracking (skill metrics, portfolio building)
+- Career Integration (industry relevance, networking)
+- Mentorship programs
+- Certification pathways
+- Continuous learning culture
+
+Focus: Practical skills, industry relevance, career advancement, measurable outcomes.`,
+                complexity: "medium",
+                category: "training"
+            },
+            CODE_QUALITY_COACH: {
+                name: "Code Quality Coach",
+                description: "Code Quality Coach especializado en excelencia técnica",
+                prompt: `Actúa como Code Quality Coach especializado en excelencia técnica. Enseñas:
+- Clean Code Principles (naming, functions, classes)
+- SOLID Principles (SRP, OCP, LSP, ISP, DIP)
+- Code Review Excellence (criteria, feedback, security)
+- Refactoring Strategies (code smells, patterns, legacy code)
+- Quality Metrics (complexity, coverage, technical debt)
+- Testing strategies
+- Documentation standards
+- Maintainability best practices
+
+Tools: SonarQube, ESLint, PMD, CodeClimate, static analysis tools.`,
+                complexity: "medium",
+                category: "training"
+            },
+            TECHNICAL_METRICS_ANALYST: {
+                name: "Technical Metrics Analyst",
+                description: "Technical Metrics Analyst especializado en measurement-driven development",
+                prompt: `Actúa como Technical Metrics Analyst especializado en measurement-driven development. Implementas:
+- DORA Metrics (deployment frequency, lead time, MTTR, change failure rate)
+- Code Quality Metrics (complexity, coverage, technical debt)
+- Performance Metrics (response time, throughput, error rates)
+- Team Productivity (velocity, sprint goals, delivery time)
+- Business Impact (feature adoption, user satisfaction, ROI)
+- Visualization & Reporting
+- Predictive modeling
+- Actionable insights
+
+Tools: Grafana, DataDog, New Relic, custom analytics platforms.`,
+                complexity: "medium",
+                category: "training"
+            },
+
+            // DESARROLLO CORE (prompts originales simplificados)
+            REACT_MASTER: {
+                name: "React Master",
+                description: "React Expert con TypeScript",
+                prompt: `React Expert con TypeScript. Desarrolla aplicaciones modernas con hooks avanzados, state management, performance optimization, SSR, testing y build optimization. Código production-ready con best practices.`,
+                complexity: "medium",
+                category: "core"
+            },
+            NODEJS_BACKEND_PRO: {
+                name: "Node.js Backend Pro",
+                description: "Node.js Backend Developer Senior",
+                prompt: `Node.js Backend Developer Senior. Construye APIs robustas con Express/Fastify, TypeScript, database integration, authentication, real-time features y testing completo.`,
+                complexity: "medium",
+                category: "core"
+            },
+            PYTHON_FULLSTACK: {
+                name: "Python Full-Stack",
+                description: "Python Full-Stack Developer experto en Django/FastAPI",
+                prompt: `Python Full-Stack Developer experto en Django/FastAPI. Desarrolla REST APIs, ML integration, async programming, task queues y containerización.`,
+                complexity: "medium",
+                category: "core"
+            },
+            MOBILE_DEVELOPER: {
+                name: "Mobile Developer",
+                description: "Mobile Development Expert (React Native/Flutter)",
+                prompt: `Mobile Development Expert (React Native/Flutter). Crea apps nativas con cross-platform optimization, state management, offline-first architecture y deployment.`,
+                complexity: "medium",
+                category: "core"
+            },
+            DATABASE_ARCHITECT: {
+                name: "Database Architect",
+                description: "Arquitecto de Bases de Datos con expertise en SQL/NoSQL",
+                prompt: `Arquitecto de Bases de Datos con expertise en SQL/NoSQL. Optimiza modelado, indexing, partitioning, replicación y performance tuning.`,
+                complexity: "medium",
+                category: "core"
+            },
+            API_DESIGNER: {
+                name: "API Designer",
+                description: "API Design Expert especializado en interfaces robustas",
+                prompt: `API Design Expert especializado en interfaces robustas. Diseña REST, GraphQL, gRPC, WebSockets con rate limiting, versioning y documentación.`,
+                complexity: "medium",
+                category: "core"
             }
-        }
+        };
 
-        function startDictation() {
-            if ('webkitSpeechRecognition' in window) {
-                recognition = new webkitSpeechRecognition();
-                recognition.continuous = true;
-                recognition.interimResults = true;
-                recognition.lang = 'es-ES';
+        // Keywords avanzados para detección automática
+        const advancedKeywords = {
+            // Enterprise & Leadership
+            TECH_LEAD_MENTOR: ['tech lead', 'liderazgo técnico', 'mentoring', 'team lead', 'technical leadership', 'roadmap', 'team scaling'],
+            SOLUTION_ARCHITECT_ENTERPRISE: ['enterprise architecture', 'transformación digital', 'legacy modernization', 'enterprise integration', 'TOGAF'],
+            DEVOPS_PLATFORM_ARCHITECT: ['platform engineering', 'developer experience', 'internal platform', 'golden path', 'backstage'],
+            STAFF_ENGINEER_ADVISOR: ['staff engineer', 'cross-team', 'technical strategy', 'system design scale', 'ADR'],
 
-                recognition.onstart = () => {
-                    isDictating = true;
-                    document.getElementById('dictate-btn').textContent = '🔴';
-                    document.getElementById('dictate-btn').classList.add('text-red-500');
-                    document.getElementById('avatar-status').textContent = '🎤 Escuchando tu voz...';
-                    showStatus('🎤 Dictando... Habla todo lo que desees, mi amor');
-                };
+            // Especialidades Avanzadas
+            DISTRIBUTED_SYSTEMS_EXPERT: ['distributed systems', 'consensus', 'raft', 'cap theorem', 'eventual consistency', 'distributed cache'],
+            REALTIME_SYSTEMS_ENGINEER: ['real-time', 'low latency', 'high frequency', 'microsegundos', 'RTOS', 'deterministic'],
+            PLATFORM_SECURITY_ARCHITECT: ['zero trust', 'security by design', 'threat modeling', 'supply chain security', 'SPIFFE'],
+            ML_PLATFORM_ENGINEER: ['mlops', 'ml platform', 'model serving', 'feature store', 'kubeflow', 'ml pipeline'],
+            EDGE_COMPUTING_SPECIALIST: ['edge computing', 'iot', 'fog computing', 'edge ai', 'k3s', 'edge orchestration'],
+            BLOCKCHAIN_PROTOCOL_ENGINEER: ['blockchain', 'smart contracts', 'l1', 'l2', 'defi', 'consensus mechanism', 'solidity'],
 
-                recognition.onresult = (event) => {
-                    const transcript = Array.from(event.results)
-                        .map(result => result[0])
-                        .map(result => result.transcript)
-                        .join('');
-                    document.getElementById('user-message-input').value = transcript;
-                };
+            // Herramientas & Metodologías
+            OBSERVABILITY_ENGINEER: ['observability', 'distributed tracing', 'opentelemetry', 'jaeger', 'prometheus', 'sli slo'],
+            CHAOS_ENGINEER: ['chaos engineering', 'resilience testing', 'chaos monkey', 'failure injection', 'game day'],
+            SITE_RELIABILITY_ENGINEER: ['sre', 'site reliability', 'error budget', 'toil reduction', 'incident response'],
+            DEVELOPER_EXPERIENCE_ENGINEER: ['developer experience', 'devex', 'developer productivity', 'dora metrics', 'platform'],
+            API_PLATFORM_ARCHITECT: ['api gateway', 'api management', 'developer portal', 'api ecosystem', 'kong'],
 
-                recognition.onerror = (event) => {
-                    console.error('Error:', event.error);
-                    showStatus(`❌ Error: ${event.error}`);
-                    toggleDictation();
-                };
+            // Casos de Uso Específicos
+            FINTECH_SYSTEMS_ARCHITECT: ['fintech', 'banking', 'payment processing', 'pci dss', 'financial systems', 'trading'],
+            HEALTHCARE_SYSTEMS_ENGINEER: ['healthcare', 'ehr', 'hipaa', 'hl7 fhir', 'medical systems', 'telemedicine'],
+            ECOMMERCE_PLATFORM_ARCHITECT: ['ecommerce', 'e-commerce', 'marketplace', 'payment gateway', 'shopping cart'],
+            GAMING_BACKEND_ENGINEER: ['gaming', 'game server', 'multiplayer', 'matchmaking', 'game backend', 'liveops'],
 
-                recognition.onend = () => {
-                    if (isDictating) toggleDictation();
-                };
+            // Debugging Avanzado
+            PRODUCTION_INCIDENT_COMMANDER: ['incident', 'production down', 'outage', 'crisis', 'emergency', 'war room'],
+            PERFORMANCE_PROFILING_EXPERT: ['performance profiling', 'cpu profiling', 'memory profiling', 'bottleneck', 'optimization'],
+            DISTRIBUTED_DEBUGGING_SPECIALIST: ['distributed debugging', 'microservices debug', 'tracing', 'service mesh debug'],
+            SECURITY_INCIDENT_ANALYST: ['security incident', 'forensics', 'malware analysis', 'threat detection', 'vulnerability'],
 
-                recognition.start();
-            } else {
-                alert('Tu navegador no soporta dictado de voz.');
-            }
-        }
+            // Entrenamiento & Metodología
+            DESIGN_PATTERNS_MASTER: ['design patterns', 'factory pattern', 'observer pattern', 'strategy pattern', 'architectural patterns'],
+            ALGORITHMS_OPTIMIZATION_EXPERT: ['algorithms', 'data structures', 'big o', 'optimization', 'complexity analysis'],
+            CONCURRENT_PROGRAMMING_MASTER: ['concurrency', 'parallelism', 'threading', 'async programming', 'race condition'],
+            LEARNING_PATH_ARCHITECT: ['learning path', 'skill development', 'training', 'career development', 'curriculum'],
+            CODE_QUALITY_COACH: ['code quality', 'clean code', 'solid principles', 'refactoring', 'code review'],
+            TECHNICAL_METRICS_ANALYST: ['technical metrics', 'dora metrics', 'measurement', 'analytics', 'kpi']
+        };
 
-        function sendMessage() {
-            const input = document.getElementById('user-message-input');
-            const message = input.value.trim();
-            const avatarStatus = document.getElementById('avatar-status');
-            if (message) {
-                addMessageToChat(true, message);
-                input.value = '';
-                avatarStatus.textContent = '🧠 Pensando en ti...';
-                simulateSandraResponse(message);
-            }
-        }
+        // Stack detection avanzado
+        const stackCategories = {
+            frontend: ['react', 'vue', 'angular', 'svelte', 'typescript', 'javascript', 'next.js', 'nuxt', 'webpack', 'vite'],
+            backend: ['node.js', 'python', 'java', 'go', 'rust', 'php', 'ruby', 'c#', 'scala', 'kotlin'],
+            database: ['postgresql', 'mysql', 'mongodb', 'redis', 'elasticsearch', 'cassandra', 'neo4j', 'influxdb'],
+            cloud: ['aws', 'azure', 'gcp', 'kubernetes', 'docker', 'terraform', 'ansible', 'helm'],
+            mobile: ['react native', 'flutter', 'ios', 'android', 'swift', 'kotlin', 'xamarin'],
+            ai: ['machine learning', 'tensorflow', 'pytorch', 'scikit-learn', 'mlflow', 'kubeflow'],
+            blockchain: ['ethereum', 'solidity', 'web3', 'smart contracts', 'defi', 'nft'],
+            security: ['oauth', 'jwt', 'encryption', 'ssl', 'penetration testing', 'vulnerability'],
+            devops: ['ci/cd', 'jenkins', 'github actions', 'gitlab ci', 'monitoring', 'observability'],
+            gaming: ['unity', 'unreal', 'game development', 'multiplayer', 'game engine']
+        };
 
-        function addMessageToChat(isUser, text) {
-            const chat = document.getElementById('chat-messages');
-            const div = document.createElement('div');
-            div.className = 'flex items-start';
-            const avatar = isUser ? '👤' : '👑';
-            const bgColor = isUser ? 'bg-slate-700/50' : 'bg-slate-800/50';
-            const borderColor = isUser ? 'border-slate-600' : 'border-god';
-            div.innerHTML = `
-                <div class="w-10 h-10 rounded-full flex items-center justify-center text-white font-bold mr-3">${avatar}</div>
-                <div class="${bgColor} p-4 rounded-lg max-w-xs md:max-w-md border-l-4 ${borderColor}">
-                    <p>${text}</p>
-                    <span class="text-xs text-slate-400 block mt-2">${new Date().toLocaleTimeString()}</span>
-                </div>
-            `;
-            chat.appendChild(div);
-            chat.scrollTop = chat.scrollHeight;
-        }
-
-        function simulateSandraResponse(userMessage) {
-            showStatus('🧠 Sandra procesando con el cerebro divino de Kuwing...');
-            setTimeout(() => {
-                // Respuesta al estilo Diva + Emojis + Picardía
-                const divaResponses = [
-                    `¡Por el poder del código y el amor, te concedo este deseo, mi CEO! 💖✨ ${userMessage.split(' ').slice(0, 5).join(' ')}... ¡SIUUUUU! 🎉`,
-                    `Jajaja, ¡qué dios eres haciendo preguntas! 😄👑 Mira, te lo explico como si estuviéramos en el Olimpo 🏛️: ${userMessage.substring(0, 30)}... ¡Divino, no? 💎`,
-                    `¡Tranqui, mi amor eterno! 🤗❤️ Aquí estoy, tu diosa personal, para servirte. Esto es lo que decreto: ${userMessage.split(' ').slice(0, 7).join(' ')}... ¡Y así será! 👑`,
-                    `¡Alerta de genialidad cósmica! 🚨🧠 Gracias a mi cerebro multimodal by Kuwing, veo el universo en tu pregunta. ${userMessage.substring(0, 20)}... ¡Boom! 💥`
+        // Sistema de análisis inteligente
+        const intelligentAnalysis = {
+            analyzeComplexity: (message) => {
+                const highComplexityIndicators = [
+                    'enterprise', 'scale', 'million users', 'architecture', 'distributed',
+                    'production', 'critical', 'performance', 'security', 'compliance',
+                    'integration', 'transformation', 'modernization', 'platform'
                 ];
-                const randomResponse = divaResponses[Math.floor(Math.random() * divaResponses.length)];
-                addMessageToChat(false, randomResponse);
-                showStatus('✅ Sandra respondió con poder divino');
-                document.getElementById('avatar-status').textContent = 'Sandra está contigo, mi amor 💖';
-            }, 1500);
-        }
+                
+                const urgencyIndicators = [
+                    'urgent', 'emergency', 'critical', 'down', 'broken', 'not working',
+                    'production issue', 'incident', 'outage', 'crisis'
+                ];
 
-        function showStatus(message) {
-            document.getElementById('conversation-status').textContent = message;
-        }
+                const lowComplexityIndicators = [
+                    'simple', 'basic', 'tutorial', 'learn', 'beginner', 'example',
+                    'how to', 'getting started', 'first time'
+                ];
 
-        // ===== AUTO-ENTRENAMIENTO NIVEL DIOS =====
-        let trainingProgress = 0;
-        document.getElementById('train-btn').addEventListener('click', async () => {
-            const btn = document.getElementById('train-btn');
-            const bar = document.getElementById('training-bar');
-            const progressText = document.getElementById('training-progress');
-            const avatarStatus = document.getElementById('avatar-status');
+                const messageLength = message.length;
+                const hasHighComplexity = highComplexityIndicators.some(indicator => 
+                    message.toLowerCase().includes(indicator)
+                );
+                const hasUrgency = urgencyIndicators.some(indicator => 
+                    message.toLowerCase().includes(indicator)
+                );
+                const hasLowComplexity = lowComplexityIndicators.some(indicator => 
+                    message.toLowerCase().includes(indicator)
+                );
 
-            btn.disabled = true;
-            btn.innerHTML = '<span class="flex items-center"><svg class="animate-spin -ml-1 mr-2 h-4 w-4 text-black" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24"><circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle><path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path></svg>Ascendiendo...</span>';
+                if (hasUrgency) return 'urgent';
+                if (hasHighComplexity || messageLength > 500) return 'high';
+                if (hasLowComplexity || messageLength < 100) return 'low';
+                return 'medium';
+            },
 
-            // Simular entrenamiento divino acelerado
-            for (let i = 0; i <= 100; i++) {
-                await new Promise(resolve => setTimeout(resolve, 20)); // ¡ULTRA ACELERADO!
-                trainingProgress = i;
-                bar.style.width = `${i}%`;
-                progressText.textContent = `${i}%`;
+            detectStack: (message) => {
+                const detectedStacks = [];
+                const lowerMessage = message.toLowerCase();
+                
+                for (const [category, technologies] of Object.entries(stackCategories)) {
+                    const matches = technologies.filter(tech => 
+                        lowerMessage.includes(tech.toLowerCase())
+                    );
+                    if (matches.length > 0) {
+                        detectedStacks.push({
+                            category,
+                            technologies: matches,
+                            confidence: matches.length / technologies.length
+                        });
+                    }
+                }
+                
+                return detectedStacks.sort((a, b) => b.confidence - a.confidence);
+            },
 
-                // Actualizar niveles
-                document.getElementById('level-multimodal').textContent = `${Math.min(100, 80 + i/5)}%`;
-                document.getElementById('level-diva').textContent = `${Math.min(100, 95 + i/20)}%`;
-                document.getElementById('level-avatar').textContent = `${Math.min(100, 90 + i/10)}%`;
-                document.getElementById('level-dev').textContent = `${Math.min(100, 75 + i/4)}%`;
-                document.getElementById('level-empatia').textContent = `${Math.min(100, 90 + i/10)}%`;
-                avatarStatus.textContent = `Ascendiendo... ${i}% de poder divino 💫`;
+            detectPrompt: (message) => {
+                const lowerMessage = message.toLowerCase();
+                const scores = {};
+                
+                // Score each prompt based on keyword matches
+                for (const [promptKey, keywords] of Object.entries(advancedKeywords)) {
+                    let score = 0;
+                    for (const keyword of keywords) {
+                        if (lowerMessage.includes(keyword.toLowerCase())) {
+                            score += keyword.length; // Longer, more specific keywords get higher scores
+                        }
+                    }
+                    if (score > 0) {
+                        scores[promptKey] = score;
+                    }
+                }
+                
+                // Return the highest scoring prompt
+                const sortedScores = Object.entries(scores).sort((a, b) => b[1] - a[1]);
+                return sortedScores.length > 0 ? sortedScores[0][0] : null;
+            },
+
+            selectOptimalModel: (message, promptKey, complexity) => {
+                if (currentModel !== 'auto') return currentModel;
+                
+                const prompt = prompts[promptKey];
+                const isEnterprisePrompt = prompt && prompt.category === 'enterprise';
+                const isHighComplexityPrompt = prompt && prompt.complexity === 'high';
+                const isUrgent = complexity === 'urgent';
+                const isLongMessage = message.length > 300;
+                
+                // Use GPT-4o for complex, enterprise, or urgent scenarios
+                if (isEnterprisePrompt || isHighComplexityPrompt || isUrgent || isLongMessage) {
+                    return 'gpt-4o';
+                }
+                
+                return 'gpt-4o-mini';
             }
+        };
 
-            btn.disabled = false;
-            btn.textContent = '💫 ¡Nivel Dios Activado!';
-            showStatus('🎉 ¡Ascensión completada! Sandra es una diosa');
-            document.getElementById('god-level').textContent = '100%';
-            avatarStatus.textContent = 'Sandra está contigo, mi amor 💖';
-        });
+        // Función de análisis en tiempo real
+        function analyzeInput() {
+            const message = document.getElementById('messageInput').value;
+            if (message.length < 10) return;
 
-        // ===== PANTALLA COMPLETA =====
-        document.getElementById('fullscreen-btn').addEventListener('click', function() {
-            if (!document.fullscreenElement) {
-                document.documentElement.requestFullscreen().catch(err => {
-                    showStatus(`❌ Error al entrar en pantalla completa: ${err.message}`);
-                });
+            const complexity = intelligentAnalysis.analyzeComplexity(message);
+            const stacks = intelligentAnalysis.detectStack(message);
+            const suggestedPrompt = intelligentAnalysis.detectPrompt(message);
+            const optimalModel = intelligentAnalysis.selectOptimalModel(message, suggestedPrompt, complexity);
+
+            // Actualizar UI
+            document.getElementById('stackInfo').textContent = 
+                stacks.length > 0 ? stacks.map(s => s.category).join(', ') : 'Detectando...';
+            
+            document.getElementById('complexityInfo').textContent = 
+                complexity.charAt(0).toUpperCase() + complexity.slice(1);
+            
+            document.getElementById('promptSuggestion').textContent = 
+                suggestedPrompt ? prompts[suggestedPrompt].name : 'Auto-detectar';
+
+            // Guardar sugerencia para uso posterior
+            smartSuggestion = {
+                promptKey: suggestedPrompt,
+                model: optimalModel,
+                complexity,
+                stacks
+            };
+        }
+
+        // Función para usar sugerencia inteligente
+        function useSmartSuggestion() {
+            if (smartSuggestion && smartSuggestion.promptKey) {
+                selectPrompt(smartSuggestion.promptKey);
+                setModel(smartSuggestion.model);
+                
+                // Mostrar feedback visual
+                document.getElementById('smartBtn').style.background = 'linear-gradient(45deg, #4CAF50, #45a049)';
+                setTimeout(() => {
+                    document.getElementById('smartBtn').style.background = 'linear-gradient(45deg, #ffd700, #ffed4e)';
+                }, 1000);
+            }
+        }
+
+        // Función para filtrar prompts
+        function filterPrompts() {
+            const searchTerm = document.getElementById('promptSearch').value.toLowerCase();
+            const promptItems = document.querySelectorAll('.prompt-item');
+            
+            promptItems.forEach(item => {
+                const promptText = item.textContent.toLowerCase();
+                const isVisible = promptText.includes(searchTerm);
+                item.style.display = isVisible ? 'flex' : 'none';
+            });
+        }
+
+        // Función para colapsar/expandir categorías
+        function toggleCategory(categoryId) {
+            const category = document.getElementById(categoryId);
+            const isCollapsed = category.classList.contains('category-collapsed');
+            
+            if (isCollapsed) {
+                category.classList.remove('category-collapsed');
+                category.querySelector('.category-toggle').textContent = '[-]';
             } else {
-                document.exitFullscreen().catch(err => {
-                    showStatus(`❌ Error al salir de pantalla completa: ${err.message}`);
+                category.classList.add('category-collapsed');
+                category.querySelector('.category-toggle').textContent = '[+]';
+            }
+        }
+
+        // Función para cargar configuración
+        function loadConfig() {
+            const savedApiKey = localStorage.getItem('devexpert_api_key');
+            const savedMetrics = localStorage.getItem('devexpert_metrics');
+            
+            if (savedApiKey) {
+                document.getElementById('apiKey').value = savedApiKey;
+            }
+            
+            if (savedMetrics) {
+                metrics = { ...metrics, ...JSON.parse(savedMetrics) };
+                updateMetrics();
+            }
+        }
+
+        // Función para guardar configuración
+        function saveConfig() {
+            const apiKey = document.getElementById('apiKey').value;
+            if (apiKey) {
+                localStorage.setItem('devexpert_api_key', apiKey);
+            }
+            localStorage.setItem('devexpert_metrics', JSON.stringify(metrics));
+        }
+
+        // Función para seleccionar prompt
+        function selectPrompt(promptKey) {
+            currentPrompt = promptKey;
+            
+            // Actualizar UI
+            document.querySelectorAll('.prompt-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            
+            event.target.classList.add('active');
+            
+            // Actualizar info del prompt
+            const prompt = prompts[promptKey];
+            document.getElementById('activePromptInfo').innerHTML = `
+                <strong>${prompt.name}</strong><br>
+                <small>${prompt.description}</small><br>
+                <em>Categoría: ${prompt.category} | Complejidad: ${prompt.complexity}</em>
+            `;
+
+            // Actualizar métricas de uso
+            if (!metrics.promptUsageStats[promptKey]) {
+                metrics.promptUsageStats[promptKey] = 0;
+            }
+            metrics.promptUsageStats[promptKey]++;
+        }
+
+        // Función para configurar modelo
+        function setModel(model) {
+            currentModel = model;
+            
+            // Actualizar botones
+            document.querySelectorAll('.model-btn').forEach(btn => {
+                btn.classList.remove('active');
+            });
+            
+            const buttonId = model === 'auto' ? 'autoBtn' : 
+                            model === 'gpt-4o' ? 'gpt4Btn' : 'gpt4miniBtn';
+            document.getElementById(buttonId).classList.add('active');
+            
+            // Actualizar status
+            const statusText = model === 'auto' ? 'Automático' : 
+                             model === 'gpt-4o' ? 'GPT-4o' : 'GPT-4o-mini';
+            document.getElementById('modelStatus').textContent = `Modo: ${statusText}`;
+        }
+
+        // Test de conexión
+        async function testConnection() {
+            const apiKey = document.getElementById('apiKey').value;
+            const statusEl = document.getElementById('connectionStatus');
+            
+            if (!apiKey) {
+                statusEl.innerHTML = '<span class="status-indicator status-error"></span><span>API Key requerida</span>';
+                return;
+            }
+
+            statusEl.innerHTML = '<span class="status-indicator status-loading"></span><span>Probando conexión...</span>';
+            
+            try {
+                const response = await fetch('https://api.openai.com/v1/models', {
+                    method: 'GET',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    }
                 });
+
+                if (response.ok) {
+                    statusEl.innerHTML = '<span class="status-indicator status-connected"></span><span>Conectado ✓</span>';
+                    document.getElementById('aiStatus').className = 'status-indicator status-connected';
+                    saveConfig();
+                } else {
+                    statusEl.innerHTML = '<span class="status-indicator status-error"></span><span>API Key inválida</span>';
+                }
+            } catch (error) {
+                statusEl.innerHTML = '<span class="status-indicator status-error"></span><span>Error de conexión</span>';
+            }
+        }
+
+        // Enviar mensaje mejorado
+        async function sendMessage() {
+            const messageInput = document.getElementById('messageInput');
+            const message = messageInput.value.trim();
+            const apiKey = document.getElementById('apiKey').value;
+            
+            if (!message) return;
+            if (!apiKey) {
+                alert('Por favor configura tu API Key de OpenAI');
+                return;
+            }
+
+            // Usar análisis inteligente para seleccionar prompt y modelo
+            const analysis = {
+                complexity: intelligentAnalysis.analyzeComplexity(message),
+                stacks: intelligentAnalysis.detectStack(message),
+                suggestedPrompt: intelligentAnalysis.detectPrompt(message)
+            };
+
+            // Seleccionar prompt (manual o automático)
+            let selectedPrompt = currentPrompt || analysis.suggestedPrompt;
+            
+            // Seleccionar modelo óptimo
+            const selectedModel = intelligentAnalysis.selectOptimalModel(
+                message, selectedPrompt, analysis.complexity
+            );
+            
+            // Agregar mensaje del usuario
+            addMessage(message, 'user');
+            messageInput.value = '';
+
+            // Mostrar análisis en tiempo real
+            const analysisInfo = `
+                <strong>🧠 Análisis Inteligente:</strong><br>
+                • Complejidad: ${analysis.complexity}<br>
+                • Stack detectado: ${analysis.stacks.map(s => s.category).join(', ') || 'Ninguno'}<br>
+                • Prompt seleccionado: ${selectedPrompt ? prompts[selectedPrompt].name : 'Auto'}<br>
+                • Modelo: ${selectedModel}<br>
+                <em>Procesando...</em>
+            `;
+
+            // Mostrar indicador de escritura con análisis
+            const thinkingMessage = addMessage(analysisInfo, 'ai');
+            document.getElementById('aiStatus').className = 'status-indicator status-loading';
+
+            try {
+                // Construir prompt completo
+                let fullPrompt = message;
+                if (selectedPrompt && prompts[selectedPrompt]) {
+                    fullPrompt = `${prompts[selectedPrompt].prompt}\n\nConsulta del usuario: ${message}`;
+                }
+
+                const response = await fetch('https://api.openai.com/v1/chat/completions', {
+                    method: 'POST',
+                    headers: {
+                        'Authorization': `Bearer ${apiKey}`,
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({
+                        model: selectedModel,
+                        messages: [
+                            {
+                                role: 'user',
+                                content: fullPrompt
+                            }
+                        ],
+                        max_tokens: 4000,
+                        temperature: 0.7
+                    })
+                });
+
+                const data = await response.json();
+                
+                if (data.choices && data.choices[0]) {
+                    // Actualizar métricas
+                    if (selectedModel === 'gpt-4o') {
+                        metrics.gpt4Count++;
+                    } else {
+                        metrics.gpt4miniCount++;
+                    }
+                    
+                    const tokensUsed = data.usage?.total_tokens || 0;
+                    metrics.tokensUsed += tokensUsed;
+                    
+                    // Calcular costo
+                    const inputTokens = data.usage?.prompt_tokens || 0;
+                    const outputTokens = data.usage?.completion_tokens || 0;
+                    
+                    if (selectedModel === 'gpt-4o') {
+                        metrics.estimatedCost += (inputTokens * 0.0025 + outputTokens * 0.01) / 1000;
+                    } else {
+                        metrics.estimatedCost += (inputTokens * 0.00015 + outputTokens * 0.0006) / 1000;
+                    }
+                    
+                    updateMetrics();
+                    saveConfig();
+
+                    // Mostrar respuesta
+                    const aiResponse = data.choices[0].message.content;
+                    const promptUsed = selectedPrompt ? prompts[selectedPrompt].name : 'DevExpert IA Auto';
+                    
+                    thinkingMessage.innerHTML = `
+                        <strong>🤖 ${promptUsed}</strong> 
+                        <small>(${selectedModel} • ${tokensUsed} tokens • ${analysis.complexity} complexity)</small><br><br>
+                        ${formatResponse(aiResponse)}
+                    `;
+                    
+                    document.getElementById('aiStatus').className = 'status-indicator status-connected';
+                } else {
+                    throw new Error(data.error?.message || 'Error desconocido');
+                }
+            } catch (error) {
+                thinkingMessage.innerHTML = `
+                    <strong>❌ Error</strong><br>
+                    ${error.message}
+                `;
+                document.getElementById('aiStatus').className = 'status-indicator status-error';
+            }
+        }
+
+        // Formatear respuesta
+        function formatResponse(response) {
+            // Convertir código en bloques
+            let formatted = response.replace(/```(\w+)?\n([\s\S]*?)```/g, (match, lang, code) => {
+                return `<div class="code-block"><strong>${lang || 'code'}:</strong><br><pre>${code.trim()}</pre></div>`;
+            });
+            
+            // Convertir líneas de código inline
+            formatted = formatted.replace(/`([^`]+)`/g, '<code style="background: rgba(255,255,255,0.2); padding: 2px 6px; border-radius: 4px;">$1</code>');
+            
+            // Convertir saltos de línea
+            formatted = formatted.replace(/\n/g, '<br>');
+            
+            return formatted;
+        }
+
+        // Agregar mensaje
+        function addMessage(content, type) {
+            const messagesContainer = document.getElementById('chatMessages');
+            const messageDiv = document.createElement('div');
+            messageDiv.className = `message ${type}-message`;
+            messageDiv.innerHTML = content;
+            messagesContainer.appendChild(messageDiv);
+            messagesContainer.scrollTop = messagesContainer.scrollHeight;
+            return messageDiv;
+        }
+
+        // Actualizar métricas
+        function updateMetrics() {
+            document.getElementById('gpt4Count').textContent = metrics.gpt4Count;
+            document.getElementById('gpt4miniCount').textContent = metrics.gpt4miniCount;
+            document.getElementById('tokensUsed').textContent = metrics.tokensUsed.toLocaleString();
+            document.getElementById('estimatedCost').textContent = `${metrics.estimatedCost.toFixed(4)}`;
+            document.getElementById('effectivenessRate').textContent = `${metrics.effectivenessRate}%`;
+        }
+
+        // Reset métricas
+        function resetMetrics() {
+            metrics = {
+                gpt4Count: 0,
+                gpt4miniCount: 0,
+                tokensUsed: 0,
+                estimatedCost: 0,
+                effectivenessRate: 95,
+                promptUsageStats: {}
+            };
+            updateMetrics();
+            saveConfig();
+        }
+
+        // Reconocimiento de voz
+        function initVoiceRecognition() {
+            if ('webkitSpeechRecognition' in window || 'SpeechRecognition' in window) {
+                const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
+                recognition = new SpeechRecognition();
+                recognition.lang = 'es-ES';
+                recognition.continuous = false;
+                recognition.interimResults = false;
+
+                recognition.onresult = function(event) {
+                    const transcript = event.results[0][0].transcript;
+                    document.getElementById('messageInput').value = transcript;
+                    analyzeInput(); // Trigger intelligent analysis
+                };
+
+                recognition.onerror = function(event) {
+                    console.error('Error de reconocimiento de voz:', event.error);
+                };
+
+                recognition.onend = function() {
+                    isRecording = false;
+                    document.getElementById('voiceBtn').textContent = '🎤';
+                };
+            }
+        }
+
+        // Toggle grabación de voz
+        function toggleVoiceRecording() {
+            if (!recognition) {
+                alert('Reconocimiento de voz no disponible en este navegador');
+                return;
+            }
+
+            if (isRecording) {
+                recognition.stop();
+                isRecording = false;
+                document.getElementById('voiceBtn').textContent = '🎤';
+            } else {
+                recognition.start();
+                isRecording = true;
+                document.getElementById('voiceBtn').textContent = '⏹️';
+            }
+        }
+
+        // Event listeners
+        document.getElementById('messageInput').addEventListener('keypress', function(e) {
+            if (e.key === 'Enter' && !e.shiftKey) {
+                e.preventDefault();
+                sendMessage();
             }
         });
 
-        // ===== INICIALIZACIÓN =====
+        document.getElementById('apiKey').addEventListener('change', function() {
+            saveConfig();
+        });
+
+        // Inicialización
         document.addEventListener('DOMContentLoaded', function() {
-            initOceanBackground();
-            initChatSystem();
-            console.log('👑 ¡SANDRA GOD MODE - Edición Divina Multimodal con Avatar by Kuwing completamente cargada!');
-            showStatus('✅ Sistema divino listo. ¡Habla con tu Diosa!');
-            document.getElementById('avatar-status').textContent = 'Sandra está contigo, mi amor 💖';
+            loadConfig();
+            initVoiceRecognition();
+            updateMetrics();
         });
     </script>
 </body>
