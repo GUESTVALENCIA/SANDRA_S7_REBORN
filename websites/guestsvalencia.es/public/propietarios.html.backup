@@ -1,0 +1,159 @@
+<!DOCTYPE html>
+
+<html lang="es"><head>
+<meta charset="utf-8"/><meta content="width=device-width, initial-scale=1" name="viewport"/>
+<title>Propietarios · GuestsValencia</title>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600;700;800&amp;display=swap" rel="stylesheet"/>
+<link href="/styles.css" rel="stylesheet"/>
+    <link rel="stylesheet" href="navbar-styles.css">
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        "inter": ["Inter", "sans-serif"],
+                    },
+                    colors: {
+                        "guests-blue": "#0ea5e9",
+                        "guests-red": "#ef4444",
+                        "guests-pink": "#ec4899",
+                    }
+                }
+            }
+        }
+    </script>
+</head><body>
+<div class="topbar"><div class="container inner">
+<div class="left">
+<span>+34 966 497 016</span>
+<span>hello@tuweb.com</span>
+<span class="badge-wa">Contacta por WhatsApp</span>
+</div>
+<div class="right"><span>Español</span><span>€ Euro</span></div>
+</div></div>
+<!-- NAVBAR (fija y con logo) -->
+<nav class="site-navbar bg-slate-900 text-white fixed top-0 left-0 right-0 z-50 shadow-lg">
+    <div class="container mx-auto px-4 py-3">
+        <div class="flex items-center justify-between">
+            <div class="flex items-center space-x-3">
+                <img src="/assets/img/logo-gv.svg" alt="GuestsValencia Logo" class="w-10 h-10">
+                <span class="text-xl font-bold">GuestsValencia</span>
+            </div>
+            <div class="hidden md:flex space-x-6">
+                <a href="/index.html" class="hover:text-sky-400 transition-colors">Inicio</a>
+                <a href="/alojamientos.html" class="hover:text-sky-400 transition-colors">Alojamientos</a>
+                <a href="/propietarios.html" class="hover:text-sky-400 transition-colors">Propietarios</a>
+                <a href="/contacto.html" class="hover:text-sky-400 transition-colors">Contacto</a>
+            </div>
+            <div class="md:hidden">
+                <button class="text-white hover:text-sky-400">
+                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+    </div>
+</nav>
+<div class="container" style="margin-top: 64px;">
+<div class="searchstrip glass">
+<div class="field">Destino · ¿A dónde vas?</div>
+<div class="field">Llegada · ¿Cuándo?</div>
+<div class="field">Salida · ¿Cuándo?</div>
+<div class="field">Personas · ¿Cuántos?</div>
+<div class="field">Alojamiento · ¿Tipo?</div>
+<a class="btn primary" href="#">Buscar</a>
+</div>
+</div>
+<div class="ribbon"><div class="container" style="margin-top: 64px;"> <span>✓ Sin depósito por desperfectos</span> <span>✓ Pago 10% reserva, 90% 30 días antes</span> <span>✓ Cancelación gratuita</span> </div></div>
+<main class="container">
+<h1>Gestión de Alquiler Vacacional</h1>
+<div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+<div class="card glass"><div class="img" style="height:200px;background-image:url('https://images.unsplash.com/photo-1505691723518-36a5ac3b2b8f?auto=format&amp;fit=crop&amp;w=1400&amp;q=60')"></div><div class="body"><h2>Time to rent</h2><a class="btn primary" href="#">Quiero alquilar</a></div></div>
+<div class="card glass"><div class="img" style="height:200px;background-image:url('https://images.unsplash.com/photo-1501183638710-841dd1904471?auto=format&amp;fit=crop&amp;w=1400&amp;q=60')"></div><div class="body"><h2>Time to rest</h2><a class="btn" href="#">Quiero vender o comprar</a></div></div>
+</div>
+<h2 style="margin-top:22px">Nos encargamos de todo</h2>
+<div class="grid-2" style="display:grid;grid-template-columns:1fr 1fr;gap:18px">
+<div class="card glass"><div class="body"><h3>Guzman Homes</h3><p class="small">Acompañamiento integral durante la inversión, arquitectura y decoración a medida.</p><a class="btn" href="#">Descubre</a></div></div>
+<div class="card glass"><div class="body"><h3>Premiamos a propietarios</h3><p class="small">Reducción de comisión y trato preferente para socios.</p><a class="btn" href="#">Descubre</a></div></div>
+</div>
+</main>
+<section class="newsletter">
+<div class="container" style="margin-top: 64px;">
+<h2>Suscríbete a nuestra Newsletter</h2>
+<div class="wrap">
+<p>Descubre nuevos alojamientos, ofertas y planes impresionantes en Valencia. Trabajamos para que tus vacaciones sean las mejores.</p>
+<form>
+<div style="display:flex;gap:10px">
+<input placeholder="Escribe aquí tu email" required="" type="email"/>
+<button class="btn primary" type="submit">Registrarme</button>
+</div>
+<label class="small"><input type="checkbox"/> Acepto el envío de comunicaciones comerciales.</label>
+</form>
+</div>
+</div>
+</section>
+<!-- Footer unificado GuestsValencia -->
+<footer class="bg-slate-800 text-white py-12 mt-16">
+    <div class="container mx-auto px-4">
+        <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Navegación</h3>
+                <ul class="space-y-2">
+                    <li><a href="/index.html" class="text-gray-300 hover:text-sky-400 transition-colors">Inicio</a></li>
+                    <li><a href="/alojamientos.html" class="text-gray-300 hover:text-sky-400 transition-colors">Alojamientos</a></li>
+                    <li><a href="/propietarios.html" class="text-gray-300 hover:text-sky-400 transition-colors">Propietarios</a></li>
+                    <li><a href="/contacto.html" class="text-gray-300 hover:text-sky-400 transition-colors">Contacto</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                <ul class="space-y-2">
+                    <li><a href="/legal.html" class="text-gray-300 hover:text-sky-400 transition-colors">Aviso Legal</a></li>
+                    <li><a href="/legal.html#privacidad" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Privacidad</a></li>
+                    <li><a href="/legal.html#cookies" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Cookies</a></li>
+                    <li><a href="/legal.html#terminos" class="text-gray-300 hover:text-sky-400 transition-colors">Términos y Condiciones</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Servicios</h3>
+                <ul class="space-y-2">
+                    <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">App Móvil</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Gestión de Reservas</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Soporte 24/7</a></li>
+                    <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Newsletter</a></li>
+                </ul>
+            </div>
+            <div>
+                <h3 class="text-lg font-semibold mb-4">Contacto</h3>
+                <div class="space-y-2 text-gray-300">
+                    <p>Valencia, España</p>
+                    <p>+34 966 497 016</p>
+                    <p>hello@guestsvalencia.es</p>
+                    <div class="flex space-x-4 mt-4">
+                        <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Instagram</a>
+                        <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Facebook</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="border-t border-slate-700 mt-8 pt-8 text-center text-gray-400">
+            <p>&copy; 2024 GuestsValencia. Todos los derechos reservados.</p>
+        </div>
+    </div>
+</footer>
+<button aria-label="Abrir chat Sandra" class="fab">
+<span class="fab-badge">●</span>
+<svg viewbox="0 0 24 24"><path d="M12 3a9 9 0 100 18 9 9 0 000-18zm-1 5h2v5h-2V8zm1 8a1.5 1.5 0 110-3 1.5 1.5 0 010 3z"></path></svg>
+</button>
+<script>
+      document.addEventListener('click',e=>{
+        if(e.target.closest('.fab')){
+          window.location.href='https://wa.me/34600000000?text=Hola%20Sandra%2C%20necesito%20ayuda';
+        }
+      });
+    </script><input accept="image/*" id="logo-file" style="display:none" type="file"/><input accept="image/*" id="hero-file" style="display:none" type="file"/>  <script src="assets/sandra-client.js"></script>
+    <script src="navbar-script.js"></script>
+</body></html>
