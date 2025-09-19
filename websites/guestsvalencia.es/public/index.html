@@ -1,0 +1,402 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guests Valencia - Alojamientos Turísticos de Calidad</title>
+
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Guests Valencia - Tu hogar lejos de casa en la hermosa Valencia. Alojamientos turísticos de calidad con gestión profesional y Sandra IA.">
+    <meta name="keywords" content="Valencia, alojamiento, turismo, apartamentos, vacaciones, España, Airbnb, alquiler, Sandra IA">
+    <meta name="author" content="Guests Valencia">
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://guestsvalencia.es/">
+    <meta property="og:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="og:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos con Sandra IA.">
+    <meta property="og:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://guestsvalencia.es/">
+    <meta property="twitter:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="twitter:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos.">
+    <meta property="twitter:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/activos/favicon.ico">
+    <link rel="apple-touch-icon" href="/activos/apple-touch-icon.png">
+    <!-- PWA Meta Tags -->
+    <link rel="manifest" href="/manifest.webmanifest">
+    <meta name="theme-color" content="#0b1020">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'guests-blue': '#0ea5e9',
+                        'guests-red': '#ef4444',
+                        'guests-pink': '#ec4899',
+                        'sandra-green': '#19C37D',
+                    },
+                    animation: {
+                        'shimmer': 'shimmer 2s linear infinite',
+                    },
+                    keyframes: {
+                        'shimmer': {
+                            '0%': { opacity: '0.3' },
+                            '50%': { opacity: '1' },
+                            '100%': { opacity: '0.3' }
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Guests Valencia",
+        "description": "Alojamientos turísticos de calidad en Valencia",
+        "url": "https://guestsvalencia.es/",
+        "logo": "https://guestsvalencia.es/activos/logo.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+34966497016",
+            "contactType": "customer service",
+            "email": "hello@guestsvalencia.es"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Avda de la Marina 318",
+            "addressLocality": "Benissa",
+            "addressRegion": "Alicante",
+            "postalCode": "03720",
+            "addressCountry": "ES"
+        }
+    }
+    </script>
+
+    <!-- TU NETLIFY IDENTITY EXISTENTE - MANTENGO TODO -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body class="antialiased font-inter bg-slate-50 text-slate-900">
+
+    <!-- NAVBAR FIJA - NUNCA DESAPARECE -->
+    <nav class="site-navbar bg-slate-900 text-white fixed top-0 left-0 right-0 z-50 shadow-lg backdrop-blur-sm">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="/assets/img/logo-gv.svg" alt="GuestsValencia Logo" class="w-10 h-10" onerror="this.style.display='none'">
+                    <span class="text-xl font-bold">GuestsValencia</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="/index.html" class="hover:text-sky-400 transition-colors font-medium">Inicio</a>
+                    <a href="/alojamientos.html" class="hover:text-sky-400 transition-colors">Alojamientos</a>
+                    <a href="/propietarios.html" class="hover:text-sky-400 transition-colors">Propietarios</a>
+                    <a href="/contacto.html" class="hover:text-sky-400 transition-colors">Contacto</a>
+                </div>
+                <div class="md:hidden">
+                    <button id="mobile-menu-toggle" class="text-white hover:text-sky-400 transition-colors">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+
+            <!-- Menu móvil -->
+            <div id="mobile-menu" class="hidden md:hidden mt-4 pb-4 border-t border-slate-700">
+                <div class="flex flex-col space-y-3 pt-4">
+                    <a href="/index.html" class="hover:text-sky-400 transition-colors">Inicio</a>
+                    <a href="/alojamientos.html" class="hover:text-sky-400 transition-colors">Alojamientos</a>
+                    <a href="/propietarios.html" class="hover:text-sky-400 transition-colors">Propietarios</a>
+                    <a href="/contacto.html" class="hover:text-sky-400 transition-colors">Contacto</a>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- MAIN CONTENT - ESPACIADO PARA NAVBAR FIJA -->
+    <main class="pt-20">
+        <!-- HERO SECTION CON BARRA DE BÚSQUEDA -->
+        <section class="bg-gradient-to-br from-slate-900 via-slate-800 to-slate-900 text-white py-20 px-4">
+            <div class="container mx-auto text-center">
+                <h1 class="text-4xl md:text-6xl font-bold mb-6 bg-gradient-to-r from-white to-sky-400 bg-clip-text text-transparent">
+                    Tu hogar lejos de casa
+                </h1>
+                <p class="text-xl md:text-2xl text-slate-300 mb-12 max-w-3xl mx-auto">
+                    Descubre alojamientos únicos en Valencia con Sandra IA, tu asistente personal 24/7
+                </p>
+
+                <!-- BARRA DE BÚSQUEDA PRINCIPAL -->
+                <div class="max-w-2xl mx-auto relative">
+                    <div class="flex items-center bg-white rounded-full p-2 shadow-2xl">
+                        <div class="flex-1 flex items-center px-4">
+                            <svg class="w-5 h-5 text-slate-400 mr-3" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"></path>
+                            </svg>
+                            <input
+                                type="text"
+                                id="search-input"
+                                placeholder="¿Qué alojamiento buscas? Ej: Apartamento centro Valencia..."
+                                class="flex-1 outline-none text-slate-900 text-lg"
+                                autocomplete="off"
+                            >
+                        </div>
+                        <button
+                            id="search-btn"
+                            class="bg-guests-blue hover:bg-blue-600 text-white px-8 py-3 rounded-full font-semibold transition-all duration-200 hover:scale-105"
+                        >
+                            Buscar
+                        </button>
+                    </div>
+
+                    <!-- SLOT IA DISCRETO - BAJO LA BÚSQUEDA -->
+                    <div id="ai-slot" class="mt-4 opacity-0 transition-all duration-300">
+                        <div class="bg-slate-800/50 backdrop-blur-sm rounded-xl p-4 border border-slate-700">
+                            <div class="flex items-center justify-center space-x-3">
+                                <div class="w-3 h-3 bg-sandra-green rounded-full animate-pulse"></div>
+                                <span id="ai-text" class="text-sandra-green font-medium">
+                                    Buscar con IA
+                                </span>
+                                <svg class="w-4 h-4 text-sandra-green" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                    <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- QUICK ACTIONS -->
+                <div class="mt-12 flex flex-wrap justify-center gap-4">
+                    <a href="/alojamientos.html" class="bg-white/10 hover:bg-white/20 backdrop-blur-sm px-6 py-3 rounded-full transition-all duration-200 hover:scale-105">
+                        Ver todos los alojamientos
+                    </a>
+                    <a href="/propietarios.html" class="border border-white/30 hover:bg-white/10 px-6 py-3 rounded-full transition-all duration-200 hover:scale-105">
+                        ¿Eres propietario?
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- SANDRA IA SECTION -->
+        <section class="bg-gradient-to-r from-sandra-green to-guests-blue py-20 px-4 text-white">
+            <div class="container mx-auto text-center">
+                <h2 class="text-3xl md:text-4xl font-bold mb-6">Conoce a Sandra IA</h2>
+                <p class="text-xl mb-8 max-w-2xl mx-auto opacity-90">
+                    Tu asistente personal 24/7. Sandra te ayuda a encontrar el alojamiento perfecto,
+                    gestionar tu reserva y resolver cualquier duda durante tu estancia.
+                </p>
+                <div class="flex flex-col md:flex-row items-center justify-center gap-6">
+                    <button
+                        id="sandra-chat-btn"
+                        class="bg-white text-sandra-green px-8 py-4 rounded-full font-semibold hover:bg-slate-100 transition-all duration-200 hover:scale-105"
+                    >
+                        💬 Chatear con Sandra
+                    </button>
+                    <button
+                        id="sandra-call-btn"
+                        class="border-2 border-white text-white px-8 py-4 rounded-full font-semibold hover:bg-white hover:text-sandra-green transition-all duration-200 hover:scale-105"
+                    >
+                        📞 Llamar a Sandra
+                    </button>
+                </div>
+            </div>
+        </section>
+    </main>
+
+    <!-- Footer unificado GuestsValencia -->
+    <footer class="bg-slate-800 text-white py-12 mt-16">
+        <div class="container mx-auto px-4">
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Navegación</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/index.html" class="text-gray-300 hover:text-sky-400 transition-colors">Inicio</a></li>
+                        <li><a href="/alojamientos.html" class="text-gray-300 hover:text-sky-400 transition-colors">Alojamientos</a></li>
+                        <li><a href="/propietarios.html" class="text-gray-300 hover:text-sky-400 transition-colors">Propietarios</a></li>
+                        <li><a href="/contacto.html" class="text-gray-300 hover:text-sky-400 transition-colors">Contacto</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Legal</h3>
+                    <ul class="space-y-2">
+                        <li><a href="/legal.html" class="text-gray-300 hover:text-sky-400 transition-colors">Aviso Legal</a></li>
+                        <li><a href="/legal.html#privacidad" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Privacidad</a></li>
+                        <li><a href="/legal.html#cookies" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Cookies</a></li>
+                        <li><a href="/legal.html#terminos" class="text-gray-300 hover:text-sky-400 transition-colors">Términos y Condiciones</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Servicios</h3>
+                    <ul class="space-y-2">
+                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">App Móvil</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Gestión de Reservas</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Soporte 24/7</a></li>
+                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Newsletter</a></li>
+                    </ul>
+                </div>
+                <div>
+                    <h3 class="text-lg font-semibold mb-4">Contacto</h3>
+                    <div class="space-y-2 text-gray-300">
+                        <p>Valencia, España</p>
+                        <p>+34 966 497 016</p>
+                        <p>hello@guestsvalencia.es</p>
+                        <div class="flex space-x-4 mt-4">
+                            <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Instagram</a>
+                            <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Facebook</a>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="border-t border-slate-700 mt-8 pt-8 text-center text-gray-400">
+                <p>&copy; 2024 GuestsValencia. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- SCRIPTS MODERNOS -->
+    <script>
+        // MODERNO INDEX CONTROLLER
+        class ModernIndexController {
+            constructor() {
+                this.init();
+                this.startShimmerEffect();
+                this.setupEventListeners();
+            }
+
+            init() {
+                console.log('GuestsValencia Index Moderno iniciado');
+
+                // Mostrar slot IA
+                setTimeout(() => {
+                    const aiSlot = document.getElementById('ai-slot');
+                    if (aiSlot) {
+                        aiSlot.style.opacity = '1';
+                    }
+                }, 1500);
+            }
+
+            startShimmerEffect() {
+                // Efecto shimmer cada 15 segundos exactos
+                setInterval(() => {
+                    const aiText = document.getElementById('ai-text');
+                    if (aiText) {
+                        aiText.classList.add('animate-shimmer');
+                        setTimeout(() => {
+                            aiText.classList.remove('animate-shimmer');
+                        }, 2000);
+                    }
+                }, 15000);
+            }
+
+            setupEventListeners() {
+                // Menu móvil
+                const menuToggle = document.getElementById('mobile-menu-toggle');
+                const mobileMenu = document.getElementById('mobile-menu');
+
+                if (menuToggle && mobileMenu) {
+                    menuToggle.addEventListener('click', () => {
+                        mobileMenu.classList.toggle('hidden');
+                    });
+                }
+
+                // Búsqueda
+                const searchInput = document.getElementById('search-input');
+                const searchBtn = document.getElementById('search-btn');
+
+                if (searchInput && searchBtn) {
+                    searchBtn.addEventListener('click', () => this.performSearch());
+                    searchInput.addEventListener('keypress', (e) => {
+                        if (e.key === 'Enter') this.performSearch();
+                    });
+                }
+
+                // Sandra IA buttons
+                const chatBtn = document.getElementById('sandra-chat-btn');
+                const callBtn = document.getElementById('sandra-call-btn');
+
+                if (chatBtn) {
+                    chatBtn.addEventListener('click', () => this.initSandraChat());
+                }
+
+                if (callBtn) {
+                    callBtn.addEventListener('click', () => this.initSandraCall());
+                }
+            }
+
+            performSearch() {
+                const query = document.getElementById('search-input').value.trim();
+                if (query) {
+                    window.location.href = '/alojamientos.html?search=' + encodeURIComponent(query);
+                }
+            }
+
+            initSandraChat() {
+                if (window.SandraWidget) {
+                    window.SandraWidget.open('chat');
+                } else {
+                    console.log('Sandra Chat iniciado - pendiente integración');
+                }
+            }
+
+            initSandraCall() {
+                if (window.SandraWidget) {
+                    window.SandraWidget.open('call');
+                } else {
+                    console.log('Sandra Call iniciado - pendiente integración');
+                }
+            }
+        }
+
+        // Inicializar cuando el DOM esté listo
+        document.addEventListener('DOMContentLoaded', () => {
+            new ModernIndexController();
+        });
+    </script>
+
+    <!-- Script de la nueva aplicación -->
+    <script src="gv-app.js"></script>
+
+    <!-- Sandra Widget Híbrido Chat + Avatar -->
+    <script src="assets/sandra-widget-hybrid.js"></script>
+
+    <!-- TUS NETLIFY HANDLERS EXISTENTES - NO TOCO NADA -->
+    <script>
+        // MANTENGO TU CONFIGURACIÓN EXACTA
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/panel/";
+                    });
+                }
+            });
+        }
+    </script>
+
+    <!-- TUS ANALYTICS EXISTENTES - NO MODIFICO -->
+    <script src="navbar-script.js"></script>
+    <!-- PWA Scripts -->
+    <script>
+      if("serviceWorker" in navigator){ navigator.serviceWorker.register("/sw.js"); }
+    </script>
+    <script src="/assets/pwa-install.js"></script>
+</body>
+</html>

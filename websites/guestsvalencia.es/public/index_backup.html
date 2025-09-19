@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guests Valencia - Alojamientos Turísticos de Calidad</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Guests Valencia - Tu hogar lejos de casa en la hermosa Valencia. Alojamientos turísticos de calidad con gestión profesional y Sandra IA.">
+    <meta name="keywords" content="Valencia, alojamiento, turismo, apartamentos, vacaciones, España, Airbnb, alquiler, Sandra IA">
+    <meta name="author" content="Guests Valencia">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://guestsvalencia.es/">
+    <meta property="og:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="og:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos con Sandra IA.">
+    <meta property="og:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://guestsvalencia.es/">
+    <meta property="twitter:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="twitter:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos.">
+    <meta property="twitter:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/activos/favicon.ico">
+    <link rel="apple-touch-icon" href="/activos/apple-touch-icon.png">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'guests-blue': '#0ea5e9',
+                        'guests-red': '#ef4444',
+                        'guests-pink': '#ec4899',
+                        'sandra-green': '#19C37D',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- TUS ESTILOS EXISTENTES - NO MODIFICO NADA -->
+    <link rel="stylesheet" href="estilos.css">
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Guests Valencia",
+        "description": "Alojamientos turísticos de calidad en Valencia",
+        "url": "https://guestsvalencia.es/",
+        "logo": "https://guestsvalencia.es/activos/logo.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+34966497016",
+            "contactType": "customer service",
+            "email": "hello@guestsvalencia.es"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Avda de la Marina 318",
+            "addressLocality": "Benissa",
+            "addressRegion": "Alicante",
+            "postalCode": "03720",
+            "addressCountry": "ES"
+        }
+    }
+    </script>
+
+    <!-- TU NETLIFY IDENTITY EXISTENTE - MANTENGO TODO -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body class="antialiased font-inter bg-slate-50 text-slate-900">
+    
+    <!-- Contenedor principal de la aplicación -->
+    <div id="gv-app">
+        <!-- Loading inicial -->
+        <div id="gv-loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+            <div class="text-center">
+                <div class="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="text-gray-600">Cargando Guests Valencia...</p>
+            </div>
+        </div>
+    </div>
+
+    <!-- Script de la nueva aplicación -->
+    <script src="gv-app.js"></script>
+
+    <!-- Sandra Widget Híbrido Chat + Avatar -->
+    <script src="assets/sandra-widget-hybrid.js"></script>
+    
+    <!-- TUS NETLIFY HANDLERS EXISTENTES - NO TOCO NADA -->
+    <script>
+        // MANTENGO TU CONFIGURACIÓN EXACTA
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/panel/";
+                    });
+                }
+            });
+        }
+    </script>
+
+    <!-- TUS ANALYTICS EXISTENTES - NO MODIFICO -->
+    <!-- Aquí van tus scripts de analytics si los tienes -->
+</body>
+</html>

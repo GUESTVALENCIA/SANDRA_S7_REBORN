@@ -1,0 +1,87 @@
+/* Estilos adicionales para navbar fija GuestsValencia */
+
+.site-navbar {
+    transition: all 0.3s ease;
+    backdrop-filter: blur(10px);
+    -webkit-backdrop-filter: blur(10px);
+}
+
+.site-navbar.scrolled {
+    background-color: rgba(15, 23, 42, 0.95);
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+}
+
+/* Asegurar que el contenido no se superponga con la navbar */
+body {
+    padding-top: 0;
+}
+
+.pt-16 {
+    padding-top: 4rem !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+    .site-navbar .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+
+    .pt-16 {
+        padding-top: 3.5rem !important;
+    }
+}
+
+/* Logo hover effect */
+.site-navbar img {
+    transition: transform 0.3s ease;
+}
+
+.site-navbar img:hover {
+    transform: scale(1.1);
+}
+
+/* Menu button for mobile */
+.site-navbar button:focus {
+    outline: none;
+    box-shadow: 0 0 0 2px rgba(59, 130, 246, 0.5);
+}
+
+/* Active link styling */
+.site-navbar a.active {
+    color: #0ea5e9;
+    position: relative;
+}
+
+.site-navbar a.active::after {
+    content: '';
+    position: absolute;
+    bottom: -8px;
+    left: 0;
+    right: 0;
+    height: 2px;
+    background-color: #0ea5e9;
+}
+
+/* Footer improvements */
+footer a:hover {
+    text-decoration: underline;
+}
+
+footer h3 {
+    color: #ffffff;
+}
+
+/* Smooth scroll for anchors */
+html {
+    scroll-behavior: smooth;
+}
+
+/* Z-index management */
+.site-navbar {
+    z-index: 1000;
+}
+
+#gv-loading {
+    z-index: 9999;
+}

@@ -1,0 +1,154 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Guests Valencia - Alojamientos Turísticos de Calidad</title>
+    
+    <!-- SEO Meta Tags -->
+    <meta name="description" content="Guests Valencia - Tu hogar lejos de casa en la hermosa Valencia. Alojamientos turísticos de calidad con gestión profesional y Sandra IA.">
+    <meta name="keywords" content="Valencia, alojamiento, turismo, apartamentos, vacaciones, España, Airbnb, alquiler, Sandra IA">
+    <meta name="author" content="Guests Valencia">
+    
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://guestsvalencia.es/">
+    <meta property="og:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="og:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos con Sandra IA.">
+    <meta property="og:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="https://guestsvalencia.es/">
+    <meta property="twitter:title" content="Guests Valencia - Alojamientos Turísticos de Calidad">
+    <meta property="twitter:description" content="Tu hogar lejos de casa en la hermosa Valencia. Descubre nuestros alojamientos únicos.">
+    <meta property="twitter:image" content="https://guestsvalencia.es/activos/og-image.jpg">
+
+    <!-- Favicon -->
+    <link rel="icon" type="image/x-icon" href="/activos/favicon.ico">
+    <link rel="apple-touch-icon" href="/activos/apple-touch-icon.png">
+
+    <!-- Fuentes -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+    
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'guests-blue': '#0ea5e9',
+                        'guests-red': '#ef4444',
+                        'guests-pink': '#ec4899',
+                        'sandra-green': '#19C37D',
+                    }
+                }
+            }
+        }
+    </script>
+    
+    <!-- Lucide Icons -->
+    <script src="https://unpkg.com/lucide@latest/dist/umd/lucide.js"></script>
+    
+    <!-- TUS ESTILOS EXISTENTES - NO MODIFICO NADA -->
+    <link rel="stylesheet" href="estilos.css">
+
+    <!-- Schema.org structured data -->
+    <script type="application/ld+json">
+    {
+        "@context": "https://schema.org",
+        "@type": "TravelAgency",
+        "name": "Guests Valencia",
+        "description": "Alojamientos turísticos de calidad en Valencia",
+        "url": "https://guestsvalencia.es/",
+        "logo": "https://guestsvalencia.es/activos/logo.png",
+        "contactPoint": {
+            "@type": "ContactPoint",
+            "telephone": "+34966497016",
+            "contactType": "customer service",
+            "email": "hello@guestsvalencia.es"
+        },
+        "address": {
+            "@type": "PostalAddress",
+            "streetAddress": "Avda de la Marina 318",
+            "addressLocality": "Benissa",
+            "addressRegion": "Alicante",
+            "postalCode": "03720",
+            "addressCountry": "ES"
+        }
+    }
+    </script>
+
+    <!-- TU NETLIFY IDENTITY EXISTENTE - MANTENGO TODO -->
+    <script type="text/javascript" src="https://identity.netlify.com/v1/netlify-identity-widget.js"></script>
+</head>
+<body class="antialiased font-inter bg-slate-50 text-slate-900">
+
+    <!-- NAVBAR (fija y con logo) -->
+    <nav class="site-navbar bg-slate-900 text-white fixed top-0 left-0 right-0 z-50 shadow-lg">
+        <div class="container mx-auto px-4 py-3">
+            <div class="flex items-center justify-between">
+                <div class="flex items-center space-x-3">
+                    <img src="/assets/img/logo-gv.svg" alt="GuestsValencia Logo" class="w-10 h-10">
+                    <span class="text-xl font-bold">GuestsValencia</span>
+                </div>
+                <div class="hidden md:flex space-x-6">
+                    <a href="/index.html" class="hover:text-sky-400 transition-colors">Inicio</a>
+                    <a href="/alojamientos.html" class="hover:text-sky-400 transition-colors">Alojamientos</a>
+                    <a href="/propietarios.html" class="hover:text-sky-400 transition-colors">Propietarios</a>
+                    <a href="/contacto.html" class="hover:text-sky-400 transition-colors">Contacto</a>
+                </div>
+                <div class="md:hidden">
+                    <button class="text-white hover:text-sky-400">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </nav>
+    
+    <!-- Contenedor principal de la aplicación -->
+    <div id="gv-app">
+        <!-- Loading inicial -->
+        <div id="gv-loading" class="fixed inset-0 bg-white flex items-center justify-center z-50">
+            <div class="text-center">
+                <div class="w-16 h-16 border-4 border-sky-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
+                <p class="text-gray-600">Cargando Guests Valencia...</p>
+            </div>
+        </div>
+    </div>
+
+<!-- Footer unificado GuestsValencia -->    <footer class="bg-slate-800 text-white py-12 mt-16">        <div class="container mx-auto px-4">            <div class="grid grid-cols-1 md:grid-cols-4 gap-8">                <div>                    <h3 class="text-lg font-semibold mb-4">Navegación</h3>                    <ul class="space-y-2">                        <li><a href="/index.html" class="text-gray-300 hover:text-sky-400 transition-colors">Inicio</a></li>                        <li><a href="/alojamientos.html" class="text-gray-300 hover:text-sky-400 transition-colors">Alojamientos</a></li>                        <li><a href="/propietarios.html" class="text-gray-300 hover:text-sky-400 transition-colors">Propietarios</a></li>                        <li><a href="/contacto.html" class="text-gray-300 hover:text-sky-400 transition-colors">Contacto</a></li>                    </ul>                </div>                <div>                    <h3 class="text-lg font-semibold mb-4">Legal</h3>                    <ul class="space-y-2">                        <li><a href="/legal.html" class="text-gray-300 hover:text-sky-400 transition-colors">Aviso Legal</a></li>                        <li><a href="/legal.html#privacidad" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Privacidad</a></li>                        <li><a href="/legal.html#cookies" class="text-gray-300 hover:text-sky-400 transition-colors">Política de Cookies</a></li>                        <li><a href="/legal.html#terminos" class="text-gray-300 hover:text-sky-400 transition-colors">Términos y Condiciones</a></li>                    </ul>                </div>                <div>                    <h3 class="text-lg font-semibold mb-4">Servicios</h3>                    <ul class="space-y-2">                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">App Móvil</a></li>                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Gestión de Reservas</a></li>                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Soporte 24/7</a></li>                        <li><a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Newsletter</a></li>                    </ul>                </div>                <div>                    <h3 class="text-lg font-semibold mb-4">Contacto</h3>                    <div class="space-y-2 text-gray-300">                        <p>Valencia, España</p>                        <p>+34 966 497 016</p>                        <p>hello@guestsvalencia.es</p>                        <div class="flex space-x-4 mt-4">                            <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Instagram</a>                            <a href="#" class="text-gray-300 hover:text-sky-400 transition-colors">Facebook</a>                        </div>                    </div>                </div>            </div>            <div class="border-t border-slate-700 mt-8 pt-8 text-center text-gray-400">                <p>&copy; 2024 GuestsValencia. Todos los derechos reservados.</p>            </div>        </div>    </footer>
+    <!-- Script de la nueva aplicación -->
+    <script src="gv-app.js"></script>
+
+    <!-- Sandra Widget Híbrido Chat + Avatar -->
+    <script src="assets/sandra-widget-hybrid.js"></script>
+    
+    <!-- TUS NETLIFY HANDLERS EXISTENTES - NO TOCO NADA -->
+    <script>
+        // MANTENGO TU CONFIGURACIÓN EXACTA
+        if (window.netlifyIdentity) {
+            window.netlifyIdentity.on("init", user => {
+                if (!user) {
+                    window.netlifyIdentity.on("login", () => {
+                        document.location.href = "/panel/";
+                    });
+                }
+            });
+        }
+    </script>
+
+    <!-- TUS ANALYTICS EXISTENTES - NO MODIFICO -->
+    <!-- Aquí van tus scripts de analytics si los tienes -->
+    <script src="navbar-script.js"></script>
+</body>
+</html>

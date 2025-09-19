@@ -1,0 +1,74 @@
+[build]
+  command = "echo 'No build step required for static site'"
+  publish = "."
+
+[build.environment]
+  NODE_VERSION = "18"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+
+# Deploy contexts - Solo main y release branches
+[context.production]
+  publish = "."
+
+[context.deploy-preview]
+  publish = "."
+
+# Legacy redirects - redirect old paths to home
+[[redirects]]
+  from = "/legacy/*"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/demo/*"
+  to = "/"
+  status = 301
+  force = true
+
+[[redirects]]
+  from = "/old/*"
+  to = "/"
+  status = 301
+  force = true
+
+# API redirects to functions
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/:splat"
+  status = 200
+
+# SPA fallback - must be last
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
+
+# Security headers for all pages
+[[headers]]
+  for = "/*"
+  [headers.values]
+    X-Frame-Options = "SAMEORIGIN"
+    X-Content-Type-Options = "nosniff"
+    Referrer-Policy = "strict-origin-when-cross-origin"
+    X-XSS-Protection = "1; mode=block"
+    Strict-Transport-Security = "max-age=31536000; includeSubDomains"
+    Permissions-Policy = "geolocation=(), microphone=(), camera=()"
+
+# Asset optimization
+[[headers]]
+  for = "/assets/*"
+  [headers.values]
+    Cache-Control = "public, max-age=31536000, immutable"
+
+# API CORS headers
+[[headers]]
+  for = "/.netlify/functions/*"
+  [headers.values]
+    Access-Control-Allow-Origin = "*"
+    Access-Control-Allow-Methods = "GET, POST, OPTIONS"
+    Access-Control-Allow-Headers = "Content-Type, Authorization"
+    Cache-Control = "no-cache"

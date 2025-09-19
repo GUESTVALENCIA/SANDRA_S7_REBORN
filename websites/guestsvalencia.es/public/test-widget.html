@@ -1,0 +1,181 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Test - Sandra Widget Híbrido</title>
+
+    <!-- Preconnect para optimizar performance -->
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link rel="preconnect" href="https://api.elevenlabs.io">
+
+    <!-- Fuentes -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&display=swap" rel="stylesheet">
+
+    <!-- Tailwind CSS -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        'inter': ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        'guests-blue': '#0ea5e9',
+                        'guests-red': '#ef4444',
+                        'guests-pink': '#ec4899',
+                        'sandra-green': '#19C37D',
+                    }
+                }
+            }
+        }
+    </script>
+
+    <!-- Estilos principales -->
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="antialiased font-inter bg-slate-50 text-slate-900">
+
+    <!-- Contenido de prueba -->
+    <div class="min-h-screen flex items-center justify-center">
+        <div class="text-center">
+            <h1 class="text-4xl font-bold text-gray-900 mb-6">
+                Test Sandra Widget Híbrido
+            </h1>
+            <p class="text-xl text-gray-600 mb-8">
+                Prueba del widget Chat + Mini-Avatar
+            </p>
+
+            <!-- Botones de prueba -->
+            <div class="flex flex-col gap-4 max-w-md mx-auto">
+                <button id="test-open-chat" class="bg-sandra-green text-white px-6 py-3 rounded-lg font-semibold hover:bg-green-600 transition-colors">
+                    💬 Abrir Chat
+                </button>
+                <button id="test-open-avatar" class="bg-guests-blue text-white px-6 py-3 rounded-lg font-semibold hover:bg-blue-600 transition-colors">
+                    🎥 Abrir Avatar
+                </button>
+                <button id="test-fullscreen" class="bg-guests-pink text-white px-6 py-3 rounded-lg font-semibold hover:bg-pink-600 transition-colors">
+                    ⛶ Test Fullscreen
+                </button>
+            </div>
+
+            <!-- Info del widget -->
+            <div class="mt-12 bg-white rounded-lg shadow-md p-6 max-w-2xl mx-auto">
+                <h2 class="text-2xl font-semibold mb-4">Funcionalidades del Widget</h2>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 text-left">
+                    <div>
+                        <h3 class="font-semibold text-sandra-green mb-2">💬 Chat</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Chat de texto funcional</li>
+                            <li>• Envío por Enter</li>
+                            <li>• Integración con /api/chat</li>
+                            <li>• Audio TTS con MP3</li>
+                        </ul>
+                    </div>
+                    <div>
+                        <h3 class="font-semibold text-guests-blue mb-2">🎥 Avatar</h3>
+                        <ul class="text-sm text-gray-600 space-y-1">
+                            <li>• Mini-video con controles</li>
+                            <li>• PTT (Push to Talk)</li>
+                            <li>• Fullscreen del avatar</li>
+                            <li>• Botón compartir (Premium)</li>
+                        </ul>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Estado del sistema -->
+            <div class="mt-8 bg-gray-100 rounded-lg p-4 max-w-md mx-auto">
+                <h3 class="font-semibold mb-2">Estado del Sistema</h3>
+                <div id="system-status" class="text-sm space-y-1">
+                    <div>🔄 Verificando...</div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Sandra Widget Híbrido -->
+    <script src="assets/sandra-widget-hybrid.js"></script>
+
+    <script>
+        // Funciones de prueba
+        document.addEventListener('DOMContentLoaded', () => {
+            // Verificar estado del sistema
+            checkSystemStatus();
+
+            // Botones de prueba
+            document.getElementById('test-open-chat')?.addEventListener('click', () => {
+                const widget = document.getElementById('sandra-widget');
+                if (widget) {
+                    widget.classList.add('open');
+                    const chatTab = document.querySelector('[data-tab="chat"]');
+                    if (chatTab) chatTab.click();
+                }
+            });
+
+            document.getElementById('test-open-avatar')?.addEventListener('click', () => {
+                const widget = document.getElementById('sandra-widget');
+                if (widget) {
+                    widget.classList.add('open');
+                    const avatarTab = document.querySelector('[data-tab="avatar"]');
+                    if (avatarTab) avatarTab.click();
+                }
+            });
+
+            document.getElementById('test-fullscreen')?.addEventListener('click', () => {
+                const fullscreenModal = document.getElementById('sandra-fullscreen-modal');
+                if (fullscreenModal) {
+                    fullscreenModal.classList.add('open');
+                    // Simular video para test
+                    const fullscreenVideo = fullscreenModal.querySelector('#sandra-fullscreen-video');
+                    if (fullscreenVideo && !fullscreenVideo.src) {
+                        // Video de prueba (placeholder)
+                        fullscreenVideo.src = 'data:video/mp4;base64,AAAAIGZ0eXBpc29tAAACAGlzb21pc28yYXZjMW1wNDEAAAAIZnJlZQAAAuFtZGF0AAACYAYKoWm+Fz/AAAAC5G1vb3YAAABabXZoZAAAAAAAAAAAAAAAAAAAAAPoAAAAeAAAAQAAAQAAAAAAAAAAAAAAAAEAAAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAABAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAgAAABFpb2RzAAAAABAFAQKIeQAHACoAQwAGAQIAAAAAAntkaWVGhpXRhAAGhpXRhAAhpbXJhaw==';
+                    }
+                }
+            });
+
+            // Cerrar fullscreen con escape
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    const fullscreenModal = document.getElementById('sandra-fullscreen-modal');
+                    if (fullscreenModal && fullscreenModal.classList.contains('open')) {
+                        fullscreenModal.classList.remove('open');
+                    }
+                }
+            });
+        });
+
+        // Verificar estado del sistema
+        async function checkSystemStatus() {
+            const statusElement = document.getElementById('system-status');
+            const checks = [
+                { name: 'Sandra Chat', url: '/.netlify/functions/sandra-chat', method: 'GET' },
+                { name: 'Sandra TTS', url: '/.netlify/functions/sandra-tts', method: 'GET' },
+                { name: 'HeyGen Ready', url: '/.netlify/functions/heygen-ready', method: 'GET' },
+                { name: 'Proxy ElevenLabs', url: '/.netlify/functions/proxy-11labs', method: 'GET' }
+            ];
+
+            let statusHTML = '';
+
+            for (const check of checks) {
+                try {
+                    const response = await fetch(check.url);
+                    const isOk = response.status < 500; // 404 es OK para test, 500+ no
+                    statusHTML += `<div class="${isOk ? 'text-green-600' : 'text-red-600'}">
+                        ${isOk ? '✅' : '❌'} ${check.name}
+                    </div>`;
+                } catch (error) {
+                    statusHTML += `<div class="text-orange-600">
+                        ⚠️ ${check.name} (No disponible)
+                    </div>`;
+                }
+            }
+
+            statusElement.innerHTML = statusHTML;
+        }
+    </script>
+</body>
+</html>
