@@ -1,0 +1,22 @@
+{
+  "name": "sandra-s7-reborn",
+  "version": "7.0.0",
+  "description": "Sandra IA Platform - ClayTom Systems",
+  "dependencies": {
+    "pg": "^8.11.3",
+    "node-fetch": "^3.3.2"
+  },
+  "type": "module",
+  "scripts": {
+    "dev": "npx netlify dev",
+    "build": "echo 'Build complete'",
+    "deploy": "npx netlify deploy --prod"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/GUESTVALENCIA/SANDRA_S7_REBORN"
+  },
+  "keywords": ["sandra", "ai", "claytomsystems", "guestvalencia"],
+  "author": "ClayTom Systems",
+  "license": "Private"
+}

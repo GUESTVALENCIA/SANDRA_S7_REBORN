@@ -1,0 +1,26 @@
+[build]
+  functions = "netlify/functions"
+  publish   = "public"
+
+[[redirects]]
+  from = "/api/*"
+  to   = "/.netlify/functions/:splat"
+  status = 200
+
+[[headers]]
+  for = "/*"
+  [headers.values]
+  Content-Security-Policy = """
+    default-src 'self';
+    connect-src 'self'
+      https://api.openai.com
+      https://api.elevenlabs.io
+      https://api.guestsvalencia.es
+      blob:;
+    media-src 'self' blob: https://api.elevenlabs.io;
+    img-src 'self' data: blob:;
+    script-src 'self' 'unsafe-inline' https://cdn.jsdelivr.net;
+    style-src 'self' 'unsafe-inline' https://fonts.googleapis.com;
+    font-src 'self' https://fonts.gstatic.com;
+    frame-src https://app.heygen.com https://console.heygen.com;
+  """
