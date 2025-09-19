@@ -1,0 +1,424 @@
+*** a/index.html
+--- b/index.html
+@@
+-<!doctype html>
+-<html lang="es">
++<!doctype html>
++<html lang="es">
+ <head>
+   <meta charset="utf-8"/>
+   <meta name="viewport" content="width=device-width, initial-scale=1"/>
+-  <title>GuestsValencia · Alojamientos en Valencia</title>
+-  <meta name="theme-color" content="#0b1020"/>
++  <title>GuestsValencia · Alojamientos en Valencia</title>
++  <meta name="theme-color" content="#0b1020"/>
+   <script src="https://cdn.tailwindcss.com"></script>
++  <link rel="stylesheet" href="/assets/css/styles.css">
+   <script defer src="/assets/js/site.js"></script>
+-  <style>
+-    .glass { background: rgba(255,255,255,0.10); border: 1px solid rgba(255,255,255,0.20); backdrop-filter: blur(18px); }
+-    .shadow-soft { box-shadow: 0 10px 30px rgba(15,23,42,.15); }
+-    .badge { display:inline-flex; align-items:center; font-size:.75rem; padding:.25rem .6rem; border-radius:999px; border:1px solid rgba(255,255,255,.25); background:rgba(255,255,255,.10); backdrop-filter: blur(10px);}
+-  </style>
++  <script>window.WSS_URL=window.WSS_URL||"wss://TU-DOMINIO";</script>
+ </head>
+-<body class="bg-gray-50 text-slate-800">
++<body class="bg-gray-50 text-slate-800">
++  <!-- NAVBAR -->
++  <div class="bg-slate-900 text-white">
++    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
++      <a href="/index.html" class="text-sm font-semibold">GuestsValencia</a>
++      <nav class="flex items-center gap-4 text-sm">
++        <a href="/index.html"        class="hover:underline">Inicio</a>
++        <a href="/alojamientos.html" class="hover:underline">Alojamientos</a>
++        <a href="/owners.html"       class="hover:underline">Propietarios</a>
++        <a href="/servicios.html"    class="hover:underline">Servicios</a>
++        <a href="/contacto.html"     class="hover:underline">Contacto</a>
++        <span class="mx-2 h-4 w-px bg-white/25"></span>
++        <a href="/auth.html#login"   class="rounded-full bg-white/10 px-3 py-1 border border-white/20">Acceder</a>
++        <a href="/auth.html#signup"  class="rounded-full bg-blue-600 hover:bg-blue-700 px-3 py-1">Registrarse</a>
++      </nav>
++    </div>
++  </div>
+@@
+-  <header class="relative isolate overflow-hidden text-white">
++  <header class="relative isolate overflow-hidden text-white">
+     <div class="absolute inset-0 -z-20 bg-gradient-to-b from-[#0b1020] to-[#0f172a]"></div>
+-    <div class="absolute inset-0 -z-10 bg-[radial-gradient(1200px_600px_at_30%_-10%,rgba(37,99,235,0.28),transparent)]"></div>
++    <div class="absolute inset-0 -z-10 halo-hero"></div>
+@@
+-      <div class="mt-4 flex justify-center">
+-        <button id="play-opener" class="rounded-2xl border border-white/20 px-6 py-3 text-white/80 hover:text-white">Reproducir opener (3s)</button>
+-        <audio id="opener-audio" src="/audio/sandra-opener.wav" preload="auto"></audio>
+-      </div>
++      <!-- Opener automático -->
++      <audio id="opener-audio" src="/audio/sandra-opener.wav" preload="auto"></audio>
++      <div id="audio-cta" class="hidden mt-4 flex justify-center">
++        <button class="rounded-2xl border border-white/20 px-6 py-3 text-white/80 hover:text-white">🔊 activar audio</button>
++      </div>
+     </div>
+   </header>
+@@
+-  <section class="mx-auto max-w-6xl px-6 py-10">
+-    <h2 class="text-2xl font-bold text-slate-900">Destacados</h2>
+-    <div class="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
+-      <a href="/listing.html?id=MN47&nights=2" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
++  <!-- 9 cards en home → llevan a /alojamientos.html -->
++  <section class="mx-auto max-w-6xl px-6 py-10">
++    <h2 class="text-2xl font-bold text-slate-900">Alojamientos</h2>
++    <p class="text-slate-600">Explora nuestras opciones con <b>llegada autónoma</b> y soporte 24/7.</p>
++    <div class="mt-6 grid sm:grid-cols-2 md:grid-cols-3 gap-6">
++      <a href="/alojamientos.html?pref=MN47" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
+         <div class="relative">
+           <img src="/images/mn47_1.jpg" class="w-full h-44 object-cover transition group-hover:scale-[1.02]" alt="Méndez Núñez 47">
+           <span class="absolute top-2 left-2 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-black/60 text-white">Llegada autónoma</span>
+         </div>
+         <div class="p-4">
+           <div class="flex justify-between items-center">
+             <b class="text-slate-900">Méndez Núñez, 47 — Puerto</b>
+             <span class="text-blue-700 font-bold">€125</span>
+           </div>
+           <p class="text-sm text-slate-600 mt-1">4 hab · hasta 8 huéspedes</p>
+         </div>
+       </a>
+-      <a href="/listing.html?id=APT01&nights=2" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
++      <a href="/alojamientos.html?pref=APT01" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
+         <div class="relative">
+           <img src="/images/apt1_1.jpg" class="w-full h-44 object-cover transition group-hover:scale-[1.02]" alt="Apartamento 1">
+         </div>
+         <div class="p-4">
+           <div class="flex justify-between items-center">
+             <b class="text-slate-900">Apartamento céntrico 1</b>
+             <span class="text-blue-700 font-bold">€85</span>
+           </div>
+           <p class="text-sm text-slate-600 mt-1">2 hab · hasta 4</p>
+         </div>
+       </a>
+-      <a href="/listing.html?id=APT02&nights=2" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
++      <a href="/alojamientos.html?pref=APT02" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition">
+         <div class="relative">
+           <img src="/images/apt2_1.jpg" class="w-full h-44 object-cover transition group-hover:scale-[1.02]" alt="Apartamento 2">
+           <span class="absolute top-2 left-2 inline-flex items-center rounded-full px-2.5 py-1 text-xs font-semibold bg-black/60 text-white">Llegada autónoma</span>
+         </div>
+         <div class="p-4">
+           <div class="flex justify-between items-center">
+             <b class="text-slate-900">Apartamento céntrico 2</b>
+             <span class="text-blue-700 font-bold">€90</span>
+           </div>
+           <p class="text-sm text-slate-600 mt-1">2 hab · hasta 4</p>
+         </div>
+       </a>
++      <a href="/alojamientos.html?pref=APT03" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt3_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Loft marítimo</b><span class="text-blue-700 font-bold">€110</span></div><p class="text-sm text-slate-600 mt-1">1 hab · hasta 3</p></div></a>
++      <a href="/alojamientos.html?pref=APT04" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt4_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Ático con terraza</b><span class="text-blue-700 font-bold">€140</span></div><p class="text-sm text-slate-600 mt-1">2 hab · hasta 5</p></div></a>
++      <a href="/alojamientos.html?pref=APT05" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt5_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Suite histórica</b><span class="text-blue-700 font-bold">€130</span></div><p class="text-sm text-slate-600 mt-1">1 hab · hasta 2</p></div></a>
++      <a href="/alojamientos.html?pref=APT06" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt6_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Family & Friends</b><span class="text-blue-700 font-bold">€95</span></div><p class="text-sm text-slate-600 mt-1">3 hab · hasta 6</p></div></a>
++      <a href="/alojamientos.html?pref=APT07" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt7_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Vista jardines</b><span class="text-blue-700 font-bold">€88</span></div><p class="text-sm text-slate-600 mt-1">1 hab · hasta 3</p></div></a>
++      <a href="/alojamientos.html?pref=APT08" class="group block rounded-2xl border border-slate-200 bg-white shadow-sm overflow-hidden hover:shadow-lg transition"><div class="relative"><img src="/images/apt8_1.jpg" class="w-full h-44 object-cover" alt=""></div><div class="p-4"><div class="flex justify-between items-center"><b>Business Centro</b><span class="text-blue-700 font-bold">€105</span></div><p class="text-sm text-slate-600 mt-1">1 hab · hasta 2</p></div></a>
+     </div>
+   </section>
+@@
++  <!-- SERVICIOS abreviados + CTA Presupuesto -->
++  <section class="mx-auto max-w-6xl px-6 pb-12">
++    <h2 class="text-2xl font-bold text-slate-900">Servicios</h2>
++    <div class="mt-6 grid md:grid-cols-3 gap-6">
++      <a href="/servicios.html#licencias" class="block rounded-2xl border bg-white p-5 shadow-sm hover:shadow-lg">
++        <b>Gestión de licencias turísticas</b>
++        <p class="text-sm text-slate-600 mt-1">Tramitamos y mantenemos tu VT.</p>
++      </a>
++      <a href="/servicios.html#limpieza" class="block rounded-2xl border bg-white p-5 shadow-sm hover:shadow-lg">
++        <b>Limpieza profesional</b>
++        <p class="text-sm text-slate-600 mt-1">Particulares y empresas.</p>
++      </a>
++      <a href="/servicios.html#mantenimiento" class="block rounded-2xl border bg-white p-5 shadow-sm hover:shadow-lg">
++        <b>Mantenimiento integral</b>
++        <p class="text-sm text-slate-600 mt-1">Revisiones y asistencia.</p>
++      </a>
++    </div>
++    <div class="mt-8 rounded-2xl glass shadow-soft p-6 text-white relative overflow-hidden">
++      <div class="absolute inset-0 -z-10 halo-sub"></div>
++      <h3 class="text-xl font-bold">¿Quieres un presupuesto?</h3>
++      <p class="text-slate-200 mt-1">Cuéntanos tu vivienda o tus necesidades y te respondemos al momento.</p>
++      <div class="mt-3 flex gap-2">
++        <a href="/contacto.html#presupuesto" class="rounded-xl bg-white text-slate-900 px-4 py-2 font-semibold">Pedir presupuesto</a>
++        <a href="https://wa.me/34624829117?text=Quiero%20un%20presupuesto" class="rounded-xl bg-emerald-600 text-white px-4 py-2">WhatsApp</a>
++      </div>
++    </div>
++  </section>
+@@
+-  <footer class="mx-auto max-w-6xl px-6 py-10 text-sm text-slate-500">© GuestsValencia · ClayTomSystems</footer>
++  <footer class="mx-auto max-w-6xl px-6 py-10 text-sm text-slate-500">
++    © GuestsValencia · ClayTomSystems — <a class="underline" href="/legal.html">Aviso legal & cookies</a>
++  </footer>
++
++  <!-- Widget Sandra (WS + barge-in) -->
++  <div id="sandra-widget" class="fixed right-4 bottom-20 z-50">
++    <button id="sandra-toggle" class="rounded-full bg-blue-600 hover:bg-blue-700 text-white px-4 py-3 shadow-soft">🎤 Hablar con Sandra</button>
++    <div id="sandra-panel" class="hidden mt-3 w-80 rounded-2xl border bg-white p-3 shadow-soft">
++      <div class="flex items-center justify-between">
++        <b class="text-slate-900">Sandra · Asistente</b><button id="sandra-close" class="text-slate-500 hover:text-slate-700">✕</button>
++      </div>
++      <div id="sandra-log" class="mt-2 h-40 overflow-auto text-sm text-slate-700"></div>
++      <div class="mt-3 flex items-center gap-2">
++        <button id="sandra-ptt" class="rounded-lg bg-emerald-600 hover:bg-emerald-700 text-white px-3 py-2">Pulsar para hablar</button>
++        <button id="sandra-stop" class="rounded-lg bg-slate-200 text-slate-800 px-3 py-2">Parar</button>
++      </div>
++      <p class="mt-2 text-xs text-slate-500">Barge-In: si hablas mientras reproduce, Sandra se calla.</p>
++    </div>
++  </div>
++  <script defer src="/assets/js/sandra-widget.js"></script>
++
++  <!-- Opener autoplay con fallback -->
++  <script>
++  (async ()=>{
++    const a=document.getElementById('opener-audio'); const cta=document.getElementById('audio-cta');
++    try{ await a.play(); }catch{ cta.classList.remove('hidden'); cta.querySelector('button').onclick=async()=>{ try{ await a.play(); cta.classList.add('hidden'); }catch{} } }
++  })();
++  </script>
+ </body>
+ </html>
+*** /dev/null
+--- b/alojamientos.html
+@@
++<!doctype html><html lang="es"><head>
++<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Alojamientos · GuestsValencia</title>
++<link rel="stylesheet" href="/assets/css/styles.css">
++<script src="https://cdn.tailwindcss.com"></script>
++<script defer src="/assets/js/search.js"></script>
++</head><body class="bg-gray-50 text-slate-800">
++  <!-- NAVBAR -->
++  <div class="bg-slate-900 text-white">
++    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
++      <a href="/index.html" class="text-sm font-semibold">GuestsValencia</a>
++      <nav class="flex items-center gap-4 text-sm">
++        <a href="/index.html" class="hover:underline">Inicio</a>
++        <a href="/alojamientos.html" class="hover:underline">Alojamientos</a>
++        <a href="/owners.html" class="hover:underline">Propietarios</a>
++        <a href="/servicios.html" class="hover:underline">Servicios</a>
++        <a href="/contacto.html" class="hover:underline">Contacto</a>
++        <span class="mx-2 h-4 w-px bg-white/25"></span>
++        <a href="/auth.html#login"  class="rounded-full bg-white/10 px-3 py-1 border border-white/20">Acceder</a>
++        <a href="/auth.html#signup" class="rounded-full bg-blue-600 hover:bg-blue-700 px-3 py-1">Registrarse</a>
++      </nav>
++    </div>
++  </div>
++
++  <header class="relative isolate overflow-hidden text-white">
++    <div class="absolute inset-0 -z-20 bg-gradient-to-b from-[var(--bg-top)] to-[var(--bg-bottom)]"></div>
++    <div class="absolute inset-0 -z-10 halo-sub"></div>
++    <div class="mx-auto max-w-6xl px-6 py-8">
++      <h1 class="text-3xl font-extrabold tracking-tight">Alojamientos</h1>
++      <p class="text-slate-300 mt-1">Elige tu estancia ideal en Valencia.</p>
++      <div class="mt-4 rounded-2xl glass shadow-soft p-4">
++        <form id="filters" class="grid md:grid-cols-4 gap-3 items-end">
++          <label class="text-sm">Zona <input id="q" class="w-full rounded-lg border-0 px-3 py-2 text-slate-900" placeholder="Puerto, Centro…"></label>
++          <label class="text-sm">Huéspedes <input id="guests" type="number" min="1" class="w-full rounded-lg border-0 px-3 py-2 text-slate-900"></label>
++          <label class="text-sm">Habitaciones <input id="rooms" type="number" min="1" class="w-full rounded-lg border-0 px-3 py-2 text-slate-900"></label>
++          <div><button class="rounded-xl bg-white text-slate-900 px-4 py-2 font-semibold">Filtrar</button></div>
++        </form>
++      </div>
++    </div>
++  </header>
++
++  <main class="mx-auto max-w-6xl px-6 py-8">
++    <div id="results" class="grid sm:grid-cols-2 md:grid-cols-3 gap-6"></div>
++  </main>
++
++  <footer class="mx-auto max-w-6xl px-6 py-10 text-sm text-slate-500">© GuestsValencia · ClayTomSystems</footer>
++</body></html>
+*** /dev/null
+--- b/servicios.html
+@@
++<!doctype html><html lang="es"><head>
++<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Servicios · GuestsValencia</title>
++<link rel="stylesheet" href="/assets/css/styles.css">
++<script src="https://cdn.tailwindcss.com"></script>
++</head><body class="bg-gray-50 text-slate-800">
++  <!-- NAVBAR (igual que en index) -->
++  <div class="bg-slate-900 text-white">
++    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
++      <a href="/index.html" class="text-sm font-semibold">GuestsValencia</a>
++      <nav class="flex items-center gap-4 text-sm">
++        <a href="/index.html" class="hover:underline">Inicio</a>
++        <a href="/alojamientos.html" class="hover:underline">Alojamientos</a>
++        <a href="/owners.html" class="hover:underline">Propietarios</a>
++        <a href="/servicios.html" class="hover:underline">Servicios</a>
++        <a href="/contacto.html" class="hover:underline">Contacto</a>
++        <span class="mx-2 h-4 w-px bg-white/25"></span>
++        <a href="/auth.html#login"  class="rounded-full bg-white/10 px-3 py-1 border border-white/20">Acceder</a>
++        <a href="/auth.html#signup" class="rounded-full bg-blue-600 hover:bg-blue-700 px-3 py-1">Registrarse</a>
++      </nav>
++    </div>
++  </div>
++
++  <header class="relative isolate overflow-hidden text-white">
++    <div class="absolute inset-0 -z-20 bg-gradient-to-b from-[var(--bg-top)] to-[var(--bg-bottom)]"></div>
++    <div class="absolute inset-0 -z-10 halo-sub"></div>
++    <div class="mx-auto max-w-6xl px-6 py-8">
++      <h1 class="text-3xl font-extrabold">Servicios</h1>
++      <p class="text-slate-300 mt-1">Gestionamos de principio a fin.</p>
++    </div>
++  </header>
++
++  <main class="mx-auto max-w-6xl px-6 py-10">
++    <section id="licencias" class="mb-8">
++      <h2 class="text-xl font-bold">Gestión de licencias turísticas</h2>
++      <p class="text-slate-600 mt-1">Tramitación, seguimiento y mantenimiento anual.</p>
++    </section>
++    <section id="limpieza" class="mb-8">
++      <h2 class="text-xl font-bold">Limpieza profesional</h2>
++      <p class="text-slate-600 mt-1">Equipos certificados para particulares y empresas.</p>
++    </section>
++    <section id="mantenimiento" class="mb-8">
++      <h2 class="text-xl font-bold">Mantenimiento integral</h2>
++      <p class="text-slate-600 mt-1">Revisiones preventivas y correctivas.</p>
++    </section>
++  </main>
++  <footer class="mx-auto max-w-6xl px-6 py-10 text-sm text-slate-500">© GuestsValencia · ClayTomSystems</footer>
++</body></html>
+*** /dev/null
+--- b/contacto.html
+@@
++<!doctype html><html lang="es"><head>
++<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Contacto · GuestsValencia</title>
++<link rel="stylesheet" href="/assets/css/styles.css">
++<script src="https://cdn.tailwindcss.com"></script>
++</head><body class="bg-gray-50 text-slate-800">
++  <!-- NAVBAR -->
++  <div class="bg-slate-900 text-white">
++    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
++      <a href="/index.html" class="text-sm font-semibold">GuestsValencia</a>
++      <nav class="flex items-center gap-4 text-sm">
++        <a href="/index.html" class="hover:underline">Inicio</a>
++        <a href="/alojamientos.html" class="hover:underline">Alojamientos</a>
++        <a href="/owners.html" class="hover:underline">Propietarios</a>
++        <a href="/servicios.html" class="hover:underline">Servicios</a>
++        <a href="/contacto.html" class="hover:underline">Contacto</a>
++        <span class="mx-2 h-4 w-px bg-white/25"></span>
++        <a href="/auth.html#login"  class="rounded-full bg-white/10 px-3 py-1 border border-white/20">Acceder</a>
++        <a href="/auth.html#signup" class="rounded-full bg-blue-600 hover:bg-blue-700 px-3 py-1">Registrarse</a>
++      </nav>
++    </div>
++  </div>
++
++  <header class="relative isolate overflow-hidden text-white">
++    <div class="absolute inset-0 -z-20 bg-gradient-to-b from-[var(--bg-top)] to-[var(--bg-bottom)]"></div>
++    <div class="absolute inset-0 -z-10 halo-sub"></div>
++    <div class="mx-auto max-w-6xl px-6 py-8">
++      <h1 class="text-3xl font-extrabold">Contacto</h1>
++      <p class="text-slate-300 mt-1">Estamos para ayudarte.</p>
++    </div>
++  </header>
++
++  <main class="mx-auto max-w-6xl px-6 py-10">
++    <section id="presupuesto" class="rounded-2xl glass shadow-soft p-6 text-white">
++      <h2 class="text-xl font-bold">Pedir presupuesto</h2>
++      <p class="text-slate-200">Describe tu vivienda o servicio.</p>
++      <form class="mt-3 grid md:grid-cols-2 gap-3">
++        <input class="rounded-lg px-3 py-2 text-slate-900" placeholder="Nombre y apellidos">
++        <input class="rounded-lg px-3 py-2 text-slate-900" placeholder="Email o teléfono">
++        <input class="rounded-lg px-3 py-2 text-slate-900 md:col-span-2" placeholder="Dirección/Zona">
++        <textarea class="rounded-lg px-3 py-2 text-slate-900 md:col-span-2" rows="5" placeholder="Cuéntanos…"></textarea>
++        <div class="md:col-span-2 flex gap-2">
++          <button class="rounded-xl bg-white text-slate-900 px-4 py-2 font-semibold">Enviar</button>
++          <a class="rounded-xl bg-emerald-600 text-white px-4 py-2" href="https://wa.me/34624829117?text=Quiero%20un%20presupuesto">WhatsApp</a>
++        </div>
++      </form>
++    </section>
++  </main>
++  <footer class="mx-auto max-w-6xl px-6 py-10 text-sm text-slate-500">© GuestsValencia · ClayTomSystems</footer>
++</body></html>
+*** /dev/null
+--- b/auth.html
+@@
++<!doctype html><html lang="es"><head>
++<meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
++<title>Cuenta · GuestsValencia</title>
++<link rel="stylesheet" href="/assets/css/styles.css">
++<script src="https://cdn.tailwindcss.com"></script>
++</head><body class="bg-gray-50 text-slate-800">
++  <!-- NAVBAR básica -->
++  <div class="bg-slate-900 text-white">
++    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
++      <a href="/index.html" class="text-sm font-semibold">GuestsValencia</a>
++      <nav class="flex items-center gap-4 text-sm">
++        <a href="/index.html" class="hover:underline">Inicio</a>
++        <a href="/alojamientos.html" class="hover:underline">Alojamientos</a>
++        <a href="/owners.html" class="hover:underline">Propietarios</a>
++        <a href="/servicios.html" class="hover:underline">Servicios</a>
++        <a href="/contacto.html" class="hover:underline">Contacto</a>
++      </nav>
++    </div>
++  </div>
++
++  <main class="mx-auto max-w-md p-6">
++    <div class="rounded-2xl border bg-white p-5 shadow-soft">
++      <h1 class="text-xl font-bold">Tu cuenta</h1>
++      <p class="text-sm text-slate-600">Demo interna (localStorage).</p>
++      <div class="mt-4 flex gap-3">
++        <button id="login" class="rounded-xl bg-blue-600 text-white px-4 py-2">Acceder</button>
++        <button id="signup" class="rounded-xl bg-white border px-4 py-2">Registrarse</button>
++        <button id="logout" class="rounded-xl bg-slate-200 px-4 py-2">Salir</button>
++      </div>
++    </div>
++    <div id="panel" class="mt-6 hidden rounded-2xl border bg-white p-5 shadow-soft">
++      <h2 class="text-lg font-bold">Panel editable</h2>
++      <label class="block text-sm mt-3">Título Home
++        <input id="homeTitle" class="w-full rounded-lg px-3 py-2 border mt-1"/>
++      </label>
++      <label class="block text-sm mt-3">Subtítulo Home
++        <input id="homeSubtitle" class="w-full rounded-lg px-3 py-2 border mt-1"/>
++      </label>
++      <label class="block text-sm mt-3">Texto Servicios
++        <textarea id="svcText" rows="4" class="w-full rounded-lg px-3 py-2 border mt-1"></textarea>
++      </label>
++      <div class="mt-3">
++        <button id="save" class="rounded-xl bg-emerald-600 text-white px-4 py-2">Guardar</button>
++      </div>
++      <p class="text-xs text-slate-500 mt-2">Se guarda en localStorage (demo). Producción → backend.</p>
++    </div>
++  </main>
++  <script>
++    const stateKey="gv_user", contentKey="gv_content"; const $=s=>document.querySelector(s);
++    function refresh(){ const user=localStorage.getItem(stateKey); $('#panel').classList.toggle('hidden',!user);
++      if(user){ const d=JSON.parse(localStorage.getItem(contentKey)||'{}'); $('#homeTitle').value=d.homeTitle||'Alojamientos en Valencia'; $('#homeSubtitle').value=d.homeSubtitle||'Reserva rápida, llegada autónoma y soporte inmediato.'; $('#svcText').value=d.svcText||'Gestionamos de principio a fin.'; } }
++    $('#login').onclick=()=>{ localStorage.setItem(stateKey,'1'); refresh(); };
++    $('#signup').onclick=()=>{ localStorage.setItem(stateKey,'1'); refresh(); };
++    $('#logout').onclick=()=>{ localStorage.removeItem(stateKey); refresh(); };
++    $('#save').onclick=()=>{ const d={homeTitle:$('#homeTitle').value,homeSubtitle:$('#homeSubtitle').value,svcText:$('#svcText').value}; localStorage.setItem(contentKey,JSON.stringify(d)); alert('Guardado'); };
++    refresh();
++  </script>
++</body></html>
+*** a/listing.html
+--- b/listing.html
+@@
+- <script src="https://cdn.tailwindcss.com"></script>
++ <script src="https://cdn.tailwindcss.com"></script>
++ <link rel="stylesheet" href="/assets/css/styles.css">
+@@
+- <span id="price" class="text-xl font-bold">€0/noche</span>
+- <button id="easypay" class="rounded-xl bg-slate-900 text-white px-4 py-2">Easy Pay</button>
++ <span id="price" class="text-xl font-bold text-slate-900">€0/noche</span>
++ <button id="easypay" class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">Easy Pay</button>
+@@
+- <div class="mt-4" id="map"></div>
++ <div class="mt-4" id="map"></div>
++ <div class="mt-3">
++   <div id="paypal-button-container"></div>
++   <p id="paypal-msg" class="text-xs text-slate-500 mt-2"></p>
++ </div>
+*** /dev/null
+--- b/assets/css/styles.css
+@@
++:root{
++  --blue-600:#2563eb; --blue-800:#1e40af;
++  --bg-top:#0b1020; --bg-bottom:#0f172a;
++}
++.glass{background:rgba(255,255,255,.10);border:1px solid rgba(255,255,255,.20);backdrop-filter:blur(18px)}
++.shadow-soft{box-shadow:0 10px 30px rgba(15,23,42,.15)}
++.badge{display:inline-flex;align-items:center;font-size:.75rem;padding:.25rem .6rem;border-radius:999px;border:1px solid rgba(255,255,255,.25);background:rgba(255,255,255,.10);backdrop-filter:blur(10px)}
++.pill{display:inline-flex;align-items:center;font-size:.70rem;padding:.2rem .5rem;border-radius:999px;background:#d1fae5;color:#065f46}
++.halo-hero{background:radial-gradient(1200px 600px at 30% -10%,rgba(37,99,235,.28),transparent)}
++.halo-sub{background:radial-gradient(900px 450px at 20% -10%,rgba(37,99,235,.22),transparent)}

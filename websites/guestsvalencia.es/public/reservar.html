@@ -1,36 +1,309 @@
-<!doctype html><html lang="es"><head>
-<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
-<title>Reservar</title><style>body{font-family:system-ui;margin:20px;max-width:720px}</style></head>
-<body><h1>Reservar</h1><p>Sandbox/Live según PAYPAL_MODE. Define ?amount=50 en la URL o escribe un importe.</p>
-<input id="amount" placeholder="Importe EUR"/><button id="pay">Pagar</button><div id="paypal-container" style="margin-top:20px"></div>
-<script>
-function q(k,d){const u=new URL(location.href);return u.searchParams.get(k)||d;}
-document.getElementById('amount').value=q('amount','50.00');
-async function ensureSDK(){
-  const u = new URL(location.href);
-  const cid = u.searchParams.get('cid');
-  let clientId = cid;
-  if(!clientId){
-    const r = await fetch('/api/paypal-client-id');
-    const d = await r.json();
-    if(!d.clientId) throw new Error('Falta PAYPAL_CLIENT_ID');
-    clientId = d.clientId;
-  }
-  await new Promise((resolve,reject)=>{
-    const s = document.createElement('script');
-    s.src = 'https://www.paypal.com/sdk/js?client-id='+encodeURIComponent(clientId)+'&currency=EUR';
-    s.onload = resolve;
-    s.onerror = ()=>reject(new Error('No PayPal SDK'));
-    document.head.appendChild(s);
-  });
-}); }
-async function render(){ const amount=document.getElementById('amount').value.trim()||'50.00'; await ensureSDK(); paypal.Buttons({ createOrder: async()=>{ const r=await fetch('/api/paypal-create-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({amount})}); const d=await r.json(); if(!d.ok) throw new Error('No se pudo crear el pedido'); return d.id; }, onApprove: async (data)=>{ const r=await fetch('/api/paypal-capture-order',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({orderId:data.orderID})}); const d=await r.json(); if(d.ok){ location.href='/success.html'; } else { alert('Error: '+JSON.stringify(d.error||d)); location.href='/cancel.html'; } }, onCancel: ()=>location.href='/cancel.html', onError: (err)=>alert('Error: '+err.message) }).render('#paypal-container'); }
-document.getElementById('pay').onclick=render;
-</script>  <script src="assets/sandra-client.js"></script>
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Reservar · GuestsValencia</title>
+  <meta name="theme-color" content="#0f172a" />
+  <script src="https://cdn.tailwindcss.com"></script>
 
-    <!-- PWA Scripts -->
-    <script>
-      if("serviceWorker" in navigator){ navigator.serviceWorker.register("/sw.js"); }
-    </script>
-    <script src="/assets/pwa-install.js"></script>
-</body></html>
+  <!-- Variables de entorno (se cargarán desde Netlify) -->
+  <script>
+    // Variables que se cargarán desde Netlify Environment Variables
+    window.PAYPAL_CLIENT_ID = 'PAYPAL_CLIENT_ID'; // Se reemplazará automáticamente
+    window.PAYPAL_MODE = 'sandbox'; // sandbox | production
+
+    // WSS URL para Sandra (se actualizará cuando Railway esté listo)
+    window.WSS_URL = 'wss://localhost:8080/ws'; // Temporal hasta deploy Railway
+  </script>
+
+  <!-- PayPal SDK Sandbox -->
+  <script>
+    // Cargar PayPal SDK dinámicamente con las variables correctas
+    (function() {
+      const clientId = window.PAYPAL_CLIENT_ID || 'demo';
+      const script = document.createElement('script');
+      script.src = `https://www.paypal.com/sdk/js?client-id=${clientId}&currency=EUR&intent=capture&locale=es_ES`;
+      document.head.appendChild(script);
+    })();
+  </script>
+
+  <script defer src="/assets/js/reservar.js"></script>
+</head>
+<body class="bg-gray-50 text-slate-800">
+  <!-- Header -->
+  <div class="bg-slate-900 text-white sticky top-0 z-50 shadow-lg">
+    <div class="mx-auto max-w-6xl px-6 py-3 flex items-center justify-between">
+      <a href="/" class="text-sm opacity-90 hover:opacity-100 transition-opacity">← Volver a GuestsValencia</a>
+      <nav class="flex gap-3 text-sm">
+        <a class="underline hover:no-underline" href="/alojamientos.html">Alojamientos</a>
+        <a class="underline hover:no-underline" href="/contacto.html">Contacto</a>
+      </nav>
+    </div>
+  </div>
+
+  <!-- HERO Reserva -->
+  <header class="relative isolate overflow-hidden bg-slate-900 text-white">
+    <div class="mx-auto max-w-6xl px-6 py-14 text-center">
+      <h1 class="text-3xl md:text-5xl font-extrabold tracking-tight">Confirmar Reserva</h1>
+      <p class="mt-3 text-slate-300">Finaliza tu reserva de forma segura con PayPal.</p>
+    </div>
+  </header>
+
+  <!-- Contenido Principal -->
+  <div class="mx-auto max-w-4xl px-6 py-10">
+    <div class="grid md:grid-cols-2 gap-8">
+
+      <!-- Columna izquierda: Detalles de la reserva -->
+      <div class="space-y-6">
+        <div class="rounded-2xl border bg-white p-6">
+          <h2 class="text-xl font-bold mb-4">Detalles de tu reserva</h2>
+
+          <!-- Información del alojamiento -->
+          <div class="space-y-4">
+            <div class="flex items-start gap-4">
+              <img id="accommodation-image" src="/images/mn47_1.jpg" alt="Alojamiento" class="w-20 h-20 rounded-lg object-cover">
+              <div class="flex-1">
+                <h3 id="accommodation-name" class="font-semibold">Méndez Núñez 47</h3>
+                <p id="accommodation-location" class="text-sm text-slate-600">Centro histórico, Valencia</p>
+                <div class="flex items-center gap-2 mt-1">
+                  <span class="text-xs bg-green-100 text-green-800 px-2 py-1 rounded-full">Llegada autónoma</span>
+                  <span class="text-xs bg-blue-100 text-blue-800 px-2 py-1 rounded-full">WiFi incluido</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Fechas y huéspedes -->
+            <div class="border-t pt-4 space-y-2">
+              <div class="flex justify-between">
+                <span class="text-slate-600">Check-in:</span>
+                <span id="checkin-date" class="font-medium">15 Feb 2024</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">Check-out:</span>
+                <span id="checkout-date" class="font-medium">18 Feb 2024</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">Noches:</span>
+                <span id="total-nights" class="font-medium">3</span>
+              </div>
+              <div class="flex justify-between">
+                <span class="text-slate-600">Huéspedes:</span>
+                <span id="total-guests" class="font-medium">2 adultos</span>
+              </div>
+            </div>
+          </div>
+        </div>
+
+        <!-- Datos del huésped -->
+        <div class="rounded-2xl border bg-white p-6">
+          <h2 class="text-xl font-bold mb-4">Datos del huésped principal</h2>
+          <form id="guest-form" class="space-y-4">
+            <div class="grid md:grid-cols-2 gap-4">
+              <label class="text-sm">
+                Nombre *
+                <input name="firstName" required class="w-full rounded-lg border px-3 py-2 mt-1" placeholder="Tu nombre">
+              </label>
+              <label class="text-sm">
+                Apellidos *
+                <input name="lastName" required class="w-full rounded-lg border px-3 py-2 mt-1" placeholder="Tus apellidos">
+              </label>
+            </div>
+            <label class="text-sm">
+              Email *
+              <input name="email" type="email" required class="w-full rounded-lg border px-3 py-2 mt-1" placeholder="tu@email.com">
+            </label>
+            <label class="text-sm">
+              Teléfono *
+              <input name="phone" type="tel" required class="w-full rounded-lg border px-3 py-2 mt-1" placeholder="+34 6XX XXX XXX">
+            </label>
+            <label class="text-sm">
+              Comentarios especiales
+              <textarea name="comments" class="w-full rounded-lg border px-3 py-2 mt-1 h-20" placeholder="Hora estimada de llegada, peticiones especiales..."></textarea>
+            </label>
+          </form>
+        </div>
+      </div>
+
+      <!-- Columna derecha: Resumen y pago -->
+      <div class="space-y-6">
+        <!-- Resumen de precios -->
+        <div class="rounded-2xl border bg-white p-6 sticky top-24">
+          <h2 class="text-xl font-bold mb-4">Resumen de precios</h2>
+
+          <div class="space-y-3">
+            <div class="flex justify-between">
+              <span>€<span id="price-per-night">85</span> × <span id="nights-count">3</span> noches</span>
+              <span>€<span id="subtotal">255</span></span>
+            </div>
+            <div class="flex justify-between">
+              <span>Gastos de limpieza</span>
+              <span>€<span id="cleaning-fee">25</span></span>
+            </div>
+            <div class="flex justify-between">
+              <span>Tasas locales</span>
+              <span>€<span id="local-taxes">6</span></span>
+            </div>
+            <div class="border-t pt-3 flex justify-between text-lg font-bold">
+              <span>Total</span>
+              <span>€<span id="total-price">286</span></span>
+            </div>
+          </div>
+
+          <!-- Política de cancelación -->
+          <div class="mt-6 p-4 bg-blue-50 rounded-lg">
+            <h3 class="font-semibold text-blue-900 mb-2">Política de cancelación</h3>
+            <p class="text-sm text-blue-700">
+              Cancelación gratuita hasta 48h antes del check-in.
+              Después de este plazo se cobrará la primera noche.
+            </p>
+          </div>
+
+          <!-- Área de pago PayPal -->
+          <div class="mt-6">
+            <h3 class="font-semibold mb-3">Método de pago</h3>
+
+            <!-- Mensaje de información -->
+            <div class="mb-4 p-3 bg-amber-50 border border-amber-200 rounded-lg">
+              <div class="flex items-center gap-2">
+                <span class="text-amber-600">🔒</span>
+                <span class="text-sm text-amber-800">Modo Sandbox - Pruebas de pago</span>
+              </div>
+              <p class="text-xs text-amber-700 mt-1">
+                Este es un entorno de pruebas. No se realizarán cobros reales.
+              </p>
+            </div>
+
+            <!-- Botón PayPal -->
+            <div id="paypal-button-container" class="mb-4"></div>
+
+            <!-- Botón alternativo (para debugging) -->
+            <button id="pay-alternative" class="w-full rounded-xl bg-slate-600 text-white px-6 py-3 hover:bg-slate-700 transition-colors">
+              💳 Pago alternativo (Demo)
+            </button>
+          </div>
+
+          <!-- Estado del pago -->
+          <div id="payment-status" class="hidden mt-4 p-4 rounded-lg">
+            <div class="flex items-center gap-2">
+              <div class="w-4 h-4 rounded-full"></div>
+              <span class="font-medium"></span>
+            </div>
+            <p class="text-sm mt-1"></p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Modal de confirmación -->
+  <div id="confirmation-modal" class="hidden fixed inset-0 bg-black/50 z-50 flex items-center justify-center p-4">
+    <div class="bg-white rounded-2xl p-8 max-w-md w-full text-center">
+      <div class="text-6xl mb-4">🎉</div>
+      <h2 class="text-2xl font-bold mb-2">¡Reserva confirmada!</h2>
+      <p class="text-slate-600 mb-6">
+        Tu reserva ha sido procesada correctamente. Recibirás un email con todos los detalles.
+      </p>
+
+      <div class="space-y-3">
+        <div class="p-4 bg-green-50 rounded-lg text-left">
+          <p class="text-sm text-green-800">
+            <strong>Código de reserva:</strong> <span id="booking-reference">GV-2024-001</span>
+          </p>
+          <p class="text-sm text-green-800">
+            <strong>Check-in:</strong> <span id="modal-checkin">15 Feb 2024</span>
+          </p>
+        </div>
+
+        <button onclick="window.location.href='/'" class="w-full rounded-xl bg-blue-600 text-white px-6 py-3 hover:bg-blue-700 transition-colors">
+          Volver al inicio
+        </button>
+
+        <button id="contact-whatsapp" class="w-full rounded-xl border border-gray-300 px-6 py-3 hover:bg-gray-50 transition-colors">
+          📱 Contactar por WhatsApp
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Footer Unificado -->
+  <footer class="bg-slate-900 text-white">
+    <div class="mx-auto max-w-6xl px-6 py-10">
+      <div class="grid md:grid-cols-4 gap-8">
+        <!-- Columna 1: Marca -->
+        <div>
+          <h3 class="text-xl font-bold mb-4">GuestsValencia</h3>
+          <p class="text-slate-400 text-sm mb-4">
+            Alojamientos premium en Valencia con llegada autónoma y atención 24/7.
+            Tecnología ClayTom Systems.
+          </p>
+          <div class="flex gap-3">
+            <a href="https://facebook.com/guestsvalencia" target="_blank" class="text-slate-400 hover:text-white transition-colors">
+              <span class="sr-only">Facebook</span>📘
+            </a>
+            <a href="https://instagram.com/guestsvalencia" target="_blank" class="text-slate-400 hover:text-white transition-colors">
+              <span class="sr-only">Instagram</span>📷
+            </a>
+            <a href="https://tiktok.com/@guestsvalencia" target="_blank" class="text-slate-400 hover:text-white transition-colors">
+              <span class="sr-only">TikTok</span>🎵
+            </a>
+          </div>
+        </div>
+
+        <!-- Columna 2: Enlaces rápidos -->
+        <div>
+          <h4 class="font-semibold mb-4">Enlaces rápidos</h4>
+          <ul class="space-y-2 text-sm">
+            <li><a href="/alojamientos.html" class="text-slate-400 hover:text-white transition-colors">Alojamientos</a></li>
+            <li><a href="/search.html" class="text-slate-400 hover:text-white transition-colors">Buscar</a></li>
+            <li><a href="/owners.html" class="text-slate-400 hover:text-white transition-colors">Propietarios</a></li>
+            <li><a href="/contacto.html" class="text-slate-400 hover:text-white transition-colors">Contacto</a></li>
+          </ul>
+        </div>
+
+        <!-- Columna 3: Servicios -->
+        <div>
+          <h4 class="font-semibold mb-4">Servicios</h4>
+          <ul class="space-y-2 text-sm">
+            <li><span class="text-slate-400">✓ Llegada autónoma</span></li>
+            <li><span class="text-slate-400">✓ Atención 24/7</span></li>
+            <li><span class="text-slate-400">✓ Limpieza incluida</span></li>
+            <li><span class="text-slate-400">✓ WiFi premium</span></li>
+            <li><span class="text-slate-400">✓ Sandra IA asistente</span></li>
+          </ul>
+        </div>
+
+        <!-- Columna 4: Contacto -->
+        <div>
+          <h4 class="font-semibold mb-4">Contacto</h4>
+          <ul class="space-y-2 text-sm text-slate-400">
+            <li>📞 <a href="tel:+34624829117" class="hover:text-white transition-colors">+34 624 829 117</a></li>
+            <li>📧 <a href="mailto:info@guestsvalencia.es" class="hover:text-white transition-colors">info@guestsvalencia.es</a></li>
+            <li>📍 Valencia, España</li>
+            <li>🔒 <a href="/legal.html" class="hover:text-white transition-colors">Pagos seguros</a></li>
+          </ul>
+        </div>
+      </div>
+
+      <!-- Separador -->
+      <div class="border-t border-slate-700 mt-8 pt-6">
+        <div class="flex flex-col md:flex-row justify-between items-center gap-4 text-sm text-slate-400">
+          <div class="flex flex-wrap gap-4">
+            <span>© 2024 GuestsValencia</span>
+            <span>•</span>
+            <span>ClayTom Systems</span>
+            <span>•</span>
+            <span>Tecnología Cubana Independiente</span>
+          </div>
+          <div class="flex flex-wrap gap-4">
+            <a href="/legal.html#aviso" class="hover:text-white transition-colors">Aviso Legal</a>
+            <a href="/legal.html#privacidad" class="hover:text-white transition-colors">Privacidad</a>
+            <a href="/legal.html#cookies" class="hover:text-white transition-colors">Cookies</a>
+            <a href="/legal.html#condiciones" class="hover:text-white transition-colors">Condiciones</a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </footer>
+</body>
+</html>

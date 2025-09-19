@@ -1,0 +1,36 @@
+<!doctype html>
+<html lang="es"><head>
+<meta charset="utf-8"/><meta name="viewport" content="width=device-width, initial-scale=1"/>
+<title>Detalle del alojamiento · GuestsValencia</title>
+<script src="https://cdn.tailwindcss.com"></script>
+<link rel="stylesheet" href="/assets/css/styles.css">
+<script defer src="/assets/js/listing.js"></script>
+</head>
+<body class="bg-gray-50 text-slate-800">
+  <main class="mx-auto max-w-6xl px-6 py-8">
+    <div class="grid md:grid-cols-2 gap-6">
+      <section>
+        <div class="flex items-center gap-2">
+          <h1 id="title" class="text-2xl font-bold">Título</h1>
+          <span id="badge-auto" class="hidden text-xs rounded-full bg-emerald-100 text-emerald-700 px-2 py-1">Llegada autónoma</span>
+        </div>
+        <p id="summary" class="text-slate-600 mt-1">Resumen</p>
+        <div id="gallery" class="mt-4 grid grid-cols-2 gap-3"></div>
+      </section>
+      <aside class="rounded-2xl border bg-white p-4 shadow-sm h-fit">
+        <div class="flex items-center justify-between">
+          <span id="price" class="text-xl font-bold text-slate-900">€0/noche</span>
+          <button id="easypay" class="rounded-xl bg-blue-600 text-white px-4 py-2 hover:bg-blue-700">Easy Pay</button>
+        </div>
+        <p class="text-xs text-slate-500 mt-1">Política: 50% hasta 7 días; 0% en 48h.</p>
+        <div class="mt-4" id="map"></div>
+        <div class="mt-3">
+          <div id="paypal-button-container"></div>
+          <p id="paypal-msg" class="text-xs text-slate-500 mt-2"></p>
+        </div>
+        <h2 class="mt-6 font-semibold">Características</h2>
+        <ul id="features" class="mt-2 list-disc pl-5 text-slate-700"></ul>
+      </aside>
+    </div>
+  </main>
+</body></html>

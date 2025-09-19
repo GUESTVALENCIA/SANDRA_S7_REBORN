@@ -4,7 +4,6 @@ publish = "public"
 command = "npm run build || echo static"
 functions = "netlify/functions"
 
-# (opcional) redirecciones legacy
 [[redirects]]
 from = "/legacy/*"
 to = "/"
